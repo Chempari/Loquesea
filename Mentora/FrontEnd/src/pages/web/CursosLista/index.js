@@ -1,1 +1,0 @@
-export { CursosLista } from './CursosLista';
