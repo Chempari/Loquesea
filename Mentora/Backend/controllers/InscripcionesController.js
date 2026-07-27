@@ -8,7 +8,7 @@ const crearInscripcion = async (estudiante_id, curso_id) => {
   const secciones = await Seccion.find({ cursoID: curso_id });
   const seccionIds = secciones.map(s => s._id);
   const lecciones = await Leccion.find({ seccionID: { $in: seccionIds } }).sort("orden");
-
+  
   const progreso = lecciones.map(l => ({
     leccion_id: l._id,
     completada: false

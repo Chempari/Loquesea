@@ -27,6 +27,7 @@ export function CursoPreview() {
   const [error, setError] = useState('');
   const [enrolling, setEnrolling] = useState(false);
   const [enrolled, setEnrolled] = useState(false);
+  const [checkingEnrollment, setCheckingEnrollment] = useState(true);
   const [message, setMessage] = useState('');
   const [seccionAbierta, setSeccionAbierta] = useState(0);
 
@@ -37,6 +38,7 @@ export function CursoPreview() {
   const [enviandoResena, setEnviandoResena] = useState(false);
   const [resenaMsg, setResenaMsg] = useState('');
 
+  // Cargar datos del curso
   useEffect(() => {
     api.get(`/Cursos/${id}`)
       .then((res) => {
@@ -45,6 +47,29 @@ export function CursoPreview() {
       .catch((err) => setError(err.response?.data?.message || 'Error al cargar curso'))
       .finally(() => setLoading(false));
   }, [id]);
+
+  // Verificar si el usuario ya está inscrito
+  useEffect(() => {
+    if (!user || !curso || user.rol !== 'estudiante') {
+      setCheckingEnrollment(false);
+      return;
+    }
+
+    const checkEnrollment = async () => {
+      try {
+        const res = await api.get('/Inscripciones/mis-cursos');
+        const inscripciones = res.data.inscripciones || [];
+        const estaInscrito = inscripciones.some(insc => insc.curso_id?._id === id);
+        setEnrolled(estaInscrito);
+      } catch (err) {
+        console.error('Error al verificar inscripción:', err);
+      } finally {
+        setCheckingEnrollment(false);
+      }
+    };
+
+    checkEnrollment();
+  }, [id, user, curso]);
 
   useEffect(() => {
     api.get(`/Cursos/${id}/resenas`)
