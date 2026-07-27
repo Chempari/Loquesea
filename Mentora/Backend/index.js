@@ -1,6 +1,14 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
 const app = require("./app");
+
+// Create uploads/images directory if it doesn't exist
+const uploadsDir = path.join(__dirname, 'uploads', 'images');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 const {
     DB_USER,
