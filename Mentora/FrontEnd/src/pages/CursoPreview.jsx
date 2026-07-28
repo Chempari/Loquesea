@@ -42,7 +42,9 @@ export function CursoPreview() {
   useEffect(() => {
     api.get(`/Cursos/${id}`)
       .then((res) => {
-        setCurso(res.data.curso || res.data.data?.curso);
+        // Manejar diferentes estructuras de respuesta
+        const cursoData = res.data?.curso || res.data?.data?.curso || null;
+        setCurso(cursoData);
       })
       .catch((err) => setError(err.response?.data?.message || 'Error al cargar curso'))
       .finally(() => setLoading(false));
@@ -58,7 +60,7 @@ export function CursoPreview() {
     const checkEnrollment = async () => {
       try {
         const res = await api.get('/Inscripciones/mis-cursos');
-        const inscripciones = res.data.inscripciones || [];
+        const inscripciones = res.data?.inscripciones || [];
         const estaInscrito = inscripciones.some(insc => insc.curso_id?._id === id);
         setEnrolled(estaInscrito);
       } catch (err) {
@@ -159,18 +161,18 @@ export function CursoPreview() {
             </div>
             <div className="curso-preview-sidebar">
               <div className={`curso-preview-price ${curso.precio === 0 ? 'gratis' : ''}`}>
-                {curso.precio === 0 ? 'Gratis' : `$${curso.precio}`}
+                {curso.precio === 0 ? 'Gratis' : `$${curso.precio ?? 0}`}
               </div>
               {curso.instructorID && (
                 <div className="curso-preview-instructor">
                   {curso.instructorID.foto ? (
-                    <img src={imageUrl(curso.instructorID.foto)} alt="" />
+                    <img src={imageUrl(curso.instructorID.foto)} alt="Instructor" />
                   ) : (
                     <div className="perfil-photo-placeholder" style={{ width: 40, height: 40, fontSize: 18 }}>
-                      {curso.instructorID.nombre?.charAt(0) || '?'}
+                      {curso.instructorID?.nombre?.charAt(0) || '?'}
                     </div>
                   )}
-                  <span>{curso.instructorID.nombre}</span>
+                  <span>{curso.instructorID?.nombre || 'Sin nombre'}</span>
                 </div>
               )}
 

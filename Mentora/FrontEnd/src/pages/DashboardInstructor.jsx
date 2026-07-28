@@ -19,10 +19,10 @@ export function DashboardInstructor() {
 
   const togglePublicado = async (curso) => {
     try {
-      const res = await api.patch(`/Cursos/${curso._id}/publicar`);
+      const res = await api.patch(`/Cursos/${curso?._id}/publicar`);
       setData((prev) => prev ? {
         ...prev,
-        cursos: prev.cursos.map((c) => c._id === curso._id ? res.data.curso : c)
+        cursos: prev.cursos.map((c) => c._id === curso?._id ? res.data?.curso || c : c)
       } : prev);
     } catch (err) {
       console.error(err);

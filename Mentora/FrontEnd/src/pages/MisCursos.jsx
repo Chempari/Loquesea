@@ -8,8 +8,12 @@ export function MisCursos() {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    // Usar la ruta correcta para obtener cursos del instructor
     api.get('/Dashboard/instructor')
-      .then((res) => setCursos(res.data?.cursos || []))
+      .then((res) => {
+        const cursosData = res.data?.cursos || [];
+        setCursos(cursosData);
+      })
       .catch((err) => setError(err.response?.data?.message || err.message || 'Error al cargar cursos'))
       .finally(() => setLoading(false));
   }, []);
