@@ -17,7 +17,8 @@ export function DashboardEstudiante() {
   if (loading) return <div className="dashboard-loading">Cargando...</div>;
   if (error) return <div className="dashboard-error">{error}</div>;
 
-  const { resumen, inscripciones } = data;
+  const resumen = data?.resumen || {};
+  const inscripciones = data?.inscripciones || [];
 
   return (
     <div>
@@ -28,15 +29,15 @@ export function DashboardEstudiante() {
 
       <div className="summary-cards">
         <div className="summary-card">
-          <span className="summary-value">{resumen.total_cursos}</span>
+          <span className="summary-value">{resumen.total_cursos ?? 0}</span>
           <span className="summary-label">Cursos inscritos</span>
         </div>
         <div className="summary-card">
-          <span className="summary-value">{resumen.cursos_completados}</span>
+          <span className="summary-value">{resumen.cursos_completados ?? 0}</span>
           <span className="summary-label">Completados</span>
         </div>
         <div className="summary-card">
-          <span className="summary-value">{resumen.progreso_promedio}%</span>
+          <span className="summary-value">{resumen.progreso_promedio ?? 0}%</span>
           <span className="summary-label">Progreso promedio</span>
         </div>
       </div>
@@ -53,14 +54,14 @@ export function DashboardEstudiante() {
               <div className="course-info">
                 <h3>{insc.curso_id?.titulo || 'Curso sin titulo'}</h3>
                 <span className="course-category">
-                  {insc.curso_id?.categoria} - {insc.curso_id?.nivel}
+                  {insc.curso_id?.categoria || 'Sin categoria'} - {insc.curso_id?.nivel || 'Sin nivel'}
                 </span>
               </div>
               <div className="course-progress">
                 <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${insc.porcentaje}%` }} />
+                  <div className="progress-fill" style={{ width: `${insc.porcentaje ?? 0}%` }} />
                 </div>
-                <span className="progress-text">{insc.porcentaje}%</span>
+                <span className="progress-text">{insc.porcentaje ?? 0}%</span>
               </div>
             </Link>
           ))}

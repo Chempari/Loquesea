@@ -125,11 +125,27 @@ exports.pagarCurso = async (req, res) => {
 exports.getMisInscripciones = async (req, res) => {
   try {
     const inscripciones = await Inscripcion.find({ estudiante_id: req.user.id })
-      .populate("curso_id", "titulo imagen nivel categoria precio")
+      .populate("curso_id", "titulo imagen nivel categoria precio total_inscritos calificacion_promedio")
       .populate("progreso.leccion_id", "titulo url")
       .sort("-fecha_inscripcion");
 
-    return res.status(200).json({ success: true, inscripciones });
+    // Estandarizar respuesta con total_estudiantes
+    const inscripcionesEstandarizadas = inscripciones.map(insc => ({
+      ...insc.toObject(),
+      curso_id: insc.curso_id ? {
+        ...insc.curso_id.toObject(),
+        total_estudiantes: insc.curso_id.total_inscritos || 0,
+        total_inscritos: insc.curso_id.total_inscritos || 0,
+        calificacion_promedio: insc.curso_id.calificacion_promedio || 0
+      } : null
+    }));
+
+    return res.status(200).json({ 
+      success: true, 
+      inscripciones: inscripcionesEstandarizadas,
+      total_estudiantes: inscripciones.length,
+      message: "Inscripciones obtenidas exitosamente"
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }

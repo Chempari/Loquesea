@@ -45,7 +45,23 @@ exports.getCursos = async (req, res) => {
       .populate("instructorID", "nombre foto")
       .select("-__v");
 
-    return res.status(200).json({ success: true, cursos });
+    // Estandarizar respuesta y asegurar que instructorID exista
+    const cursosEstandarizados = cursos.map(curso => ({
+      ...curso.toObject(),
+      instructorID: curso.instructorID ? {
+        _id: curso.instructorID._id,
+        nombre: curso.instructorID.nombre || 'Sin nombre',
+        foto: curso.instructorID.foto || null
+      } : null,
+      total_inscritos: curso.total_inscritos || 0,
+      calificacion_promedio: curso.calificacion_promedio || 0
+    }));
+
+    return res.status(200).json({ 
+      success: true, 
+      cursos: cursosEstandarizados,
+      message: "Cursos obtenidos exitosamente"
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -91,9 +107,25 @@ exports.getCursoById = async (req, res) => {
       )
     }));
 
+    // Estandarizar instructorID y asegurar que exista
+    const cursoEstandarizado = {
+      ...curso,
+      instructorID: curso.instructorID ? {
+        _id: curso.instructorID._id,
+        nombre: curso.instructorID.nombre || 'Sin nombre',
+        biografia: curso.instructorID.biografia || '',
+        foto: curso.instructorID.foto || null,
+        redes_sociales: curso.instructorID.redes_sociales || []
+      } : null,
+      secciones: seccionesConLecciones,
+      total_inscritos: curso.total_inscritos || 0,
+      calificacion_promedio: curso.calificacion_promedio || 0
+    };
+
     return res.status(200).json({
       success: true,
-      curso: { ...curso, secciones: seccionesConLecciones }
+      curso: cursoEstandarizado,
+      message: "Curso obtenido exitosamente"
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });

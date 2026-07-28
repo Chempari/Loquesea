@@ -80,11 +80,11 @@ export function CursosLista() {
                 <div className="curso-card-body">
                   <h3>{curso.titulo}</h3>
                   <div className="curso-card-meta">
-                    <span>{curso.categoria}</span>
-                    <span>{curso.nivel}</span>
+                    <span>{curso.categoria || 'Sin categoria'}</span>
+                    <span>{curso.nivel || 'Sin nivel'}</span>
                   </div>
                   <span className={`curso-card-precio ${curso.precio === 0 ? 'gratis' : ''}`}>
-                    {curso.precio === 0 ? 'Gratis' : `$${curso.precio}`}
+                    {curso.precio === 0 ? 'Gratis' : `$${curso.precio ?? 0}`}
                   </span>
                   {curso.calificacion_promedio > 0 && (
                     <span style={{ fontSize: 13, color: '#f59e0b', display: 'block', marginTop: 4 }}>

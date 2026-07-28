@@ -15,9 +15,21 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-  if (allowed.includes(file.mimetype)) return cb(null, true);
-  cb(new Error("Solo se permiten imágenes (JPG, PNG, WEBP, GIF)"), false);
+  const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+  const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
+  
+  // Verificar mimetype
+  if (!allowedMimeTypes.includes(file.mimetype)) {
+    return cb(new Error("Solo se permiten imágenes (JPG, JPEG, PNG, WEBP, GIF)"), false);
+  }
+  
+  // Verificar extension
+  const ext = path.extname(file.originalname).toLowerCase();
+  if (!allowedExtensions.includes(ext)) {
+    return cb(new Error("Extension de archivo no permitida. Solo JPG, JPEG, PNG, WEBP, GIF"), false);
+  }
+  
+  cb(null, true);
 };
 
 const upload = multer({
