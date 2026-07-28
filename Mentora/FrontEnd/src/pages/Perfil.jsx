@@ -29,8 +29,8 @@ export function Perfil() {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validar tipo de archivo - aceptar PNG y JPG explícitamente
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    // Validar tipo de archivo - aceptar solo mime types correctos (image/jpg no existe, es image/jpeg)
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
       setError('Formato no permitido. Usa JPG, PNG, WEBP o GIF.');
       return;

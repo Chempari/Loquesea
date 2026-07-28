@@ -2,6 +2,13 @@ const Curso = require("../models/Cursos");
 
 exports.getDashboardInstructor = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const cursos = await Curso.find({ instructorID: req.user.id })
       .select("titulo imagen nivel categoria precio publicado calificacion_promedio total_inscritos")
       .sort("-createdAt");
@@ -34,6 +41,13 @@ exports.getDashboardInstructor = async (req, res) => {
 
 exports.getDashboardEstudiante = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const Inscripcion = require("../models/Inscripciones");
 
     const inscripciones = await Inscripcion.find({ estudiante_id: req.user.id })

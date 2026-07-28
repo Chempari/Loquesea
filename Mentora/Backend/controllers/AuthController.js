@@ -147,6 +147,13 @@ exports.login = async (req, res) => {
 
 exports.getMe = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const usuario = await Usuario.findById(req.user.id).select('-password');
     
     if (!usuario) {
@@ -172,6 +179,13 @@ exports.getMe = async (req, res) => {
 
 exports.refreshToken = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const usuario = await Usuario.findById(req.user.id);
     
     if (!usuario || !usuario.activo) {
@@ -212,6 +226,13 @@ exports.refreshToken = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const camposPermitidos = ['nombre', 'biografia', 'foto', 'redes_sociales'];
     const datosActualizar = {};
     

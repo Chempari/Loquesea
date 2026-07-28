@@ -5,6 +5,13 @@ const Curso = require("../models/Cursos");
 
 exports.subirFotoPerfil = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -62,6 +69,13 @@ exports.subirFotoPerfil = async (req, res) => {
 
 exports.subirPortadaCurso = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -90,6 +104,13 @@ exports.subirPortadaCurso = async (req, res) => {
 
 exports.eliminarArchivo = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const { filename } = req.params;
 
     if (!filename) {

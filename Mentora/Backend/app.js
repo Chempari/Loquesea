@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const path = require("path");
 const { API_VERSION, CORS_ORIGIN } = require("./constants");
 
 const AuthRouter = require("./router/Auth");
@@ -22,7 +23,8 @@ app.use(cors({
 app.use(bodyParser.urlencoded({ extended: true, limit: "3mb" }));
 app.use(bodyParser.json({ limit: "3mb" }));
 
-app.use(express.static("uploads"));
+// Ruta estática correcta para imágenes subidas
+app.use('/images', express.static(path.join(__dirname, 'uploads', 'images')));
 
 app.use(`/api/${API_VERSION}`, AuthRouter);
 app.use(`/api/${API_VERSION}`, UsuariosRouter);
