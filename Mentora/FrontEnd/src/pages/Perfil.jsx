@@ -29,9 +29,8 @@ export function Perfil() {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validar tipo de archivo - aceptar PNG y JPG explícitamente
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
-    if (!allowedTypes.includes(file.type)) {
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowed.includes(file.type)) {
       setError('Formato no permitido. Usa JPG, PNG, WEBP o GIF.');
       return;
     }
@@ -51,10 +50,9 @@ export function Perfil() {
     try {
       const res = await api.post('/uploads/profile-photo', formData);
       setFotoUrl(res.data.url);
-      setMessage('Foto actualizada correctamente.');
+      setMessage('Foto actualizada.');
     } catch (err) {
-      console.error('Error al subir foto:', err);
-      setError(err.response?.data?.message || 'Error al subir foto. Verifica el formato y tamaño.');
+      setError(err.response?.data?.message || 'Error al subir foto.');
     } finally {
       setSubiendoFoto(false);
     }

@@ -115,31 +115,17 @@ export function CursoForm() {
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    
-    // Validar tipo de archivo - aceptar PNG y JPG explícitamente
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
-    if (!allowedTypes.includes(file.type)) { 
-      setError('Formato no permitido. Usa JPG, PNG, WEBP o GIF.'); 
-      return; 
-    }
-    
-    if (file.size > 2 * 1024 * 1024) { 
-      setError('Imagen excede 2MB.'); 
-      return; 
-    }
-    
+    if (file.size > 2 * 1024 * 1024) { setError('Imagen excede 2MB.'); return; }
     setSubiendoImagen(true);
     setError('');
-    setMessage('');
     const fd = new FormData();
     fd.append('imagen', file);
     try {
       const res = await api.post('/uploads/course-cover', fd);
       setCurso((prev) => ({ ...prev, imagen: res.data.url }));
-      setMessage('Imagen subida correctamente.');
+      setMessage('Imagen subida.');
     } catch (err) {
-      console.error('Error al subir imagen:', err);
-      setError(err.response?.data?.message || 'Error al subir imagen. Verifica el formato y tamaño.');
+      setError(err.response?.data?.message || 'Error al subir');
     } finally {
       setSubiendoImagen(false);
     }

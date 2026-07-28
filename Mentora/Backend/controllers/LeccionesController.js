@@ -4,8 +4,8 @@ const Seccion = require("../models/Secciones");
 const Curso = require("../models/Cursos");
 const Inscripcion = require("../models/Inscripciones");
 
-const YOUTUBE_REGEX = /^https?:\/\/(www\.)?(youtube\.com\/watch\?v=[\w-]{11}|youtu\.be\/[\w-]{11})([\?&].*)?$/;
-const VIMEO_REGEX = /^https?:\/\/(www\.)?vimeo\.com\/\d+([\?&].*)?$/;
+const YOUTUBE_REGEX = /^https?:\/\/(www\.)?(youtube\.com\/watch\?v=[\w-]{11}|youtu\.be\/[\w-]{11})(&.*)?$/;
+const VIMEO_REGEX = /^https?:\/\/(www\.)?vimeo\.com\/\d+(\?.*)?$/;
 
 const validarUrlVideo = (url) => YOUTUBE_REGEX.test(url) || VIMEO_REGEX.test(url);
 
