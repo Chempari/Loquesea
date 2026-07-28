@@ -7,6 +7,13 @@ const Resena = require("../models/Reseñas");
 
 exports.createCurso = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     req.body.instructorID = req.user.id;
 
     const imagen = req.body.imagen;
@@ -134,6 +141,13 @@ exports.getCursoById = async (req, res) => {
 
 exports.updateCurso = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({ success: false, message: "ID inválido" });
@@ -144,7 +158,9 @@ exports.updateCurso = async (req, res) => {
       return res.status(404).json({ success: false, message: "Curso no encontrado" });
     }
 
-    if (curso.instructorID.toString() !== req.user.id) {
+    // Comparación segura entre ObjectId y string (updateCurso)
+    const instructorIdStrUpdate = curso.instructorID ? curso.instructorID.toString() : null;
+    if (instructorIdStrUpdate !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: "Solo el instructor dueño puede editar este curso"
@@ -177,6 +193,13 @@ exports.updateCurso = async (req, res) => {
 
 exports.togglePublicado = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({ success: false, message: "ID inválido" });
@@ -209,6 +232,13 @@ exports.togglePublicado = async (req, res) => {
 
 exports.deleteCurso = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({ success: false, message: "ID inválido" });
