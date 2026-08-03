@@ -1,7 +1,7 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const cors = require("cors");
-const { API_VERSION, CORS_ORIGIN } = require("./constants");
+const path = require("path");
+const { API_VERSION } = require("./constants");
 
 const AuthRouter = require("./router/Auth");
 const UsuariosRouter = require("./router/Usuarios");
@@ -11,14 +11,18 @@ const LeccionesRouter = require("./router/Lecciones");
 const ResenasRouter = require("./router/Resenas");
 const SeccionesRouter = require("./router/Secciones");
 const DashboardRouter = require("./router/Dashboard");
+const UploadsRouter = require("./router/Uploads");
 const app = express()
 
-app.use(bodyParser.urlencoded({ extended: true, limit: "3mb" }));
-app.use(bodyParser.json({ limit: "3mb" }));
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:5173'],
+  credentials: true
+}));
 
-app.use(express.static("uploads"));
+app.use(express.urlencoded({ extended: true, limit: "3mb" }));
+app.use(express.json({ limit: "3mb" }));
 
-app.use(cors({ origin: CORS_ORIGIN }));
+app.use('/images', express.static(path.join(__dirname, 'uploads', 'images')));
 
 app.use(`/api/${API_VERSION}`, AuthRouter);
 app.use(`/api/${API_VERSION}`, UsuariosRouter);
@@ -28,5 +32,6 @@ app.use(`/api/${API_VERSION}`, CursosRouter);
 app.use(`/api/${API_VERSION}`, LeccionesRouter);
 app.use(`/api/${API_VERSION}`, SeccionesRouter);
 app.use(`/api/${API_VERSION}`, DashboardRouter);
+app.use(`/api/${API_VERSION}`, UploadsRouter);
 
 module.exports = app

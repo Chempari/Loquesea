@@ -7,6 +7,13 @@ const Resena = require("../models/Reseñas");
 
 exports.createCurso = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     req.body.instructorID = req.user.id;
 
     const imagen = req.body.imagen;
@@ -45,7 +52,23 @@ exports.getCursos = async (req, res) => {
       .populate("instructorID", "nombre foto")
       .select("-__v");
 
-    return res.status(200).json({ success: true, cursos });
+    // Estandarizar respuesta y asegurar que instructorID exista
+    const cursosEstandarizados = cursos.map(curso => ({
+      ...curso.toObject(),
+      instructorID: curso.instructorID ? {
+        _id: curso.instructorID._id,
+        nombre: curso.instructorID.nombre || 'Sin nombre',
+        foto: curso.instructorID.foto || null
+      } : null,
+      total_inscritos: curso.total_inscritos || 0,
+      calificacion_promedio: curso.calificacion_promedio || 0
+    }));
+
+    return res.status(200).json({ 
+      success: true, 
+      cursos: cursosEstandarizados,
+      message: "Cursos obtenidos exitosamente"
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -66,7 +89,13 @@ exports.getCursoById = async (req, res) => {
       return res.status(404).json({ success: false, message: "Curso no encontrado" });
     }
 
-    if (!curso.publicado) {
+    // Solo mostrar error 404 si el curso no está publicado Y el usuario NO es el instructor dueño
+    const esInstructorDueño = req.user &&
+      curso.instructorID && 
+      curso.instructorID._id && 
+      curso.instructorID._id.toString() === req.user.id;
+    
+    if (!curso.publicado && !esInstructorDueño) {
       return res.status(404).json({ success: false, message: "Curso no encontrado" });
     }
 
@@ -86,9 +115,25 @@ exports.getCursoById = async (req, res) => {
       )
     }));
 
+    // Estandarizar instructorID y asegurar que exista
+    const cursoEstandarizado = {
+      ...curso,
+      instructorID: curso.instructorID ? {
+        _id: curso.instructorID._id,
+        nombre: curso.instructorID.nombre || 'Sin nombre',
+        biografia: curso.instructorID.biografia || '',
+        foto: curso.instructorID.foto || null,
+        redes_sociales: curso.instructorID.redes_sociales || []
+      } : null,
+      secciones: seccionesConLecciones,
+      total_inscritos: curso.total_inscritos || 0,
+      calificacion_promedio: curso.calificacion_promedio || 0
+    };
+
     return res.status(200).json({
       success: true,
-      curso: { ...curso, secciones: seccionesConLecciones }
+      curso: cursoEstandarizado,
+      message: "Curso obtenido exitosamente"
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
@@ -97,6 +142,13 @@ exports.getCursoById = async (req, res) => {
 
 exports.updateCurso = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({ success: false, message: "ID inválido" });
@@ -107,7 +159,9 @@ exports.updateCurso = async (req, res) => {
       return res.status(404).json({ success: false, message: "Curso no encontrado" });
     }
 
-    if (curso.instructorID.toString() !== req.user.id) {
+    // Comparación segura entre ObjectId y string (updateCurso)
+    const instructorIdStrUpdate = curso.instructorID ? curso.instructorID.toString() : null;
+    if (instructorIdStrUpdate !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: "Solo el instructor dueño puede editar este curso"
@@ -140,6 +194,13 @@ exports.updateCurso = async (req, res) => {
 
 exports.togglePublicado = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({ success: false, message: "ID inválido" });
@@ -172,6 +233,13 @@ exports.togglePublicado = async (req, res) => {
 
 exports.deleteCurso = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({ success: false, message: "ID inválido" });

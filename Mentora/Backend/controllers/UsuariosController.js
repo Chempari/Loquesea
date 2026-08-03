@@ -77,12 +77,21 @@ exports.getUserById = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({ success: false, message: "ID inválido" });
     }
 
-    if (req.user.id !== id && req.user.rol !== 'instructor') {
+    // Comparación segura entre ObjectId y string
+    const userIdStr = req.user.id.toString();
+    if (userIdStr !== id && req.user.rol !== 'instructor') {
       return res.status(403).json({
         success: false,
         message: "Solo puedes editar tu propio perfil"

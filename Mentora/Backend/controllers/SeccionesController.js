@@ -6,12 +6,21 @@ const Leccion = require("../models/Lecciones");
 const verificarInstructorDueño = async (cursoID, userId) => {
   const curso = await Curso.findById(cursoID);
   if (!curso) return null;
-  if (curso.instructorID.toString() !== userId) return false;
+  // Comparación segura entre ObjectId y string
+  const instructorIdStr = curso.instructorID ? curso.instructorID.toString() : null;
+  if (instructorIdStr !== userId) return false;
   return curso;
 };
 
 exports.createSeccion = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const { cursoID } = req.body;
     if (!cursoID) {
       return res.status(400).json({ success: false, message: "El cursoID es requerido" });
@@ -68,6 +77,13 @@ exports.getSeccionById = async (req, res) => {
 
 exports.updateSeccion = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({ success: false, message: "ID inválido" });
@@ -101,6 +117,13 @@ exports.updateSeccion = async (req, res) => {
 
 exports.deleteSeccion = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado'
+      });
+    }
+    
     const { id } = req.params;
     if (!mongoose.isValidObjectId(id)) {
       return res.status(400).json({ success: false, message: "ID inválido" });
