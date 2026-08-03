@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const progreso = new mongoose.Schema({
   leccion_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Lecciones', 
+    ref: 'Leccion', 
     required: [true, 'El ID de la lección es obligatorio.']
   },
   completada: {

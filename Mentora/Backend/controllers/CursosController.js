@@ -90,7 +90,8 @@ exports.getCursoById = async (req, res) => {
     }
 
     // Solo mostrar error 404 si el curso no está publicado Y el usuario NO es el instructor dueño
-    const esInstructorDueño = curso.instructorID && 
+    const esInstructorDueño = req.user &&
+      curso.instructorID && 
       curso.instructorID._id && 
       curso.instructorID._id.toString() === req.user.id;
     
