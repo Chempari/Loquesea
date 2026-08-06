@@ -67,7 +67,7 @@ export function Layout({ children, title }) {
           <Link to="/perfil" className="btn-text" style={{ textDecoration: 'none' }}>Perfil</Link>
 
           {/* Nombre del usuario dinámico */}
-          <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.85)', marginLeft: '8px', fontWeight: 500 }}>
+          <span style={{ fontSize: '14px', color: 'rgb(255, 255, 255)', marginLeft: '8px', fontWeight: 500 }}>
             {user?.nombre || 'Usuario'}
           </span>
 

@@ -4,6 +4,7 @@
     --verde-apagado-medio:  #345446;    
     --verde-apagado-suave:  #507a67;    
     --verde-intermedio-luz: #a3beb0;    
+    --verde-intermedio-oscuro-transparente: #7692839e;    
     --verde-casi-blanco:    #e8f0ec;    
     --blanco-puro:          #ffffff;    
 }
@@ -16,7 +17,7 @@
 
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    background-color: var(--verde-casi-blanco);
+    background-color: var(--verde-intermedio-oscuro-transparente);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     position: relative;
