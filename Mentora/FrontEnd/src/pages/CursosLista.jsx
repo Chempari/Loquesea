@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import './CursosLista.css';
 import { Link } from 'react-router-dom';
 import api from '../Api/axios';
 import { imageUrl } from '../utils';

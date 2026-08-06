@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from 'react';
 const randomBetween = (min, max) => Math.random() * (max - min) + min;
 
 const triangleShapes = [
-  'polygon(50% 0%, 0% 100%, 100% 100%)',
-  'polygon(0% 0%, 100% 50%, 0% 100%)',
-  'polygon(50% 100%, 0% 0%, 100% 0%)',
-  'polygon(100% 0%, 0% 50%, 100% 100%)',
+  'polygon(50% 0%, 98% 16%, 82% 100%, 18% 88%, 0% 24%)',
+  'polygon(50% 0%, 98% 16%, 82% 100%, 18% 88%, 0% 24%)',
+  'polygon(50% 0%, 98% 16%, 82% 100%, 18% 88%, 0% 24%)',
+  'polygon(50% 0%, 98% 16%, 82% 100%, 18% 88%, 0% 24%)',
 ];
 
 const createTriangles = (count, containerWidth, containerHeight) => {

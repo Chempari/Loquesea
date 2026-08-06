@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import api from '../Api/axios';
 import { imageUrl } from '../utils';
+import './Perfil.css';
 
 export function Perfil() {
   const [nombre, setNombre] = useState('');
