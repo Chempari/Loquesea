@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../Api/axios';
+import './DashboardInstructor.css';
 
 export function DashboardInstructor() {
   const [data, setData] = useState(null);
@@ -36,10 +37,10 @@ export function DashboardInstructor() {
   const cursos = data?.cursos || [];
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <p className="dashboard-role" style={{ marginBottom: 0 }}>Instructor</p>
-        <Link to="/cursos/nuevo" className="btn-primary" style={{ width: 'auto', display: 'inline-block', padding: '10px 20px' }}>Crear curso</Link>
+    <div className="dashboard-instructor">
+      <div className="dashboard-instructor__topbar">
+        <p className="dashboard-instructor__role">Instructor</p>
+        <Link to="/cursos/nuevo" className="dashboard-instructor__create-action">Crear curso</Link>
       </div>
 
       <div className="summary-cards">
@@ -61,16 +62,16 @@ export function DashboardInstructor() {
         </div>
       </div>
 
-      <h2 style={{ fontSize: 20, fontWeight: 600, margin: '32px 0 16px' }}>Mis cursos</h2>
+      <h2 className="dashboard-instructor__section-title">Mis cursos</h2>
       {cursos.length === 0 ? (
-        <p className="empty-message">
+        <p className="dashboard-instructor__no-courses">
           No has creado ningun curso. <Link to="/cursos/nuevo">Crea uno aqui</Link>
         </p>
       ) : (
         <div className="course-list">
           {cursos.map((curso) => (
-            <div key={curso._id} className="course-card" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-              <div className="course-info" style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div key={curso._id} className="course-card">
+              <div className="course-info">
                 <h3>{curso.titulo}</h3>
                 <div className="switch-wrapper">
                   <button
@@ -78,20 +79,18 @@ export function DashboardInstructor() {
                     onClick={() => togglePublicado(curso)}
                     title={curso.publicado ? 'Despublicar' : 'Publicar'}
                   />
-                  <span className={`stat ${curso.publicado ? 'published' : 'draft'}`} style={{ fontSize: 12 }}>
+                  <span className={`stat ${curso.publicado ? 'published' : 'draft'}`}>
                     {curso.publicado ? 'Publicado' : 'Borrador'}
                   </span>
                 </div>
               </div>
-              <span className="course-category" style={{ marginBottom: 8 }}>
-                {curso.categoria} - {curso.nivel}
-              </span>
-              <div className="course-stats" style={{ marginBottom: 8 }}>
+              <span className="course-category">{curso.categoria} - {curso.nivel}</span>
+              <div className="course-stats">
                 <span className="stat">{curso.total_inscritos ?? 0} inscritos</span>
                 <span className="stat">{curso.calificacion_promedio ?? 0} / 5</span>
                 <span className="stat">${curso.precio ?? 0}</span>
               </div>
-              <Link to={`/cursos/${curso._id}/editar`} className="btn-outline" style={{ display: 'inline-block', textDecoration: 'none', fontSize: 13 }}>
+              <Link to={`/cursos/${curso._id}/editar`} className="btn-outline">
                 Editar
               </Link>
             </div>
