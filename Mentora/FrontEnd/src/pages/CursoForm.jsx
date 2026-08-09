@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../Api/axios';
 import { imageUrl } from '../utils';
+import './CursoForm.css';
 
 const CATEGORIAS = ['programacion', 'diseno', 'negocios', 'musica', 'fotografia', 'marketing', 'desarrollo'];
 const NIVELES = ['principiante', 'intermedio', 'avanzado'];

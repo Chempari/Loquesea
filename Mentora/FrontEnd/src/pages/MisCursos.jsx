@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../Api/axios';
+import './MisCursos.css';
 
 export function MisCursos() {
   const [cursos, setCursos] = useState([]);
@@ -41,9 +42,9 @@ export function MisCursos() {
   if (error) return <div className="dashboard-error">{error}</div>;
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <Link to="/cursos/nuevo" className="btn-primary" style={{ width: 'auto', padding: '10px 20px' }}>Crear curso</Link>
+    <div className="mis-cursos-page">
+      <div className="mis-cursos-header">
+        <Link to="/cursos/nuevo" className="btn-primary mis-cursos-create-button">Crear curso</Link>
       </div>
 
       {cursos.length === 0 ? (
@@ -51,30 +52,32 @@ export function MisCursos() {
       ) : (
         <div className="course-list">
           {cursos.map((curso) => (
-            <div key={curso._id} className="course-card" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-              <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                <h3>{curso.titulo}</h3>
-                <div className="switch-wrapper">
+            <div key={curso._id} className="course-card course-card-mis-cursos">
+              <div className="course-card-header">
+                <div>
+                  <h3>{curso.titulo}</h3>
+                  <p className="course-category">
+                    {curso.categoria} · {curso.nivel}
+                  </p>
+                </div>
+                <div className="course-status-group">
                   <button
                     className={`switch ${curso.publicado ? 'on' : ''}`}
                     onClick={() => togglePublicado(curso._id)}
                     title={curso.publicado ? 'Despublicar' : 'Publicar'}
                   />
-                  <span className={`stat ${curso.publicado ? 'published' : 'draft'}`} style={{ fontSize: 12 }}>
+                  <span className={`stat ${curso.publicado ? 'published' : 'draft'}`}>
                     {curso.publicado ? 'Publicado' : 'Borrador'}
                   </span>
                 </div>
               </div>
-              <span className="course-category" style={{ marginBottom: 8 }}>
-                {curso.categoria} - {curso.nivel}
-              </span>
-              <div className="course-stats" style={{ marginBottom: 12 }}>
+              <div className="course-stats">
                 <span className="stat">{curso.total_inscritos ?? 0} inscritos</span>
                 <span className="stat">{curso.calificacion_promedio ?? 0} / 5</span>
                 <span className="stat">${curso.precio ?? 0}</span>
               </div>
-              <div style={{ display: 'flex', gap: 8 }}>
-                <Link to={`/cursos/${curso._id}/editar`} className="btn-outline" style={{ display: 'inline-block', textDecoration: 'none', fontSize: 13 }}>
+              <div className="course-actions">
+                <Link to={`/cursos/${curso._id}/editar`} className="btn-outline">
                   Editar
                 </Link>
                 <button className="btn-sm danger" type="button" onClick={() => deleteCurso(curso._id)}>

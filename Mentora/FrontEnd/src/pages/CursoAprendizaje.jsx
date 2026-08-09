@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../Api/axios';
+import './CursoAprendizaje.css';
 
 export function CursoAprendizaje() {
   const { id } = useParams();
