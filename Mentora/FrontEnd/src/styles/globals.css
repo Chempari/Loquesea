@@ -638,6 +638,7 @@ select.input {
   justify-content: center;
   padding: 24px;
   position: relative;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e8ecf8 100%);
   overflow: hidden;
 }
 

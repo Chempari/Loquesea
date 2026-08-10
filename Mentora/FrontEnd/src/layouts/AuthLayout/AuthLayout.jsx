@@ -7,7 +7,7 @@ export function AuthLayout() {
   const [shakePulse, setShakePulse] = useState(0);
 
   return (
-    <div className={`auth-page ${fastMotion ? 'auth-page--fast-motion' : ''}`}>
+    <div className={`auth-page auth-page--slide-in-left${fastMotion ? ' auth-page--fast-motion' : ''}`}>
       <AuthBackground active={fastMotion} shakePulse={shakePulse} />
 
       <main className="auth-wrapper">

@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+
+// Middleware pre-save para asegurar valores por defecto
 const cursos = new mongoose.Schema(
   {
     instructorID: {
@@ -47,18 +49,29 @@ const cursos = new mongoose.Schema(
     calificacion_promedio: {
       type: Number,
       default: 0,
-      min: 0
+      min: 0,
+      max: 5
     },
     total_inscritos: {
       type: Number,
       default: 0,
       min: 0
     }
-
   },
   {
     timestamps: true,
   }
 );
+
+// Asegurar que los campos numéricos siempre tengan valor
+cursos.pre('save', function(next) {
+  if (this.calificacion_promedio === undefined || this.calificacion_promedio === null) {
+    this.calificacion_promedio = 0;
+  }
+  if (this.total_inscritos === undefined || this.total_inscritos === null) {
+    this.total_inscritos = 0;
+  }
+  next();
+});
 
 module.exports = mongoose.model("Curso", cursos);

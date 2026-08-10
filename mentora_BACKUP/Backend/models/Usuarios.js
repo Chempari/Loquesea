@@ -8,6 +8,11 @@ const usuario = new mongoose.Schema(
       required: true,
       trim: true
     },
+    apellido:{
+      type: String,
+      required: true,
+      trim: true
+    },
     correo: {
       type: String,
       required:true,
@@ -32,6 +37,11 @@ const usuario = new mongoose.Schema(
     foto:{
         type: String,
         default: null
+    },
+    redes_sociales:
+    {
+      type: [String],
+      default: []
     },
     activo:{
         type: Boolean,
