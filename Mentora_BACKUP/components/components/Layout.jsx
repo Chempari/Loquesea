@@ -2,12 +2,15 @@ import { useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { LayoutBackground } from './LayoutBackground';
-import './layout.css';
 
 export function Layout({ children, title }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    import('../temp/dashboard.css');
+  }, []);
 
   useEffect(() => {
     const content = document.querySelector('.layout-page-transition');

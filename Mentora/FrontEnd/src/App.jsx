@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { useAuth } from './context/useAuth';
-import { Login } from './pages/Login';
-import { Register } from './pages/Register';
-import { DashboardEstudiante } from './pages/DashboardEstudiante';
-import { DashboardInstructor } from './pages/DashboardInstructor';
+import { Login } from './pages/auth/Login';
+import { Register } from './pages/auth/Register';
+import { DashboardEstudiante } from './pages/dashboard/Estudiante';
+import { DashboardInstructor } from './pages/dashboard/Instructor';
 import { Perfil } from './pages/Perfil';
 import { CursosLista } from './pages/CursosLista';
 import { CursoPreview } from './pages/CursoPreview';

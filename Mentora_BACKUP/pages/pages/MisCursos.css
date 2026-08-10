@@ -46,7 +46,7 @@
   gap: 18px;
   padding: 24px;
   border-radius: 24px;
-  background: rgba(27, 46, 38, 0.7);
+  background: rgba(27, 46, 38, 0.78);
   border: 1px solid rgba(255, 255, 255, 0.10);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
   transition: transform 0.2s ease, border-color 0.2s ease;
