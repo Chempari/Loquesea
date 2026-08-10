@@ -62,6 +62,7 @@ export function RegisterForm({ onSuccess }) {
           onChange={(e) => setNombre(e.target.value)}
           onBlur={() => handleBlur('nombre')}
           error={touched.nombre && !nombre.trim() ? 'El nombre es obligatorio' : ''}
+          variant="round"
           required
         />
         <Input
@@ -74,6 +75,7 @@ export function RegisterForm({ onSuccess }) {
           onChange={(e) => setApellido(e.target.value)}
           onBlur={() => handleBlur('apellido')}
           error={touched.apellido && !apellido.trim() ? 'El apellido es obligatorio' : ''}
+          variant="round"
           required
         />
       </div>
@@ -89,6 +91,7 @@ export function RegisterForm({ onSuccess }) {
         onBlur={() => handleBlur('correo')}
         error={touched.correo && !correo.trim() ? 'El correo es obligatorio' : ''}
         autoComplete="email"
+        variant="round"
         required
       />
 
@@ -103,6 +106,7 @@ export function RegisterForm({ onSuccess }) {
         onBlur={() => handleBlur('password')}
         error={touched.password && password.length < 6 ? 'Mínimo 6 caracteres' : ''}
         autoComplete="new-password"
+        variant="round"
         required
       />
 
@@ -117,6 +121,7 @@ export function RegisterForm({ onSuccess }) {
         onBlur={() => handleBlur('confirmPassword')}
         error={touched.confirmPassword && password !== confirmPassword ? 'Las contraseñas no coinciden' : ''}
         autoComplete="new-password"
+        variant="round"
         required
       />
 

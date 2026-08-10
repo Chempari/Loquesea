@@ -56,6 +56,7 @@ export function LoginForm({ onSuccess }) {
         onBlur={() => handleBlur('correo')}
         error={touched.correo && !correo.trim() ? 'El correo es obligatorio' : ''}
         autoComplete="email"
+        variant="round"
         required
       />
 
@@ -70,6 +71,7 @@ export function LoginForm({ onSuccess }) {
         onBlur={() => handleBlur('password')}
         error={touched.password && !password ? 'La contraseña es obligatoria' : ''}
         autoComplete="current-password"
+        variant="round"
         required
       />
 

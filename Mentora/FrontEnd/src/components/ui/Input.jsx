@@ -5,11 +5,13 @@ export const Input = forwardRef(function Input({
   error,
   helperText,
   className = '',
+  variant = 'default',
   id,
   type = 'text',
   ...props
 }, ref) {
   const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
+  const inputClass = variant === 'round' ? 'round-input' : 'input';
 
   return (
     <div className={`form-group ${className}`}>
@@ -22,7 +24,7 @@ export const Input = forwardRef(function Input({
         ref={ref}
         id={inputId}
         type={type}
-        className={`input ${error ? 'input-error' : ''}`}
+        className={`${inputClass} ${error ? 'input-error' : ''}`}
         aria-invalid={error ? 'true' : 'false'}
         aria-describedby={error ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined}
         {...props}
