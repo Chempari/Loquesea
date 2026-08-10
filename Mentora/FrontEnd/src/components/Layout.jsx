@@ -24,24 +24,24 @@ export function Layout({ children, title }) {
   };
 
   return (
-    <div className="dashboard-wrapper">
+    <div className="layout-wrapper">
       {/* Fondo Geométrico Global para toda la app */}
       <LayoutBackground />
 
       {/* NAVBAR GLASSMORPHISM GLOBAL */}
-      <nav className="glass-navbar" style={{ zIndex: 100 }}>
-        <Link to="/dashboard" className="logo" style={{ textDecoration: 'none' }}>
+      <nav className="layout-navbar" style={{ zIndex: 100 }}>
+        <Link to="/dashboard" className="layout-logo" style={{ textDecoration: 'none' }}>
           MENTORA
         </Link>
 
         {/* Buscador visual (opcional a nivel global) */}
-        <div className="search-container input-container">
+        <div className="layout-search layout-input-container">
           <input
             type="text"
             placeholder="Buscar cursos..."
-            className="round-input search-input"
+            className="layout-input layout-search-input"
           />
-          <span className="input-icon">
+          <span className="layout-input-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -49,19 +49,19 @@ export function Layout({ children, title }) {
           </span>
         </div>
 
-        <div className="auth-buttons">
-          <Link to="/explorar" className="btn-text" style={{ textDecoration: 'none' }}>Explorar</Link>
-          <Link to="/dashboard" className="btn-text" style={{ textDecoration: 'none' }}>Dashboard</Link>
+        <div className="layout-auth-buttons">
+          <Link to="/explorar" className="layout-btn-text" style={{ textDecoration: 'none' }}>Explorar</Link>
+          <Link to="/dashboard" className="layout-btn-text" style={{ textDecoration: 'none' }}>Dashboard</Link>
 
           {/* Opciones exclusivas para instructor */}
           {user?.rol === 'instructor' && (
             <>
-              <Link to="/cursos/nuevo" className="btn-text" style={{ textDecoration: 'none' }}>Crear curso</Link>
-              <Link to="/mis-cursos" className="btn-text" style={{ textDecoration: 'none' }}>Mis cursos</Link>
+              <Link to="/cursos/nuevo" className="layout-btn-text" style={{ textDecoration: 'none' }}>Crear curso</Link>
+              <Link to="/mis-cursos" className="layout-btn-text" style={{ textDecoration: 'none' }}>Mis cursos</Link>
             </>
           )}
 
-          <Link to="/perfil" className="btn-text" style={{ textDecoration: 'none' }}>Perfil</Link>
+          <Link to="/perfil" className="layout-btn-text" style={{ textDecoration: 'none' }}>Perfil</Link>
 
           {/* Nombre del usuario dinámico */}
           <span style={{ fontSize: '14px', color: 'rgb(255, 255, 255)', marginLeft: '8px', fontWeight: 500 }}>
@@ -69,18 +69,18 @@ export function Layout({ children, title }) {
           </span>
 
           {/* Botón de cerrar sesión unificado */}
-          <button className="btn-primary-round btn-nav" onClick={handleLogout}>
+          <button className="layout-btn-primary layout-btn-nav" onClick={handleLogout}>
             Cerrar sesión
           </button>
         </div>
       </nav>
 
       {/* CONTENIDO PRINCIPAL DINÁMICO */}
-      <main key={location.pathname} className="main-content layout-page-transition" style={{ position: 'relative', zIndex: 10 }}>
+      <main key={location.pathname} className="layout-content layout-page-transition" style={{ position: 'relative', zIndex: 10 }}>
         {/* Renderizado de título dinámico si se pasa la prop 'title' */}
         {title && (
-          <div className="header-section" style={{ marginBottom: '24px' }}>
-            <h1 className="login-title" style={{ textAlign: 'left' }}>{title}</h1>
+          <div className="layout-header-section" style={{ marginBottom: '24px' }}>
+            <h1 className="layout-title" style={{ textAlign: 'left' }}>{title}</h1>
           </div>
         )}
 

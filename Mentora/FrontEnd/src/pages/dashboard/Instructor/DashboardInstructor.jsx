@@ -33,8 +33,8 @@ export function DashboardInstructor() {
     }
   };
 
-  if (loading) return <div className="dashboard-loading">Cargando...</div>;
-  if (error) return <div className="dashboard-error">{error}</div>;
+  if (loading) return <div className="dash-loading">Cargando...</div>;
+  if (error) return <div className="dash-error">{error}</div>;
 
   const resumen = data?.resumen || {};
   const cursos = data?.cursos || [];

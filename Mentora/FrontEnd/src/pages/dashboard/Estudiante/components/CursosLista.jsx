@@ -11,21 +11,21 @@ export function CursosLista({ inscripciones }) {
   }
 
   return (
-    <div className="courses-grid">
+    <div className="estudiante-grid">
       {inscripciones.map((insc) => (
         <Link
           to={`/cursos/${insc.curso_id?._id}/aprender`}
           key={insc._id}
-          className="glass-card course-card"
+          className="estudiante-card"
           style={{ textDecoration: 'none' }}
         >
-          <div className="card-image-placeholder">IMAGEN CURSO</div>
-          <div className="card-info">
-            <h3 className="card-title">{insc.curso_id?.titulo || 'Curso sin título'}</h3>
-            <p className="card-description">{insc.curso_id?.descripcion || ''}</p>
-            <div className="card-footer" style={{ borderTop: 'none', paddingTop: 0 }}>
-              <span className="tag-glass">{insc.curso_id?.nivel || 'Sin nivel'}</span>
-              <span className="price-glass">{insc.curso_id?.precio ? insc.curso_id.precio : 'Gratis'}</span>
+          <div className="estudiante-card-img">IMAGEN CURSO</div>
+          <div className="estudiante-card-info">
+            <h3 className="estudiante-card-title">{insc.curso_id?.titulo || 'Curso sin título'}</h3>
+            <p className="estudiante-card-desc">{insc.curso_id?.descripcion || ''}</p>
+            <div className="estudiante-card-footer" style={{ borderTop: 'none', paddingTop: 0 }}>
+              <span className="estudiante-tag">{insc.curso_id?.nivel || 'Sin nivel'}</span>
+              <span className="estudiante-price">{insc.curso_id?.precio ? insc.curso_id.precio : 'Gratis'}</span>
             </div>
             <ProgressBar percentage={insc.porcentaje} label="Progreso" />
           </div>

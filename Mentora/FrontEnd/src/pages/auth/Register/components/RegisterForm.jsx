@@ -49,7 +49,7 @@ export function RegisterForm({
   };
 
   return (
-    <form className="login-form" onSubmit={handleSubmit}>
+    <form className="auth-form" onSubmit={handleSubmit}>
       <FormInput
         id="nombre"
         type="text"
@@ -107,20 +107,20 @@ export function RegisterForm({
         autoComplete="new-password"
       />
 
-      <div className="input-container">
+      <div className="auth-input-container">
         <select
           id="rol"
           value={rol}
           onChange={(e) => setRol(e.target.value)}
-          className="round-input"
+          className="auth-input"
         >
           <option value="estudiante">Estudiante</option>
           <option value="instructor">Instructor</option>
         </select>
-        <span className="input-icon">{rolIcon}</span>
+        <span className="auth-input-icon">{rolIcon}</span>
       </div>
 
-      <button type="submit" className="btn-primary-round" disabled={loading}>
+      <button type="submit" className="auth-btn-primary" disabled={loading}>
         {loading ? 'Registrando...' : 'Registrarse'}
       </button>
     </form>

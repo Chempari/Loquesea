@@ -140,7 +140,7 @@
 /* =========================================
    Botones Globales (Inscribir y Enviar)
    ========================================= */
-.btn-inscribir, .btn-enviar {
+.preview-btn-inscribir, .preview-btn-enviar {
   width: 100%;
   padding: 14px 20px;
   border-radius: 12px;
@@ -155,13 +155,13 @@
   box-shadow: 0 4px 12px rgba(79, 107, 91, 0.3);
 }
 
-.btn-inscribir:hover, .btn-enviar:hover {
+.preview-btn-inscribir:hover, .preview-btn-enviar:hover {
   background: #5e7e6c;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(79, 107, 91, 0.4);
 }
 
-.btn-inscribir:disabled, .btn-enviar:disabled {
+.preview-btn-inscribir:disabled, .preview-btn-enviar:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
@@ -171,7 +171,7 @@
 /* =========================================
    Temario (Acordeón)
    ========================================= */
-.temario {
+.preview-temario {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -185,7 +185,7 @@
   transition: all 0.2s ease;
 }
 
-.seccion-header {
+.preview-seccion-header {
   display: flex;
   justify-content: space-between;
   padding: 16px 20px;
@@ -196,11 +196,11 @@
   transition: background 0.2s;
 }
 
-.seccion-header:hover {
+.preview-seccion-header:hover {
   background: rgba(27, 46, 38, 0.9);
 }
 
-.leccion-item {
+.preview-leccion-item {
   padding: 14px 20px;
   display: flex;
   gap: 12px;
@@ -288,12 +288,12 @@
   gap: 16px;
 }
 
-.star-rating {
+.preview-star-rating {
   display: flex;
   gap: 4px;
 }
 
-.star-rating button {
+.preview-star-rating button {
   background: none;
   border: none;
   font-size: 32px;
@@ -302,11 +302,11 @@
   transition: color 0.2s, transform 0.1s;
 }
 
-.star-rating button:hover {
+.preview-star-rating button:hover {
   transform: scale(1.1);
 }
 
-.star-rating button.filled {
+.preview-star-rating button.filled {
   color: #fbbf24;
 }
 

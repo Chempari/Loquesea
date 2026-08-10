@@ -117,7 +117,7 @@ html, body, #root {
 
 /* --- Navbar (público) --- */
 
-.navbar {
+.layout-navbar-public {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -131,19 +131,19 @@ html, body, #root {
   z-index: 100;
 }
 
-.navbar-brand a {
+.layout-navbar-public-brand a {
   font-size: 20px;
   font-weight: 700;
   color: var(--accent);
   text-decoration: none;
 }
 
-.navbar-links {
+.layout-navbar-public-links {
   display: flex;
   gap: 20px;
 }
 
-.navbar-links a {
+.layout-navbar-public-links a {
   font-size: 14px;
   color: var(--text);
   text-decoration: none;
@@ -151,7 +151,7 @@ html, body, #root {
   transition: color 0.2s;
 }
 
-.navbar-links a:hover {
+.layout-navbar-public-links a:hover {
   color: var(--accent);
 }
 
@@ -162,4 +162,19 @@ html, body, #root {
   text-align: center;
   padding: 40px 0;
   font-size: 15px;
+}
+
+/* --- Main Content (público) --- */
+
+.layout-main-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  width: 100%;
+}
+
+.layout-page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
 }

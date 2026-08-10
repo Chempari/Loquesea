@@ -1,7 +1,7 @@
 export function Switch({ isOn, onToggle, title }) {
   return (
     <button
-      className={`switch ${isOn ? 'on' : ''}`}
+      className={`dash-switch ${isOn ? 'on' : ''}`}
       onClick={onToggle}
       title={title}
     />

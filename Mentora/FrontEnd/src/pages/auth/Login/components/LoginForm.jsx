@@ -21,7 +21,7 @@ export function LoginForm({ onSubmit, loading, correo, setCorreo, password, setP
   };
 
   return (
-    <form className="login-form" onSubmit={handleSubmit}>
+    <form className="auth-form" onSubmit={handleSubmit}>
       <FormInput
         id="email"
         type="email"
@@ -44,15 +44,15 @@ export function LoginForm({ onSubmit, loading, correo, setCorreo, password, setP
         autoComplete="current-password"
       />
 
-      <div className="form-options">
-        <label className="remember-me">
+      <div className="auth-options">
+        <label className="auth-remember">
           <input type="checkbox" />
           <span>Recordarme</span>
         </label>
-        <a href="#" className="forgot-link">¿Olvidaste tu contraseña?</a>
+        <a href="#" className="auth-forgot">¿Olvidaste tu contraseña?</a>
       </div>
 
-      <button type="submit" className="btn-primary-round" disabled={loading}>
+      <button type="submit" className="auth-btn-primary" disabled={loading}>
         {loading ? 'Ingresando...' : 'Login'}
       </button>
     </form>

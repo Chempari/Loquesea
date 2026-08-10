@@ -1,11 +1,11 @@
 /* ============================================
    Dashboard Shared Styles
-   Extraídos de index.css para ambos dashboards
+   Prefijo: .dash-
    ============================================ */
 
 /* --- Loading & Error States --- */
-.dashboard-loading,
-.app-loading {
+.dash-loading,
+.dash-app-loading {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,7 +14,7 @@
   color: var(--text-light);
 }
 
-.dashboard-error {
+.dash-error {
   color: var(--error);
   text-align: center;
   padding: 40px 24px;
@@ -22,22 +22,22 @@
 }
 
 /* --- Stat Labels --- */
-.stat {
+.dash-stat {
   color: var(--text-light);
   white-space: nowrap;
 }
 
-.stat.published {
+.dash-stat.published {
   color: var(--success);
   font-weight: 600;
 }
 
-.stat.draft {
+.dash-stat.draft {
   color: var(--text-light);
 }
 
 /* --- Outline Button --- */
-.btn-outline {
+.dash-btn-outline {
   padding: 10px 20px;
   background: var(--white);
   color: var(--accent);
@@ -51,18 +51,18 @@
   display: inline-block;
 }
 
-.btn-outline:hover {
+.dash-btn-outline:hover {
   background: rgba(79, 70, 229, 0.05);
 }
 
 /* --- Switch Toggle --- */
-.switch-wrapper {
+.dash-switch-wrapper {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.switch {
+.dash-switch {
   position: relative;
   width: 44px;
   height: 24px;
@@ -73,11 +73,11 @@
   transition: background 0.2s;
 }
 
-.switch.on {
+.dash-switch.on {
   background: var(--success);
 }
 
-.switch::after {
+.dash-switch::after {
   content: '';
   position: absolute;
   top: 2px;
@@ -89,6 +89,6 @@
   transition: transform 0.2s;
 }
 
-.switch.on::after {
+.dash-switch.on::after {
   transform: translateX(20px);
 }

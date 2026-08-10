@@ -4,7 +4,7 @@
    ============================================ */
 
 /* --- Main Content --- */
-.main-content {
+.estudiante-main-content {
   max-width: 1280px;
   margin: 0 auto;
   padding: 40px;
@@ -12,31 +12,31 @@
 }
 
 /* --- Header Section --- */
-.header-section {
+.estudiante-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   margin-bottom: 40px;
 }
 
-.login-title {
+.estudiante-title {
   font-size: 36px;
   font-weight: 700;
   letter-spacing: -0.01em;
   color: #ffffff;
 }
-.subtitle {
+.estudiante-subtitle {
   color: rgba(232, 240, 236, 0.8);
   font-size: 15px;
 }
 
-.filters-group {
+.estudiante-filters {
   display: flex;
   gap: 16px;
 }
 
 /* --- Glass Dropdown Filters --- */
-.glass-dropdown {
+.estudiante-dropdown {
   background: rgba(27, 46, 38, 0.5);
   backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -51,25 +51,34 @@
   transition: all 0.3s ease;
 }
 
-.glass-dropdown:hover {
+.glass-dropdown{
+  background: rgba(27, 46, 38, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 22px 20px;
+  text-align: center;
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.2);
+}
+
+.estudiante-dropdown:hover {
   background: rgba(27, 46, 38, 0.8);
   border-color: var(--verde-intermedio-luz);
 }
 
-.glass-dropdown strong {
+.estudiante-dropdown strong {
   color: var(--verde-intermedio-luz);
   font-weight: 600;
 }
 
 /* --- Courses Grid --- */
-.courses-grid {
+.estudiante-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
 }
 
 /* --- Glass Card (Course Card) --- */
-.glass-card {
+.estudiante-card {
   background: rgba(27, 46, 38, 0.75);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -79,7 +88,7 @@
   color: var(--blanco-puro);
 }
 
-.course-card {
+.estudiante-card {
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -89,14 +98,14 @@
   cursor: pointer;
 }
 
-.course-card:hover {
+.estudiante-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
   border-color: rgba(255, 255, 255, 0.3);
 }
 
 /* --- Card Image Placeholder --- */
-.card-image-placeholder {
+.estudiante-card-img {
   height: 160px;
   background: rgba(255, 255, 255, 0.05);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -110,7 +119,7 @@
 }
 
 /* --- Card Info --- */
-.card-info {
+.estudiante-card-info {
   padding: 24px;
   display: flex;
   flex-direction: column;
@@ -118,19 +127,19 @@
   flex-grow: 1;
 }
 
-.card-title {
+.estudiante-card-title {
   font-size: 18px;
   font-weight: 700;
 }
 
-.card-description {
+.estudiante-card-desc {
   font-size: 13px;
   color: rgba(232, 240, 236, 0.7);
   line-height: 1.5;
 }
 
 /* --- Card Footer --- */
-.card-footer {
+.estudiante-card-footer {
   margin-top: auto;
   display: flex;
   justify-content: space-between;
@@ -139,7 +148,7 @@
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.tag-glass {
+.estudiante-tag {
   background: rgba(255, 255, 255, 0.1);
   padding: 4px 10px;
   border-radius: 12px;
@@ -148,7 +157,7 @@
   color: var(--verde-intermedio-luz);
 }
 
-.price-glass {
+.estudiante-price {
   font-size: 15px;
   font-weight: 700;
 }

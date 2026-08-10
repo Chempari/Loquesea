@@ -10,19 +10,19 @@ export function FormInput({
   autoComplete,
 }) {
   return (
-    <div className="input-container">
+    <div className="auth-input-container">
       <input
         id={id}
         type={type}
         placeholder={placeholder}
         required={required}
         minLength={minLength}
-        className="round-input"
+        className="auth-input"
         value={value}
         onChange={onChange}
         autoComplete={autoComplete}
       />
-      <span className="input-icon">{icon}</span>
+      <span className="auth-input-icon">{icon}</span>
     </div>
   );
 }

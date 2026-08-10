@@ -21,42 +21,42 @@
   margin-bottom: 22px;
 }
 
-.curso-form-page .form-success,
-.curso-form-page .auth-error {
+.curso-form-page .curso-form-success,
+.curso-form-page .curso-form-error {
   border-radius: 20px;
   padding: 14px 16px;
   font-size: 0.95rem;
   margin-bottom: 22px;
 }
 
-.curso-form-page .form-success {
+.curso-form-page .curso-form-success {
   background: rgba(16, 185, 129, 0.14);
   color: #d1fae5;
   border: 1px solid rgba(16, 185, 129, 0.24);
 }
 
-.curso-form-page .auth-error {
+.curso-form-page .curso-form-error {
   background: rgba(248, 113, 113, 0.16);
   color: #fecaca;
   border: 1px solid rgba(248, 113, 113, 0.28);
 }
 
-.curso-form-page .form-group {
+.curso-form-page .curso-form-group {
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 18px;
 }
 
-.curso-form-page .form-group label {
+.curso-form-page .curso-form-group label {
   color: rgba(255, 255, 255, 0.86);
   font-size: 0.95rem;
   font-weight: 600;
 }
 
-.curso-form-page .form-group input,
-.curso-form-page .form-group textarea,
-.curso-form-page .form-group select {
+.curso-form-page .curso-form-group input,
+.curso-form-page .curso-form-group textarea,
+.curso-form-page .curso-form-group select {
   width: 100%;
   min-height: 50px;
   padding: 14px 16px;
@@ -69,19 +69,19 @@
   transition: all 0.25s ease;
 }
 
-.curso-form-page .form-group textarea {
+.curso-form-page .curso-form-group textarea {
   min-height: 120px;
   resize: vertical;
 }
 
-.curso-form-page .form-group input::placeholder,
-.curso-form-page .form-group textarea::placeholder {
+.curso-form-page .curso-form-group input::placeholder,
+.curso-form-page .curso-form-group textarea::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
-.curso-form-page .form-group input:focus,
-.curso-form-page .form-group textarea:focus,
-.curso-form-page .form-group select:focus {
+.curso-form-page .curso-form-group input:focus,
+.curso-form-page .curso-form-group textarea:focus,
+.curso-form-page .curso-form-group select:focus {
   border-color: rgba(163, 190, 176, 0.9);
   background: rgba(255, 255, 255, 0.12);
   box-shadow: 0 0 0 4px rgba(163, 190, 176, 0.12);
@@ -173,7 +173,7 @@
   color: #fff;
 }
 
-.curso-form-page .seccion-group .leccion-item {
+.curso-form-page .seccion-group .curso-form-leccion-item {
   margin-bottom: 10px;
   padding: 10px 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -184,13 +184,13 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-.curso-form-page .seccion-group .leccion-item span {
+.curso-form-page .seccion-group .curso-form-leccion-item span {
   display: inline-block;
   max-width: 100%;
   word-break: break-word;
 }
 
-.curso-form-page .seccion-group .leccion-item span:last-child {
+.curso-form-page .seccion-group .curso-form-leccion-item span:last-child {
   color: rgba(255, 255, 255, 0.65);
   font-size: 0.85rem;
 }
@@ -220,7 +220,7 @@
   background: rgba(248, 113, 113, 0.16);
 }
 
-.curso-form-page .btn-outline {
+.curso-form-page .curso-form-btn-outline {
   padding: 12px 18px;
   background: transparent;
   color: #fff;
@@ -231,7 +231,7 @@
   transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.curso-form-page .btn-outline:hover {
+.curso-form-page .curso-form-btn-outline:hover {
   background: rgba(255, 255, 255, 0.08);
   transform: translateY(-1px);
 }
@@ -272,7 +272,7 @@
 
   .curso-form-page .btn-primary,
   .curso-form-page .btn-secondary,
-  .curso-form-page .btn-outline {
+  .curso-form-page .curso-form-btn-outline {
     width: 100%;
   }
 }

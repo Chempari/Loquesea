@@ -61,11 +61,11 @@ export function Register() {
     <div className={pageClass}>
       <AuthBackground active={fastMotion} shakePulse={shakePulse} />
 
-      <main className="login-wrapper">
-        <div className="glass-card">
-          <h1 className="login-title">Registrarse</h1>
+      <main className="auth-wrapper">
+        <div className="auth-card">
+          <h1 className="auth-title">Registrarse</h1>
 
-          {error && <div className="auth-error">{error}</div>}
+          {error && <div className="auth-error-msg">{error}</div>}
 
           <RegisterForm
             onSubmit={handleSubmit}

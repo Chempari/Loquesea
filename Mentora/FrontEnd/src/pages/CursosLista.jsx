@@ -41,8 +41,8 @@ export function CursosLista() {
   };
 
   return (
-    <div className="cursos-page">
-      <div className="cursos-filters">
+    <div className="lista-page">
+      <div className="lista-filters">
         <input
           name="titulo"
           placeholder="Buscar por titulo..."
@@ -63,24 +63,24 @@ export function CursosLista() {
         </select>
       </div>
 
-      {loading && <div className="dashboard-loading">Cargando cursos...</div>}
-      {error && <div className="dashboard-error">{error}</div>}
+      {loading && <div className="dash-loading">Cargando cursos...</div>}
+      {error && <div className="dash-error">{error}</div>}
 
       {!loading && !error && (
-        <div className="cursos-grid" style={{ marginTop: 24 }}>
+        <div className="lista-grid" style={{ marginTop: 24 }}>
           {cursos.length === 0 ? (
-            <p className="empty-message">No se encontraron cursos.</p>
+            <p className="lista-empty-message">No se encontraron cursos.</p>
           ) : (
             cursos.map((curso) => (
-              <Link to={`/cursos/${curso._id}`} key={curso._id} className="curso-card">
+              <Link to={`/cursos/${curso._id}`} key={curso._id} className="lista-card">
                 {curso.imagen ? (
-                  <img src={imageUrl(curso.imagen)} alt={curso.titulo} className="curso-card-img" />
+                  <img src={imageUrl(curso.imagen)} alt={curso.titulo} className="lista-card-img" />
                 ) : (
-                  <div className="curso-card-img-placeholder">{'?'}</div>
+                  <div className="lista-card-img-placeholder">{'?'}</div>
                 )}
-                <div className="curso-card-body">
+                <div className="lista-card-body">
                   <h3>{curso.titulo}</h3>
-                  <div className="curso-card-meta">
+                  <div className="lista-card-meta">
                     <span>{curso.categoria || 'Sin categoria'}</span>
                     <span>{curso.nivel || 'Sin nivel'}</span>
                   </div>

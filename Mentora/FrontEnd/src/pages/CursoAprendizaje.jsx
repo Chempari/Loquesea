@@ -41,9 +41,9 @@ export function CursoAprendizaje() {
     }
   };
 
-  if (loading) return <div className="dashboard-loading">Cargando curso...</div>;
-  if (error) return <div className="dashboard-error">{error}</div>;
-  if (!curso) return <div className="dashboard-error">Curso no encontrado</div>;
+  if (loading) return <div className="dash-loading">Cargando curso...</div>;
+  if (error) return <div className="dash-error">{error}</div>;
+  if (!curso) return <div className="dash-error">Curso no encontrado</div>;
 
   const progresoMap = {};
   if (inscripcion?.progreso) {
@@ -100,7 +100,7 @@ export function CursoAprendizaje() {
           ))}
         </div>
       ) : (
-        <p className="empty-message">Este curso no tiene contenido aun.</p>
+        <p className="aprendizaje-empty-message">Este curso no tiene contenido aun.</p>
       )}
     </div>
   );

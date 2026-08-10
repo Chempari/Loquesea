@@ -90,11 +90,11 @@
   margin-bottom: 0;
 }
 
-.mis-cursos-page .stat {
+.mis-cursos-page .dash-stat {
   color: rgba(255, 255, 255, 0.72);
 }
 
-.mis-cursos-page .switch {
+.mis-cursos-page .dash-switch {
   width: 44px;
   height: 24px;
 }
@@ -105,7 +105,7 @@
   gap: 10px;
 }
 
-.mis-cursos-page .course-actions .btn-outline,
+.mis-cursos-page .course-actions .dash-btn-outline,
 .mis-cursos-page .course-actions .btn-sm {
   font-size: 0.92rem;
 }

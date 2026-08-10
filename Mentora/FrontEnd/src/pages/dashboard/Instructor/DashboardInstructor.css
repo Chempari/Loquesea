@@ -148,37 +148,37 @@
   font-size: 13px;
 }
 
-.dashboard-instructor .course-stats .stat {
+.dashboard-instructor .course-stats .dash-stat {
   color: rgba(255, 255, 255, 0.72);
 }
 
-.dashboard-instructor .switch-wrapper {
+.dashboard-instructor .dash-switch-wrapper {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.dashboard-instructor .switch {
+.dashboard-instructor .dash-switch {
   width: 44px;
   height: 24px;
 }
 
-.dashboard-instructor .stat {
+.dashboard-instructor .dash-stat {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.78);
   white-space: nowrap;
 }
 
-.dashboard-instructor .stat.published {
+.dashboard-instructor .dash-stat.published {
   color: #a3beb0;
   font-weight: 600;
 }
 
-.dashboard-instructor .stat.draft {
+.dashboard-instructor .dash-stat.draft {
   color: rgba(255, 255, 255, 0.66);
 }
 
-.dashboard-instructor .btn-outline {
+.dashboard-instructor .dash-btn-outline {
   padding: 10px 16px;
   font-size: 13px;
 }

@@ -1,5 +1,6 @@
 /* ============================================
    Auth Shared Styles
+   Prefijo: .auth-
    Keyframes definidos en index.css global
    ============================================ */
 
@@ -50,7 +51,7 @@
 }
 
 /* --- Glass Card Container --- */
-.login-wrapper {
+.auth-wrapper {
   width: 100%;
   padding: 24px;
   display: flex;
@@ -60,7 +61,7 @@
   z-index: 10;
 }
 
-.glass-card {
+.auth-card {
   background: rgba(27, 46, 38, 0.82);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -75,8 +76,8 @@
   animation: authCardPop 0.45s ease-out both;
 }
 
-/* --- Login/Register Title --- */
-.login-title {
+/* --- Title --- */
+.auth-title {
   color: #ffffff;
   font-size: 36px;
   font-weight: 700;
@@ -85,26 +86,26 @@
 }
 
 /* --- Form Layout --- */
-.login-form {
+.auth-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
 /* --- Input Container & Inputs --- */
-.input-container {
+.auth-input-container {
   position: relative;
   width: 100%;
 }
 
-.round-input,
-.round-input:focus,
-.round-input:active,
-.round-input:disabled {
+.auth-input,
+.auth-input:focus,
+.auth-input:active,
+.auth-input:disabled {
   transition: background-color 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, transform 0.25s ease, color 0.25s ease;
 }
 
-.round-input {
+.auth-input {
   width: 100%;
   padding: 14px 48px 14px 20px;
   background: rgba(255, 255, 255, 0.08);
@@ -116,18 +117,17 @@
   transition: all 0.3s ease;
 }
 
-.round-input::placeholder {
+.auth-input::placeholder {
   color: rgba(232, 240, 236, 0.5);
 }
 
-.round-input:focus {
+.auth-input:focus {
   background: rgba(255, 255, 255, 0.14);
   border-color: rgba(163, 190, 176, 0.9);
   box-shadow: 0 0 0 4px rgba(163, 190, 176, 0.15);
 }
 
-.round-input:focus,
-.round-input:hover {
+.auth-input:hover {
   box-shadow: 0 0 0 4px rgba(163, 190, 176, 0.22);
   border-color: rgba(163, 190, 176, 0.95);
   background: rgba(255, 255, 255, 0.22);
@@ -135,7 +135,7 @@
   color: #ffffff;
 }
 
-.input-icon {
+.auth-input-icon {
   position: absolute;
   right: 20px;
   top: 50%;
@@ -147,7 +147,7 @@
 }
 
 /* --- Form Options --- */
-.form-options {
+.auth-options {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -155,7 +155,7 @@
   margin-top: 4px;
 }
 
-.remember-me {
+.auth-remember {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -163,28 +163,23 @@
   color: rgba(232, 240, 236, 0.8);
 }
 
-.remember-me input {
+.auth-remember input {
   accent-color: rgba(163, 190, 176, 0.9);
   cursor: pointer;
 }
 
-.forgot-link {
+.auth-forgot {
   color: rgba(232, 240, 236, 0.8);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
-.forgot-link:hover {
+.auth-forgot:hover {
   color: rgba(163, 190, 176, 1);
 }
 
 /* --- Primary Button --- */
-.btn-primary-round,
-.social-btn-round {
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
-}
-
-.btn-primary-round {
+.auth-btn-primary {
   background-color: #ffffff;
   color: #1b2e26;
   border: none;
@@ -197,39 +192,39 @@
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-primary-round:hover {
+.auth-btn-primary:hover {
   background-color: #e8f0ec;
   transform: translateY(-2px) scale(1.01);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
 }
 
-.btn-primary-round:active {
+.auth-btn-primary:active {
   transform: translateY(0) scale(0.99);
 }
 
-.btn-primary-round:disabled {
+.auth-btn-primary:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
 
 /* --- Social Buttons --- */
-.social-section {
+.auth-social-section {
   margin-top: 32px;
 }
 
-.social-title {
+.auth-social-title {
   font-size: 13px;
   color: rgba(232, 240, 236, 0.6);
   margin-bottom: 16px;
 }
 
-.social-icons {
+.auth-social-icons {
   display: flex;
   justify-content: center;
   gap: 20px;
 }
 
-.social-btn-round {
+.auth-social-btn {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.25);
   color: #ffffff;
@@ -243,35 +238,35 @@
   transition: all 0.25s ease;
 }
 
-.social-btn-round:hover {
+.auth-social-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.4);
   transform: scale(1.08);
 }
 
-.social-btn-round:active {
+.auth-social-btn:active {
   transform: translateY(0) scale(0.98);
 }
 
 /* --- Signup Redirect --- */
-.signup-redirect {
+.auth-redirect {
   margin-top: 36px;
   font-size: 13.5px;
   color: rgba(232, 240, 236, 0.7);
 }
 
-.signup-redirect a {
+.auth-redirect a {
   color: #ffffff;
   font-weight: 700;
   text-decoration: none;
 }
 
-.signup-redirect a:hover {
+.auth-redirect a:hover {
   color: rgba(163, 190, 176, 1);
 }
 
 /* --- Error Message --- */
-.auth-error {
+.auth-error-msg {
   background: rgba(254, 202, 202, 0.18);
   color: #b91c1c;
   padding: 12px 16px;

@@ -53,11 +53,11 @@ export function Login() {
     <div className={pageClass}>
       <AuthBackground active={fastMotion} shakePulse={shakePulse} />
 
-      <main className="login-wrapper">
-        <div className="glass-card">
-          <h1 className="login-title">Iniciar sesión</h1>
+      <main className="auth-wrapper">
+        <div className="auth-card">
+          <h1 className="auth-title">Iniciar sesión</h1>
 
-          {error && <div className="auth-error">{error}</div>}
+          {error && <div className="auth-error-msg">{error}</div>}
 
           <LoginForm
             onSubmit={handleSubmit}
