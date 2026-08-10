@@ -1,26 +1,25 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useCourses } from '../../../hooks';
+import { useCourses, useMyEnrollments } from '../../../hooks';
 import { CourseCard } from '../../../components/course/CourseCard';
 import { SummaryCard } from '../../../components/dashboard/SummaryCard';
-import { ProgressBar } from '../../../components/ui';
 import { Spinner } from '../../../components/ui';
 
 export function DashboardEstudiante() {
-  const { cursos, loading, error, loadCursos } = useCourses();
+  const { cursos, loading: loadingCursos } = useCourses();
+  const { inscripciones, loading: loadingInscripciones, error } = useMyEnrollments();
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/v1/Dashboard/estudiante')
       .then((res) => res.json())
       .then((res) => setData(res.data))
-      .catch((err) => setError(err.response?.data?.message || 'Error al cargar dashboard'))
+      .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
 
-  // Simular datos si no hay API
   const resumen = data?.resumen || { total_cursos: 0, cursos_completados: 0, progreso_promedio: 0 };
-  const inscripciones = data?.inscripciones || [];
 
   if (loading && !data) return <div className="dashboard-loading">Cargando...</div>;
   if (error) return <div className="dashboard-error">{error}</div>;

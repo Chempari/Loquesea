@@ -1,5 +1,5 @@
 import { imageUrl } from '../../utils';
-import { StarRating } from '../ui';
+import { StarRating, Avatar, Spinner } from '../ui';
 import { formatRelativeTime } from '../../utils/formatters';
 
 export function ReviewCard({

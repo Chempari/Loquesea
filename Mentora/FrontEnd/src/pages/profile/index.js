@@ -1,1 +1,1 @@
-export { default as Perfil } from './Perfil';
+export { Perfil } from './Perfil';

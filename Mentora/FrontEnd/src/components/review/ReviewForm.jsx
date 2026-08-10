@@ -1,14 +1,5 @@
 import { useState } from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { Textarea, Button, StarPicker } from '../ui';
-
-const validationSchema = Yup.object({
-  calificacion: Yup.number()
-    .min(1, 'Selecciona al menos 1 estrella')
-    .required('La calificación es obligatoria'),
-  comentario: Yup.string().max(1000, 'Máximo 1000 caracteres'),
-});
 
 export function ReviewForm({
   onSubmit,
@@ -17,42 +8,33 @@ export function ReviewForm({
   className = '',
   ...props
 }) {
+  const [calificacion, setCalificacion] = useState(initialValues.calificacion || 0);
+  const [comentario, setComentario] = useState(initialValues.comentario || '');
   const [hoverStar, setHoverStar] = useState(0);
+  const [error, setError] = useState('');
 
-  const formik = useFormik({
-    initialValues,
-    validationSchema,
-    onSubmit: async (values) => {
-      await onSubmit(values);
-    },
-  });
-
-  const handleStarClick = (star) => {
-    formik.setFieldValue('calificacion', star);
-  };
-
-  const handleStarHover = (star) => {
-    setHoverStar(star);
-  };
-
-  const handleStarLeave = () => {
-    setHoverStar(0);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (calificacion < 1) {
+      setError('Selecciona al menos 1 estrella');
+      return;
+    }
+    setError('');
+    await onSubmit({ calificacion, comentario });
   };
 
   return (
-    <form onSubmit={formik.handleSubmit} className={`review-form ${className}`} noValidate {...props}>
+    <form onSubmit={handleSubmit} className={`review-form ${className}`} noValidate {...props}>
       <div className="review-form-rating">
         <label className="review-form-label">Tu calificación</label>
         <StarPicker
-          value={hoverStar || formik.values.calificacion}
-          onChange={handleStarClick}
-          onMouseEnter={handleStarHover}
-          onMouseLeave={handleStarLeave}
+          value={hoverStar || calificacion}
+          onChange={setCalificacion}
+          onMouseEnter={setHoverStar}
+          onMouseLeave={() => setHoverStar(0)}
           disabled={submitting}
         />
-        {formik.touched.calificacion && formik.errors.calificacion && (
-          <span className="form-error">{formik.errors.calificacion}</span>
-        )}
+        {error && <span className="form-error">{error}</span>}
       </div>
 
       <Textarea
@@ -60,10 +42,8 @@ export function ReviewForm({
         label="Tu comentario (opcional)"
         placeholder="Comparte tu experiencia..."
         rows={4}
-        value={formik.values.comentario}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.comentario && formik.errors.comentario}
+        value={comentario}
+        onChange={(e) => setComentario(e.target.value)}
         disabled={submitting}
       />
 

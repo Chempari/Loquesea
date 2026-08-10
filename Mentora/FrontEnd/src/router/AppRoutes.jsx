@@ -5,7 +5,7 @@ import { AuthRouter } from './AuthRouter';
 import { PublicRouter } from './PublicRouter';
 import { StudentRouter } from './StudentRouter';
 import { InstructorRouter } from './InstructorRouter';
-import { Perfil } from '../pages/profile/Perfil';
+import { Perfil } from '../pages/profile';
 
 function DashboardRouter() {
   const { user } = useAuth();

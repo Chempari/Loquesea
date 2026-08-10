@@ -1,2 +1,2 @@
-export { default as CursosLista } from './CursosLista';
-export { default as CursoPreview } from './CursoPreview';
+export { CursosLista } from './CursosLista';
+export { CursoPreview } from './CursoPreview';

@@ -7,7 +7,7 @@ export { default as Checkbox } from './Checkbox';
 export { default as Card, CardHeader, CardBody, CardFooter } from './Card';
 export { default as ProgressBar } from './ProgressBar';
 export { default as Avatar, AvatarUpload } from './Avatar';
-export { default as StarPicker, StarRating } from './StarPicker';
+export { StarPicker, StarRating } from './StarPicker';
 export { default as Modal, ConfirmDialog } from './Modal';
 export { default as Spinner, LoadingOverlay } from './Spinner';
 export { default as Badge } from './Badge';

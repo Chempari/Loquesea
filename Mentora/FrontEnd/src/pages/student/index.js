@@ -1,3 +1,3 @@
-export { default as Dashboard } from './Dashboard';
-export { default as MisCursos } from './MisCursos';
-export { default as CursoAprendizaje } from './CursoAprendizaje';
+export { DashboardEstudiante as Dashboard } from './Dashboard';
+export { MisCursos } from './MisCursos';
+export { CursoAprendizaje } from './CursoAprendizaje';

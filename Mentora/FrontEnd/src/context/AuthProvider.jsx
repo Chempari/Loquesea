@@ -61,5 +61,3 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-
-export { AuthContext };

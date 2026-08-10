@@ -1,6 +1,6 @@
 export { default as api } from './api';
-export * from './authService';
-export * from './courseService';
-export * from './enrollmentService';
-export * from './reviewService';
-export * from './uploadService';
+export { authService } from './authService';
+export { courseService } from './courseService';
+export { enrollmentService } from './enrollmentService';
+export { reviewService } from './reviewService';
+export { uploadService } from './uploadService';
