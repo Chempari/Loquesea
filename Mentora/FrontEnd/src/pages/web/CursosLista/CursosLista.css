@@ -1,0 +1,140 @@
+.cursos-page {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 18px 40px;
+  position: relative;
+  z-index: 10;
+  color: #fff;
+}
+
+.cursos-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.cursos-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.course-filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-input,
+.filter-select {
+  flex: 1;
+  min-width: 180px;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.course-grid-loading,
+.course-grid-error,
+.course-grid-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  text-align: center;
+  gap: 16px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.course-card {
+  background: rgba(27, 46, 38, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.28s cubic-bezier(.16, 1, .3, 1), box-shadow 0.28s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.36);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.course-card-img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.course-card-img-placeholder {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 28px;
+}
+
+.course-card-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-grow: 1;
+}
+
+.course-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.course-card-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.course-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.course-card-price {
+  font-weight: 700;
+  color: var(--color-brand-green-light);
+}
+
+.course-card-price.gratis {
+  color: #d1fae5;
+}
+
+.course-card-rating {
+  font-size: 13px;
+  color: #fbbf24;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+@media (max-width: 768px) {
+  .cursos-page { padding: 18px 14px 32px; }
+  .course-card-img { height: 120px; }
+}
