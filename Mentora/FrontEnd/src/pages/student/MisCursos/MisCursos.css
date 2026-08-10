@@ -1,11 +1,25 @@
 /* MisCursos - Student */
 .mis-cursos-page {
-  padding: 20px 0;
+  width: min(100%, 1080px);
+  margin: 0 auto;
+  padding: 28px 20px 40px;
 }
 
 .mis-cursos-page h1 {
   font-size: 28px;
   font-weight: 700;
-  color: var(--blanco-puro, #ffffff);
+  color: #ffffff;
   margin-bottom: 24px;
+}
+
+.mis-cursos-page .courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .mis-cursos-page .courses-grid {
+    grid-template-columns: 1fr;
+  }
 }

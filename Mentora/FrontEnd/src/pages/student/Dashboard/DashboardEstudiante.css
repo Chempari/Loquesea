@@ -1,6 +1,8 @@
 /* Dashboard Estudiante */
 .dashboard-estudiante {
-  padding: 20px 0;
+  width: min(100%, 1080px);
+  margin: 0 auto;
+  padding: 28px 20px 40px;
 }
 
 .dashboard-header {
@@ -10,7 +12,7 @@
 .dashboard-header h1 {
   font-size: 32px;
   font-weight: 700;
-  color: var(--blanco-puro, #ffffff);
+  color: #ffffff;
   margin-bottom: 8px;
 }
 
@@ -21,15 +23,15 @@
 
 .summary-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 16px;
   margin-bottom: 40px;
 }
 
 .section-title {
   font-size: 20px;
   font-weight: 600;
-  color: var(--blanco-puro, #ffffff);
+  color: #ffffff;
   margin-bottom: 20px;
 }
 
@@ -39,7 +41,7 @@
   align-items: center;
   justify-content: center;
   min-height: 200px;
-  color: var(--blanco-puro, #ffffff);
+  color: #ffffff;
   font-size: 16px;
 }
 
