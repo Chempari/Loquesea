@@ -1,0 +1,231 @@
+/* PALETA DE COLOR INTEGRADA */
+:root {
+    --verde-apagado-oscuro: #1b2e26;
+    --verde-apagado-medio:  #345446;
+    --verde-apagado-suave:  #507a67;
+    --verde-intermedio-luz: #a3beb0;
+    --verde-intermedio-oscuro-transparente: #7692839e;
+    --verde-casi-blanco:    #e8f0ec;
+    --blanco-puro:          #ffffff;
+}
+
+/* --- RECREACIÓN DEL FONDO ABSTRACTO DE FIGURAS DINÁMICAS --- */
+.dashboard-wrapper .layout-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background-color: transparent;
+    filter: blur(3px);
+}
+
+.dashboard-wrapper .layout-shape {
+    position: absolute;
+    box-shadow: 0 22px 42px rgba(9, 23, 16, 0.14);
+    will-change: transform;
+    opacity: 0.78;
+}
+
+.dashboard-wrapper .layout-shape:hover {
+    filter: brightness(1.06);
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.dashboard-wrapper {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- NAVBAR GLASSMORPHISM --- */
+.dashboard-wrapper .glass-navbar {
+    background: rgba(27, 46, 38, 0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-wrapper .navbar-brand .logo {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--blanco-puro);
+}
+
+.dashboard-wrapper .navbar-search {
+    width: 400px;
+}
+
+.dashboard-wrapper .search-input {
+    padding: 10px 40px 10px 20px;
+}
+
+.dashboard-wrapper .navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.dashboard-wrapper .navbar-btn {
+    background: none;
+    border: none;
+    color: var(--blanco-puro);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.dashboard-wrapper .navbar-btn:hover { color: var(--verde-intermedio-luz); }
+
+.dashboard-wrapper .navbar-user-name {
+    color: var(--blanco-puro);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.dashboard-wrapper .navbar-logout {
+    padding: 10px 24px;
+    font-size: 14px;
+    margin-top: 0;
+}
+
+/* --- ESTILOS REUTILIZADOS (INPUTS & BOTONES) --- */
+.dashboard-wrapper .input-container { position: relative; }
+.dashboard-wrapper .round-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 30px;
+    font-size: 14px;
+    color: var(--blanco-puro);
+    outline: none;
+    transition: all 0.3s ease;
+}
+.dashboard-wrapper .round-input::placeholder { color: rgba(232, 240, 236, 0.5); }
+.dashboard-wrapper .round-input:focus {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: var(--verde-intermedio-luz);
+    box-shadow: 0 0 0 4px rgba(163, 190, 176, 0.15);
+}
+.dashboard-wrapper .input-icon {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(232, 240, 236, 0.6);
+    pointer-events: none;
+}
+
+/* --- MAIN CONTENT & FILTROS --- */
+.dashboard-wrapper .layout-page-transition {
+    opacity: 0;
+    transform: translateY(28px) scale(0.99);
+    filter: blur(2px);
+    transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), filter 0.45s ease;
+}
+
+.dashboard-wrapper .layout-page-transition.page-enter {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+}
+
+.main-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 40px;
+    width: 100%;
+}
+
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+}
+
+.login-title {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--blanco-puro);
+}
+
+.subtitle {
+    color: rgba(232, 240, 236, 0.8);
+    font-size: 15px;
+}
+
+/* --- TARJETAS DE CURSO GLASSMORPHISM --- */
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+.glass-card {
+    background: rgba(27, 46, 38, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    color: var(--blanco-puro);
+}
+
+.course-card {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.course-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* --- Responsive --- */
+@media (max-width: 1024px) {
+    .courses-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .courses-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-wrapper .glass-navbar {
+        padding: 16px 20px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .dashboard-wrapper .navbar-search {
+        width: 100%;
+        order: 3;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+}

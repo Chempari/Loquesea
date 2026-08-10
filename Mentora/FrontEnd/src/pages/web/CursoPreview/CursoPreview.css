@@ -1,0 +1,141 @@
+/* Curso Preview */
+.curso-preview-page {
+  padding: 20px 0;
+}
+
+.curso-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.curso-preview-header {
+  margin-bottom: 16px;
+}
+
+.curso-preview-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--blanco-puro, #ffffff);
+  margin-bottom: 12px;
+}
+
+.curso-preview-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.curso-preview-body {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 32px;
+}
+
+.curso-preview-info {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.curso-preview-desc h2,
+.temario h2,
+.resenas-section h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--blanco-puro, #ffffff);
+  margin-bottom: 12px;
+}
+
+.curso-preview-desc p {
+  color: rgba(232, 240, 236, 0.8);
+  line-height: 1.6;
+}
+
+.curso-preview-sidebar {
+  background: rgba(27, 46, 38, 0.75);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 24px;
+  height: fit-content;
+  position: sticky;
+  top: 80px;
+}
+
+.curso-preview-price {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--blanco-puro, #ffffff);
+  margin-bottom: 20px;
+}
+
+.curso-preview-price.gratis {
+  color: #10b981;
+}
+
+.curso-preview-instructor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.curso-preview-instructor img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.curso-preview-instructor span {
+  color: rgba(232, 240, 236, 0.8);
+  font-size: 14px;
+}
+
+.btn-inscribir {
+  display: block;
+  width: 100%;
+  padding: 14px 28px;
+  background: var(--blanco-puro, #ffffff);
+  color: #1b2e26;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.btn-inscribir:hover {
+  background: #e8f0ec;
+  transform: translateY(-2px);
+}
+
+.btn-inscribir:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Resenas */
+.calificacion-display {
+  margin-bottom: 16px;
+}
+
+.resenas-section {
+  margin-top: 24px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .curso-preview-body {
+    grid-template-columns: 1fr;
+  }
+
+  .curso-preview-sidebar {
+    position: static;
+  }
+}

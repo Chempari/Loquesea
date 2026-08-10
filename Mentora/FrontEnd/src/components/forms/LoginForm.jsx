@@ -1,44 +1,48 @@
 import { useState } from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { useAuth } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
 import { Input, Button, Checkbox } from '../ui';
 
-const validationSchema = Yup.object({
-  correo: Yup.string()
-    .trim()
-    .email('Correo inválido')
-    .required('El correo es obligatorio'),
-  password: Yup.string().required('La contraseña es obligatoria'),
-});
-
 export function LoginForm({ onSuccess }) {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [correo, setCorreo] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [touched, setTouched] = useState({});
 
-  const formik = useFormik({
-    initialValues: { correo: '', password: '' },
-    validationSchema,
-    onSubmit: async (values) => {
-      setError('');
-      setLoading(true);
-      try {
-        await login(values.correo, values.password);
-        onSuccess?.();
-        navigate('/dashboard');
-      } catch (err) {
-        setError(err.response?.data?.message || 'Error al iniciar sesión');
-      } finally {
-        setLoading(false);
-      }
-    },
-  });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (!correo.trim()) {
+      setError('El correo es obligatorio');
+      return;
+    }
+    if (!password) {
+      setError('La contraseña es obligatoria');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await login(correo, password);
+      onSuccess?.();
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error al iniciar sesión');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBlur = (field) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+  };
 
   return (
-    <form onSubmit={formik.handleSubmit} className="login-form" noValidate>
+    <form onSubmit={handleSubmit} className="login-form" noValidate>
       {error && <div className="auth-error" role="alert">{error}</div>}
 
       <Input
@@ -47,10 +51,10 @@ export function LoginForm({ onSuccess }) {
         type="email"
         label="Correo"
         placeholder="tu@email.com"
-        value={formik.values.correo}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.correo && formik.errors.correo}
+        value={correo}
+        onChange={(e) => setCorreo(e.target.value)}
+        onBlur={() => handleBlur('correo')}
+        error={touched.correo && !correo.trim() ? 'El correo es obligatorio' : ''}
         autoComplete="email"
         required
       />
@@ -61,10 +65,10 @@ export function LoginForm({ onSuccess }) {
         type="password"
         label="Contraseña"
         placeholder="••••••••"
-        value={formik.values.password}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.password && formik.errors.password}
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        onBlur={() => handleBlur('password')}
+        error={touched.password && !password ? 'La contraseña es obligatoria' : ''}
         autoComplete="current-password"
         required
       />
@@ -73,8 +77,6 @@ export function LoginForm({ onSuccess }) {
         <Checkbox
           name="remember"
           label="Recordarme"
-          checked={formik.values.remember}
-          onChange={formik.handleChange}
         />
         <a href="#" className="forgot-link">¿Olvidaste tu contraseña?</a>
       </div>

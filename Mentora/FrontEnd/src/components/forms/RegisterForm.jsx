@@ -1,25 +1,7 @@
 import { useState } from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { useAuth } from '../../hooks';
 import { useNavigate } from 'react-router-dom';
 import { Input, Button, Select, Checkbox } from '../ui';
-
-const validationSchema = Yup.object({
-  nombre: Yup.string().trim().required('El nombre es obligatorio'),
-  apellido: Yup.string().trim().required('El apellido es obligatorio'),
-  correo: Yup.string()
-    .trim()
-    .email('Correo inválido')
-    .required('El correo es obligatorio'),
-  password: Yup.string()
-    .min(6, 'Mínimo 6 caracteres')
-    .required('La contraseña es obligatoria'),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref('password')], 'Las contraseñas no coinciden')
-    .required('Confirma tu contraseña'),
-  rol: Yup.string().required('Selecciona un rol'),
-});
 
 const ROLES = [
   { value: 'estudiante', label: 'Estudiante' },
@@ -29,36 +11,44 @@ const ROLES = [
 export function RegisterForm({ onSuccess }) {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [correo, setCorreo] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [rol, setRol] = useState('estudiante');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [touched, setTouched] = useState({});
 
-  const formik = useFormik({
-    initialValues: {
-      nombre: '',
-      apellido: '',
-      correo: '',
-      password: '',
-      confirmPassword: '',
-      rol: 'estudiante',
-    },
-    validationSchema,
-    onSubmit: async (values) => {
-      setError('');
-      setLoading(true);
-      try {
-        await register(values);
-        onSuccess?.();
-        navigate('/dashboard');
-      } catch (err) {
-        setError(err.response?.data?.message || 'Error al registrarse');
-      } finally {
-        setLoading(false);
-      }
-    },
-  });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (!nombre.trim()) { setError('El nombre es obligatorio'); return; }
+    if (!apellido.trim()) { setError('El apellido es obligatorio'); return; }
+    if (!correo.trim()) { setError('El correo es obligatorio'); return; }
+    if (password.length < 6) { setError('Mínimo 6 caracteres'); return; }
+    if (password !== confirmPassword) { setError('Las contraseñas no coinciden'); return; }
+
+    setLoading(true);
+    try {
+      await register({ nombre, apellido, correo, password, rol });
+      onSuccess?.();
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error al registrarse');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBlur = (field) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+  };
 
   return (
-    <form onSubmit={formik.handleSubmit} className="register-form" noValidate>
+    <form onSubmit={handleSubmit} className="register-form" noValidate>
       {error && <div className="auth-error" role="alert">{error}</div>}
 
       <div className="form-row">
@@ -68,10 +58,10 @@ export function RegisterForm({ onSuccess }) {
           type="text"
           label="Nombre"
           placeholder="Juan"
-          value={formik.values.nombre}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.nombre && formik.errors.nombre}
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          onBlur={() => handleBlur('nombre')}
+          error={touched.nombre && !nombre.trim() ? 'El nombre es obligatorio' : ''}
           required
         />
         <Input
@@ -80,10 +70,10 @@ export function RegisterForm({ onSuccess }) {
           type="text"
           label="Apellido"
           placeholder="Pérez"
-          value={formik.values.apellido}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.apellido && formik.errors.apellido}
+          value={apellido}
+          onChange={(e) => setApellido(e.target.value)}
+          onBlur={() => handleBlur('apellido')}
+          error={touched.apellido && !apellido.trim() ? 'El apellido es obligatorio' : ''}
           required
         />
       </div>
@@ -94,10 +84,10 @@ export function RegisterForm({ onSuccess }) {
         type="email"
         label="Correo"
         placeholder="tu@email.com"
-        value={formik.values.correo}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.correo && formik.errors.correo}
+        value={correo}
+        onChange={(e) => setCorreo(e.target.value)}
+        onBlur={() => handleBlur('correo')}
+        error={touched.correo && !correo.trim() ? 'El correo es obligatorio' : ''}
         autoComplete="email"
         required
       />
@@ -108,10 +98,10 @@ export function RegisterForm({ onSuccess }) {
         type="password"
         label="Contraseña"
         placeholder="••••••••"
-        value={formik.values.password}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.password && formik.errors.password}
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        onBlur={() => handleBlur('password')}
+        error={touched.password && password.length < 6 ? 'Mínimo 6 caracteres' : ''}
         autoComplete="new-password"
         required
       />
@@ -122,10 +112,10 @@ export function RegisterForm({ onSuccess }) {
         type="password"
         label="Confirmar contraseña"
         placeholder="••••••••"
-        value={formik.values.confirmPassword}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.confirmPassword && formik.errors.confirmPassword}
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        onBlur={() => handleBlur('confirmPassword')}
+        error={touched.confirmPassword && password !== confirmPassword ? 'Las contraseñas no coinciden' : ''}
         autoComplete="new-password"
         required
       />
@@ -135,10 +125,8 @@ export function RegisterForm({ onSuccess }) {
         label="Rol"
         placeholder="Selecciona tu rol"
         options={ROLES}
-        value={formik.values.rol}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.rol && formik.errors.rol}
+        value={rol}
+        onChange={(e) => setRol(e.target.value)}
         required
       />
 

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks';
 import { LayoutBackground, Navbar } from '../../components';
+import './DashboardLayout.css';
 
 export function DashboardLayout() {
   const { user, logout } = useAuth();

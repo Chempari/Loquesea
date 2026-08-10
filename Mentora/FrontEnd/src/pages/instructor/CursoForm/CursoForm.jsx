@@ -5,6 +5,7 @@ import { imageUrl } from '../../../utils';
 import { CATEGORIAS, NIVELES } from '../../../constants';
 import { Button, Input, Textarea, Select, Switch, Badge, Card } from '../../../components/ui';
 import { Spinner } from '../../../components/ui';
+import './CursoForm.css';
 
 function SeccionBlock({ seccion, lecciones, onDelete, onAddLeccion, onDeleteLeccion }) {
   const [titulo, setTitulo] = useState('');

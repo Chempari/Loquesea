@@ -1,0 +1,55 @@
+/* Curso Form */
+.curso-form-page {
+  padding: 20px 0;
+}
+
+.curso-form-card {
+  background: rgba(27, 46, 38, 0.75);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 32px;
+  color: var(--blanco-puro, #ffffff);
+}
+
+.curso-form-card h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.curso-form-card h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.secciones-manager {
+  margin-top: 32px;
+}
+
+.seccion-group {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.seccion-group h3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.imagen-preview {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-top: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

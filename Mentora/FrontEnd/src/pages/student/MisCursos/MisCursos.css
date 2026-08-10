@@ -1,0 +1,11 @@
+/* MisCursos - Student */
+.mis-cursos-page {
+  padding: 20px 0;
+}
+
+.mis-cursos-page h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--blanco-puro, #ffffff);
+  margin-bottom: 24px;
+}

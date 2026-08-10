@@ -3,6 +3,7 @@ import { useCourses } from '../../../hooks';
 import { CourseFilters } from '../../../components/course/CourseFilters';
 import { CourseGrid } from '../../../components/course/CourseGrid';
 import { Spinner } from '../../../components/ui';
+import './CursosLista.css';
 
 export function CursosLista() {
   const { cursos, loading, error, filters, loadCursos, updateFilters } = useCourses();

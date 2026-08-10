@@ -4,6 +4,7 @@ import { useCourses, useMyEnrollments } from '../../../hooks';
 import { CourseCard } from '../../../components/course/CourseCard';
 import { SummaryCard } from '../../../components/dashboard/SummaryCard';
 import { Spinner } from '../../../components/ui';
+import './DashboardEstudiante.css';
 
 export function DashboardEstudiante() {
   const { cursos, loading: loadingCursos } = useCourses();

@@ -4,6 +4,7 @@ import { authService, uploadService } from '../../../services';
 import { imageUrl } from '../../../utils';
 import { Button, Input, Textarea, Avatar } from '../../../components/ui';
 import { Spinner } from '../../../components/ui';
+import './Perfil.css';
 
 export function Perfil() {
   const { user, updateUser } = useAuth();

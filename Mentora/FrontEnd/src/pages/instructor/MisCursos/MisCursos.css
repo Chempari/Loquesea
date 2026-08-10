@@ -1,0 +1,16 @@
+/* MisCursos - Instructor */
+.mis-cursos-page {
+  padding: 20px 0;
+}
+
+.mis-cursos-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 24px;
+}
+
+.course-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

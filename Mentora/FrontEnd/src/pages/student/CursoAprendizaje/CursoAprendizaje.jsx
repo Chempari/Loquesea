@@ -4,6 +4,7 @@ import { useAuth } from '../../../hooks';
 import { enrollmentService } from '../../../services';
 import { ProgressBar } from '../../../components/ui';
 import { Spinner } from '../../../components/ui';
+import './CursoAprendizaje.css';
 
 export function CursoAprendizaje() {
   const { id } = useParams();

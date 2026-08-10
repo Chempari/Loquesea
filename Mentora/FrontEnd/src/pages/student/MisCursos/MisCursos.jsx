@@ -5,6 +5,7 @@ import { enrollmentService } from '../../../services';
 import { CourseCard } from '../../../components/course/CourseCard';
 import { ProgressBar } from '../../../components/ui';
 import { Spinner } from '../../../components/ui';
+import './MisCursos.css';
 
 export function MisCursos() {
   const { user } = useAuth();

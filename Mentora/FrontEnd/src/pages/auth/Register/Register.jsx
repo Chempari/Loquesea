@@ -1,6 +1,7 @@
 import { useAuth } from '../../../hooks';
 import { RegisterForm } from '../../../components';
 import { Link, useNavigate } from 'react-router-dom';
+import './Register.css';
 
 export function Register() {
   const { register } = useAuth();

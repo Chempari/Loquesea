@@ -5,6 +5,7 @@ import { courseService } from '../../../services';
 import { SummaryCard } from '../../../components/dashboard/SummaryCard';
 import { InstructorCourseCard } from '../../../components/course/CourseCard';
 import { Spinner } from '../../../components/ui';
+import './DashboardInstructor.css';
 
 export function DashboardInstructor() {
   const { user } = useAuth();

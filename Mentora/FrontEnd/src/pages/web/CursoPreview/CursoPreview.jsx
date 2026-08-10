@@ -7,6 +7,7 @@ import { formatPrice } from '../../../utils/formatters';
 import { Button, Badge, StarRating, StarPicker } from '../../../components/ui';
 import { ReviewList, ReviewForm } from '../../../components/review';
 import { Card } from '../../../components/ui';
+import './CursoPreview.css';
 
 const StarPickerInline = ({ value, onChange }) => (
   <div className="star-rating">

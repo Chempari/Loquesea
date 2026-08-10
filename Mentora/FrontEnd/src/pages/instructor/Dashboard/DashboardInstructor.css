@@ -1,0 +1,58 @@
+/* Dashboard Instructor */
+.dashboard-instructor {
+  padding: 20px 0;
+}
+
+.dashboard-instructor__topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.dashboard-instructor__role {
+  font-size: 14px;
+  color: rgba(232, 240, 236, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dashboard-instructor__create-action {
+  background: var(--blanco-puro, #ffffff);
+  color: #1b2e26;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.dashboard-instructor__create-action:hover {
+  background: #e8f0ec;
+  transform: translateY(-2px);
+}
+
+.dashboard-instructor__section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--blanco-puro, #ffffff);
+  margin-bottom: 20px;
+}
+
+.dashboard-instructor__no-courses {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(232, 240, 236, 0.7);
+}
+
+.dashboard-instructor__no-courses a {
+  color: var(--verde-intermedio-luz, #a3beb0);
+  text-decoration: underline;
+}
+
+.course-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

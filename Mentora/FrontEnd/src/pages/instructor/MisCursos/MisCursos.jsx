@@ -5,6 +5,7 @@ import { courseService } from '../../../services';
 import { CourseCard } from '../../../components/course/CourseCard';
 import { Switch } from '../../../components/ui';
 import { Spinner } from '../../../components/ui';
+import './MisCursos.css';
 
 export function MisCursos() {
   const { user } = useAuth();
