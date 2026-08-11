@@ -80,9 +80,10 @@ export function MisCursos() {
                 <Link to={`/cursos/${curso._id}/editar`} className="dash-btn-outline">
                   Editar
                 </Link>
-                <button className="btn-sm danger" type="button" onClick={() => deleteCurso(curso._id)}>
-                  Eliminar
-                </button>
+
+                  <Link className="delete-btn-outline" onClick={() => deleteCurso(curso._id)}>
+                    Eliminar
+                  </Link>
               </div>
             </div>
           ))}
