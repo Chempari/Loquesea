@@ -28,7 +28,7 @@ function SeccionBlock({ seccion, lecciones, onDelete, onAddLeccion, onDeleteLecc
         <button className="btn-sm danger" type="button" onClick={onDelete}>X</button>
       </h3>
       {(lecciones || []).map((lec) => (
-        <div key={lec._id} className="leccion-item" style={{ padding: '6px 0', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between' }}>
+        <div key={lec._id} className="curso-form-leccion-item" style={{ padding: '6px 0', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between' }}>
           <span>{lec.titulo}</span>
           <span style={{ fontSize: 12, color: 'var(--text-light)' }}>{lec.url}</span>
           <button className="btn-sm danger" type="button" onClick={() => onDeleteLeccion(lec._id)}>X</button>
@@ -43,7 +43,7 @@ function SeccionBlock({ seccion, lecciones, onDelete, onAddLeccion, onDeleteLecc
           <button className="btn-sm" type="button" onClick={() => setShowForm(false)} style={{ marginLeft: 4 }}>Cancelar</button>
         </div>
       ) : (
-        <button className="btn-outline" type="button" onClick={() => setShowForm(true)} style={{ marginTop: 8 }}>+ Agregar leccion</button>
+        <button className="dash-btn-outline" type="button" onClick={() => setShowForm(true)} style={{ marginTop: 8 }}>+ Agregar leccion</button>
       )}
     </div>
   );
@@ -225,11 +225,11 @@ export function CursoForm() {
       <div className="curso-form-card">
         <h1>{isEditing ? 'Editar curso' : 'Crear curso'}</h1>
 
-        {message && <div className="form-success">{message}</div>}
-        {error && <div className="auth-error">{error}</div>}
+        {message && <div className="curso-form-success">{message}</div>}
+        {error && <div className="curso-form-error">{error}</div>}
 
         <form onSubmit={handleSaveCurso}>
-          <div className="form-group">
+          <div className="curso-form-group">
             <label>Imagen de portada</label>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
               <input type="text" name="imagen" value={curso.imagen} onChange={handleChange} placeholder="URL o sube una" />
@@ -243,17 +243,17 @@ export function CursoForm() {
             )}
           </div>
 
-          <div className="form-group">
+          <div className="curso-form-group">
             <label>Titulo</label>
             <input name="titulo" value={curso.titulo} onChange={handleChange} required />
           </div>
 
-          <div className="form-group">
+          <div className="curso-form-group">
             <label>Descripcion</label>
             <textarea name="descripcion" rows={4} value={curso.descripcion} onChange={handleChange} />
           </div>
 
-          <div className="form-group" style={{ display: 'flex', gap: 12 }}>
+          <div className="curso-form-group" style={{ display: 'flex', gap: 12 }}>
             <div style={{ flex: 1 }}>
               <label>Categoria</label>
               <select name="categoria" value={curso.categoria} onChange={handleChange} required>
@@ -269,7 +269,7 @@ export function CursoForm() {
             </div>
           </div>
 
-          <div className="form-group">
+          <div className="curso-form-group">
             <label>Precio ($) - 0 = gratis</label>
             <input name="precio" type="number" min={0} value={curso.precio} onChange={handleChange} />
           </div>

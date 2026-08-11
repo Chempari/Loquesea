@@ -6,7 +6,7 @@ import api from '../Api/axios';
 import { imageUrl } from '../utils';
 
 const StarPicker = ({ value, onChange }) => (
-  <div className="star-rating">
+  <div className="preview-star-rating">
     {[1, 2, 3, 4, 5].map((s) => (
       <button
         key={s}
@@ -136,9 +136,9 @@ export function CursoPreview() {
     }
   };
 
-  if (loading) return <div className="dashboard-loading">Cargando curso...</div>;
-  if (error) return <div className="dashboard-error">{error}</div>;
-  if (!curso) return <div className="dashboard-error">Curso no encontrado</div>;
+  if (loading) return <div className="dash-loading">Cargando curso...</div>;
+  if (error) return <div className="dash-error">{error}</div>;
+  if (!curso) return <div className="dash-error">Curso no encontrado</div>;
 
   return (
     <div>
@@ -178,12 +178,12 @@ export function CursoPreview() {
               )}
 
               {user?.rol === 'estudiante' && !enrolled && (
-                <button className="btn-inscribir" onClick={handleInscribir} disabled={enrolling}>
+                <button className="preview-btn-inscribir" onClick={handleInscribir} disabled={enrolling}>
                   {enrolling ? 'Inscribiendo...' : 'Inscribirse'}
                 </button>
               )}
               {enrolled && (
-                <Link to={`/cursos/${id}/aprender`} className="btn-inscribir" style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
+                <Link to={`/cursos/${id}/aprender`} className="preview-btn-inscribir" style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
                   Ir al curso
                 </Link>
               )}
@@ -199,16 +199,16 @@ export function CursoPreview() {
       </div>
 
       {curso.secciones && curso.secciones.length > 0 && (
-        <div className="temario">
+        <div className="preview-temario">
           <h2>Temario</h2>
           {curso.secciones.map((seccion, i) => (
             <div key={seccion._id} className="seccion-item">
-              <div className="seccion-header" onClick={() => setSeccionAbierta(seccionAbierta === i ? -1 : i)}>
+              <div className="preview-seccion-header" onClick={() => setSeccionAbierta(seccionAbierta === i ? -1 : i)}>
                 <span>Seccion {i + 1}: {seccion.titulo}</span>
                 <span>{seccionAbierta === i ? '▲' : '▼'}</span>
               </div>
               {seccionAbierta === i && seccion.lecciones && seccion.lecciones.map((leccion) => (
-                <div key={leccion._id} className="leccion-item">
+                <div key={leccion._id} className="preview-leccion-item">
                   <span className="leccion-icon">{'▶'}</span>
                   <span>{leccion.titulo}</span>
                 </div>
@@ -256,7 +256,7 @@ export function CursoPreview() {
           <div className="resena-form">
             <h3>Deja tu resena</h3>
             <StarPicker value={nuevaCalif} onChange={setNuevaCalif} />
-            <div className="form-group">
+            <div className="preview-form-group">
               <textarea
                 rows={3}
                 placeholder="Escribe tu comentario..."
@@ -264,7 +264,7 @@ export function CursoPreview() {
                 onChange={(e) => setNuevoComentario(e.target.value)}
               />
             </div>
-            <button className="btn-enviar" onClick={handleEnviarResena} disabled={enviandoResena || nuevaCalif < 1}>
+            <button className="preview-btn-enviar" onClick={handleEnviarResena} disabled={enviandoResena || nuevaCalif < 1}>
               {enviandoResena ? 'Enviando...' : 'Enviar resena'}
             </button>
             {resenaMsg && <p style={{ marginTop: 8, fontSize: 13, color: resenaMsg.includes('Error') ? 'var(--error)' : '#059669' }}>{resenaMsg}</p>}

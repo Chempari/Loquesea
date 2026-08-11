@@ -117,7 +117,7 @@ export function Perfil() {
           />
           <button
             type="button"
-            className="btn-secondary"
+            className="perfil-btn-secondary"
             onClick={() => fileRef.current?.click()}
             disabled={subiendoFoto}
           >
@@ -125,21 +125,21 @@ export function Perfil() {
           </button>
         </div>
 
-        {message && <div className="form-success">{message}</div>}
-        {error && <div className="auth-error">{error}</div>}
+        {message && <div className="perfil-success">{message}</div>}
+        {error && <div className="perfil-error">{error}</div>}
 
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
+          <div className="perfil-form-group">
             <label htmlFor="nombre">Nombre</label>
             <input id="nombre" type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
           </div>
 
-          <div className="form-group">
+          <div className="perfil-form-group">
             <label htmlFor="biografia">Biografia</label>
             <textarea id="biografia" rows={4} value={biografia} onChange={(e) => setBiografia(e.target.value)} />
           </div>
 
-          <div className="form-group">
+          <div className="perfil-form-group">
             <label htmlFor="redes">Redes sociales (una por linea)</label>
             <textarea id="redes" rows={3} placeholder="https://twitter.com/usuario&#10;https://github.com/usuario" value={redesSociales} onChange={(e) => setRedesSociales(e.target.value)} />
           </div>

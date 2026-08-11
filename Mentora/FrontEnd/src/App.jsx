@@ -5,12 +5,12 @@ import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
 import { DashboardEstudiante } from './pages/dashboard/Estudiante';
 import { DashboardInstructor } from './pages/dashboard/Instructor';
-import { Perfil } from './pages/Perfil';
-import { CursosLista } from './pages/CursosLista';
-import { CursoPreview } from './pages/CursoPreview';
-import { CursoForm } from './pages/CursoForm';
-import { MisCursos } from './pages/MisCursos';
-import { CursoAprendizaje } from './pages/CursoAprendizaje';
+import { Perfil } from './pages/perfil';
+import { CursosLista } from './pages/cursos/Lista';
+import { CursoPreview } from './pages/cursos/Preview';
+import { CursoForm } from './pages/cursos/Form';
+import { MisCursos } from './pages/cursos/MisCursos';
+import { CursoAprendizaje } from './pages/cursos/Aprendizaje';
 import { Layout } from './components/Layout';
 
 function PublicLayoutRoute({ children, title }) {

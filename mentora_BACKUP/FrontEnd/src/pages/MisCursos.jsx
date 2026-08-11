@@ -38,8 +38,8 @@ export function MisCursos() {
     }
   };
 
-  if (loading) return <div className="dashboard-loading">Cargando...</div>;
-  if (error) return <div className="dashboard-error">{error}</div>;
+  if (loading) return <div className="dash-loading">Cargando...</div>;
+  if (error) return <div className="dash-error">{error}</div>;
 
   return (
     <div className="mis-cursos-page">
@@ -62,11 +62,11 @@ export function MisCursos() {
                 </div>
                 <div className="course-status-group">
                   <button
-                    className={`switch ${curso.publicado ? 'on' : ''}`}
+                    className={`dash-switch ${curso.publicado ? 'on' : ''}`}
                     onClick={() => togglePublicado(curso._id)}
                     title={curso.publicado ? 'Despublicar' : 'Publicar'}
                   />
-                  <span className={`stat ${curso.publicado ? 'published' : 'draft'}`}>
+                  <span className={`dash-stat ${curso.publicado ? 'published' : 'draft'}`}>
                     {curso.publicado ? 'Publicado' : 'Borrador'}
                   </span>
                 </div>
@@ -77,12 +77,13 @@ export function MisCursos() {
                 <span className="stat">${curso.precio ?? 0}</span>
               </div>
               <div className="course-actions">
-                <Link to={`/cursos/${curso._id}/editar`} className="btn-outline">
+                <Link to={`/cursos/${curso._id}/editar`} className="dash-btn-outline">
                   Editar
                 </Link>
-                <button className="btn-sm danger" type="button" onClick={() => deleteCurso(curso._id)}>
-                  Eliminar
-                </button>
+
+                  <Link className="delete-btn-outline" onClick={() => deleteCurso(curso._id)}>
+                    Eliminar
+                  </Link>
               </div>
             </div>
           ))}

@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { useAuth } from './context/useAuth';
-import { Login } from './pages/Login';
-import { Register } from './pages/Register';
-import { DashboardEstudiante } from './pages/DashboardEstudiante';
-import { DashboardInstructor } from './pages/DashboardInstructor';
+import { Login } from './pages/auth/Login';
+import { Register } from './pages/auth/Register';
+import { DashboardEstudiante } from './pages/dashboard/Estudiante';
+import { DashboardInstructor } from './pages/dashboard/Instructor';
 import { Perfil } from './pages/Perfil';
 import { CursosLista } from './pages/CursosLista';
 import { CursoPreview } from './pages/CursoPreview';
@@ -22,17 +22,17 @@ function PublicLayoutRoute({ children, title }) {
 
   return (
     <div>
-      <nav className="navbar" style={{ position: 'sticky', top: 0, zIndex: 100 }}>
-        <div className="navbar-brand">
+      <nav className="layout-navbar-public" style={{ position: 'sticky', top: 0, zIndex: 100 }}>
+        <div className="layout-navbar-public-brand">
           <a href="/" style={{ textDecoration: 'none', color: 'var(--accent)', fontWeight: 700, fontSize: 20 }}>Mentora</a>
         </div>
-        <div className="navbar-links">
+        <div className="layout-navbar-public-links">
           <a href="/login" style={{ textDecoration: 'none', color: 'var(--text)', fontSize: 14, fontWeight: 500 }}>Login</a>
           <a href="/register" style={{ textDecoration: 'none', color: 'var(--text)', fontSize: 14, fontWeight: 500 }}>Register</a>
         </div>
       </nav>
-      <div className="main-content">
-        {title && <h1 className="page-title">{title}</h1>}
+      <div className="layout-main-content">
+        {title && <h1 className="layout-page-title">{title}</h1>}
         {children}
       </div>
     </div>

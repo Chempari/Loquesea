@@ -8,14 +8,14 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  /* Fondo oscuro translúcido con desenfoque */
-  background: rgba(30, 46, 38, 0.7);
+  /* Fondo oscuro sólido para buen contraste */
+  background: rgba(27, 46, 38, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  color: #e2e8f0; /* Texto claro para contraste */
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
 .curso-preview h1, .curso-preview h2, .curso-preview h3 {
@@ -82,8 +82,8 @@
    ========================================= */
 .curso-preview-sidebar {
   width: 320px;
-  background: rgba(163, 190, 176, 0.08);
-  border: 1px solid rgba(163, 190, 176, 0.15);
+  background: rgba(27, 46, 38, 0.69);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 16px;
   padding: 24px;
   display: flex;
@@ -92,7 +92,7 @@
   align-items: center;
   height: fit-content;
   position: sticky;
-  top: 24px; /* Hace que el panel acompañe al hacer scroll */
+  top: 24px;
 }
 
 .curso-preview-price {
@@ -140,7 +140,7 @@
 /* =========================================
    Botones Globales (Inscribir y Enviar)
    ========================================= */
-.btn-inscribir, .btn-enviar {
+.preview-btn-inscribir, .preview-btn-enviar {
   width: 100%;
   padding: 14px 20px;
   border-radius: 12px;
@@ -155,13 +155,13 @@
   box-shadow: 0 4px 12px rgba(79, 107, 91, 0.3);
 }
 
-.btn-inscribir:hover, .btn-enviar:hover {
+.preview-btn-inscribir:hover, .preview-btn-enviar:hover {
   background: #5e7e6c;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(79, 107, 91, 0.4);
 }
 
-.btn-inscribir:disabled, .btn-enviar:disabled {
+.preview-btn-inscribir:disabled, .preview-btn-enviar:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
@@ -171,44 +171,44 @@
 /* =========================================
    Temario (Acordeón)
    ========================================= */
-.temario {
+.preview-temario {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
 .seccion-item {
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(27, 46, 38, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.2s ease;
 }
 
-.seccion-header {
+.preview-seccion-header {
   display: flex;
   justify-content: space-between;
   padding: 16px 20px;
   cursor: pointer;
   font-weight: 600;
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(27, 46, 38, 0.6);
   transition: background 0.2s;
 }
 
-.seccion-header:hover {
-  background: rgba(255, 255, 255, 0.06);
+.preview-seccion-header:hover {
+  background: rgba(27, 46, 38, 0.9);
 }
 
-.leccion-item {
+.preview-leccion-item {
   padding: 14px 20px;
   display: flex;
   gap: 12px;
   align-items: center;
   color: #cbd5e1;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   font-size: 15px;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(27, 46, 38, 0.45);
 }
 
 .leccion-icon {
@@ -240,8 +240,8 @@
 }
 
 .resena-card {
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(27, 46, 38, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 20px;
   display: flex;
@@ -279,8 +279,8 @@
    ========================================= */
 .resena-form {
   margin-top: 16px;
-  background: rgba(163, 190, 176, 0.08);
-  border: 1px solid rgba(163, 190, 176, 0.15);
+  background: rgba(27, 46, 38, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 16px;
   padding: 24px;
   display: flex;
@@ -288,12 +288,12 @@
   gap: 16px;
 }
 
-.star-rating {
+.preview-star-rating {
   display: flex;
   gap: 4px;
 }
 
-.star-rating button {
+.preview-star-rating button {
   background: none;
   border: none;
   font-size: 32px;
@@ -302,11 +302,11 @@
   transition: color 0.2s, transform 0.1s;
 }
 
-.star-rating button:hover {
+.preview-star-rating button:hover {
   transform: scale(1.1);
 }
 
-.star-rating button.filled {
+.preview-star-rating button.filled {
   color: #fbbf24;
 }
 
