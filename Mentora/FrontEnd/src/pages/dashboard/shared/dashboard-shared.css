@@ -38,12 +38,12 @@
 
 /* --- Outline Button --- */
 .dash-btn-outline {
+
   padding: 10px 20px;
-  background: var(--white);
-  color: var(--accent);
+  background: var(--accent);
+  color: var(--white);
   border: 1px solid var(--accent);
   border-radius: var(--radius);
-  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.2s;
@@ -52,7 +52,29 @@
 }
 
 .dash-btn-outline:hover {
-  background: rgba(79, 70, 229, 0.05);
+  background: rgba(255, 255, 255, 0.61);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+}
+
+.delete-btn-outline {
+  padding: 10px 20px;
+  background: var(--error);
+  color: var(--white);
+  border: 1px solid var(--error);
+  border-radius: var(--radius);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-decoration: none;
+  display: inline-block;
+}
+.delete-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.61);
+  color: var(--error);
+  border: 1px solid var(--error);
+  border-radius: var(--radius);
 }
 
 /* --- Switch Toggle --- */
