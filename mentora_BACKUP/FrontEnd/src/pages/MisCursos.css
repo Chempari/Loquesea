@@ -46,7 +46,7 @@
   gap: 18px;
   padding: 24px;
   border-radius: 24px;
-  background: rgba(27, 46, 38, 0.78);
+  background: rgba(27, 46, 38, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.10);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
   transition: transform 0.2s ease, border-color 0.2s ease;
@@ -90,11 +90,11 @@
   margin-bottom: 0;
 }
 
-.mis-cursos-page .stat {
+.mis-cursos-page .dash-stat {
   color: rgba(255, 255, 255, 0.72);
 }
 
-.mis-cursos-page .switch {
+.mis-cursos-page .dash-switch {
   width: 44px;
   height: 24px;
 }
@@ -105,7 +105,7 @@
   gap: 10px;
 }
 
-.mis-cursos-page .course-actions .btn-outline,
+.mis-cursos-page .course-actions .dash-btn-outline,
 .mis-cursos-page .course-actions .btn-sm {
   font-size: 0.92rem;
 }

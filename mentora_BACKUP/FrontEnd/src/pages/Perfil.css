@@ -56,7 +56,7 @@
   font-weight: 700;
 }
 
-.perfil-page .btn-secondary {
+.perfil-page .perfil-btn-secondary {
   padding: 10px 22px;
   background: rgba(255, 255, 255, 0.08);
   color: #fff;
@@ -67,51 +67,51 @@
   transition: background 0.25s ease, transform 0.2s ease, border-color 0.2s ease;
 }
 
-.perfil-page .btn-secondary:hover:not(:disabled) {
+.perfil-page .perfil-btn-secondary:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.16);
   transform: translateY(-1px);
 }
 
-.perfil-page .btn-secondary:disabled {
+.perfil-page .perfil-btn-secondary:disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }
 
-.perfil-page .form-success,
-.perfil-page .auth-error {
+.perfil-page .perfil-success,
+.perfil-page .perfil-error {
   border-radius: 18px;
   padding: 14px 16px;
   font-size: 14px;
   margin-bottom: 20px;
 }
 
-.perfil-page .form-success {
+.perfil-page .perfil-success {
   background: rgba(16, 185, 129, 0.12);
   color: #d1fae5;
   border: 1px solid rgba(16, 185, 129, 0.28);
 }
 
-.perfil-page .auth-error {
+.perfil-page .perfil-error {
   background: rgba(254, 202, 202, 0.16);
   color: #fecaca;
   border: 1px solid rgba(248, 113, 113, 0.28);
 }
 
-.perfil-page .form-group {
+.perfil-page .perfil-form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 18px;
 }
 
-.perfil-page .form-group label {
+.perfil-page .perfil-form-group label {
   color: rgba(255, 255, 255, 0.82);
   font-size: 14px;
   font-weight: 600;
 }
 
-.perfil-page .form-group input,
-.perfil-page .form-group textarea {
+.perfil-page .perfil-form-group input,
+.perfil-page .perfil-form-group textarea {
   width: 100%;
   min-height: 48px;
   padding: 14px 18px;
@@ -124,17 +124,17 @@
   resize: vertical;
 }
 
-.perfil-page .form-group textarea {
+.perfil-page .perfil-form-group textarea {
   min-height: 100px;
 }
 
-.perfil-page .form-group input::placeholder,
-.perfil-page .form-group textarea::placeholder {
+.perfil-page .perfil-form-group input::placeholder,
+.perfil-page .perfil-form-group textarea::placeholder {
   color: rgba(255, 255, 255, 0.55);
 }
 
-.perfil-page .form-group input:focus,
-.perfil-page .form-group textarea:focus {
+.perfil-page .perfil-form-group input:focus,
+.perfil-page .perfil-form-group textarea:focus {
   border-color: rgba(163, 190, 176, 0.9);
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 0 4px rgba(163, 190, 176, 0.12);

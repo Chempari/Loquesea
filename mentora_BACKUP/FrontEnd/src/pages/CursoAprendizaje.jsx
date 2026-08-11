@@ -41,9 +41,9 @@ export function CursoAprendizaje() {
     }
   };
 
-  if (loading) return <div className="dashboard-loading">Cargando curso...</div>;
-  if (error) return <div className="dashboard-error">{error}</div>;
-  if (!curso) return <div className="dashboard-error">Curso no encontrado</div>;
+  if (loading) return <div className="dash-loading">Cargando curso...</div>;
+  if (error) return <div className="dash-error">{error}</div>;
+  if (!curso) return <div className="dash-error">Curso no encontrado</div>;
 
   const progresoMap = {};
   if (inscripcion?.progreso) {
@@ -69,17 +69,17 @@ export function CursoAprendizaje() {
       </div>
 
       {curso.secciones && curso.secciones.length > 0 ? (
-        <div className="temario" style={{ marginTop: 0 }}>
+        <div className="aprendizaje-temario" style={{ marginTop: 0 }}>
           {curso.secciones.map((seccion, i) => (
-            <div key={seccion._id} className="seccion-item">
-              <div className="seccion-header" onClick={() => setSeccionAbierta(seccionAbierta === i ? -1 : i)}>
+            <div key={seccion._id} className="aprendizaje-seccion">
+              <div className="aprendizaje-seccion-header" onClick={() => setSeccionAbierta(seccionAbierta === i ? -1 : i)}>
                 <span>{seccion.titulo}</span>
                 <span>{seccionAbierta === i ? '▲' : '▼'}</span>
               </div>
               {seccionAbierta === i && seccion.lecciones && seccion.lecciones.map((leccion) => {
                 const estaCompletada = progresoMap[leccion._id];
                 return (
-                  <div key={leccion._id} className={`leccion-item ${estaCompletada ? 'completada' : ''}`}>
+                  <div key={leccion._id} className={`aprendizaje-leccion ${estaCompletada ? 'completada' : ''}`}>
                     <label>
                       <input
                         type="checkbox"
@@ -100,7 +100,7 @@ export function CursoAprendizaje() {
           ))}
         </div>
       ) : (
-        <p className="empty-message">Este curso no tiene contenido aun.</p>
+        <p className="aprendizaje-empty-message">Este curso no tiene contenido aun.</p>
       )}
     </div>
   );
