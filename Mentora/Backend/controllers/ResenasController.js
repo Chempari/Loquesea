@@ -5,10 +5,17 @@ const Inscripcion = require("../models/Inscripciones");
 
 const recalcularPromedio = async (curso_id) => {
   const resultado = await Resena.aggregate([
-    { $match: { curso_id: new mongoose.Types.ObjectId(curso_id) } },
+    {
+      $match: {
+        curso_id: new mongoose.Types.ObjectId(curso_id),
+        calificacion: { $ne: null }
+      }
+    },
     { $group: { _id: null, promedio: { $avg: "$calificacion" } } }
   ]);
-  const promedio = Math.round((resultado[0]?.promedio || 0) * 10) / 10;
+  const promedio = resultado[0]?.promedio
+    ? Math.round(resultado[0].promedio * 10) / 10
+    : 0;
   await Curso.findByIdAndUpdate(curso_id, { calificacion_promedio: promedio });
 };
 
@@ -16,17 +23,27 @@ exports.createResena = async (req, res) => {
   try {
     const { curso_id, calificacion, comentario } = req.body;
 
-    if (!curso_id || calificacion === undefined) {
+    if (!curso_id) {
       return res.status(400).json({
         success: false,
-        message: "curso_id y calificacion son requeridos"
+        message: "curso_id es requerido"
       });
     }
 
-    if (calificacion < 1 || calificacion > 5) {
+    const tieneComentario = typeof comentario === "string" && comentario.trim() !== "";
+    const tieneCalificacion = typeof calificacion === "number" && !Number.isNaN(calificacion);
+
+    if (!tieneComentario && !tieneCalificacion) {
       return res.status(400).json({
         success: false,
-        message: "La calificación debe estar entre 1 y 5"
+        message: "Debes enviar al menos un comentario o una calificacion"
+      });
+    }
+
+    if (tieneCalificacion && (calificacion < 1 || calificacion > 5)) {
+      return res.status(400).json({
+        success: false,
+        message: "La calificacion debe estar entre 1 y 5"
       });
     }
 
@@ -37,30 +54,39 @@ exports.createResena = async (req, res) => {
     if (!inscripcion) {
       return res.status(403).json({
         success: false,
-        message: "Solo los estudiantes inscritos pueden dejar una reseña"
+        message: "Solo los estudiantes inscritos pueden dejar una resena"
       });
     }
 
-    const yaResenada = await Resena.findOne({
-      estudiante_id: req.user.id,
-      curso_id
-    });
-    if (yaResenada) {
-      return res.status(400).json({
-        success: false,
-        message: "Ya has dejado una reseña para este curso"
+    if (tieneCalificacion) {
+      const resenaConCalificacion = await Resena.findOne({
+        estudiante_id: req.user.id,
+        curso_id,
+        calificacion: { $ne: null }
       });
+
+      if (resenaConCalificacion) {
+        const actualizada = await Resena.findByIdAndUpdate(
+          resenaConCalificacion._id,
+          {
+            calificacion,
+            ...(tieneComentario ? { comentario: comentario.trim() } : {})
+          },
+          { new: true, runValidators: true }
+        );
+        await recalcularPromedio(curso_id);
+        return res.status(200).json({ success: true, resena: actualizada });
+      }
     }
 
     const resena = new Resena({
       estudiante_id: req.user.id,
       curso_id,
-      calificacion,
-      comentario: comentario || ""
+      calificacion: tieneCalificacion ? calificacion : null,
+      comentario: tieneComentario ? comentario.trim() : ""
     });
 
     const savedResena = await resena.save();
-
     await recalcularPromedio(curso_id);
 
     return res.status(201).json({ success: true, resena: savedResena });
@@ -124,17 +150,25 @@ exports.updateResena = async (req, res) => {
       });
     }
 
-    if (req.body.calificacion !== undefined && (req.body.calificacion < 1 || req.body.calificacion > 5)) {
-      return res.status(400).json({
-        success: false,
-        message: "La calificación debe estar entre 1 y 5"
-      });
+    const { calificacion, comentario } = req.body;
+
+    if (calificacion !== undefined && calificacion !== null) {
+      if (typeof calificacion !== "number" || calificacion < 1 || calificacion > 5) {
+        return res.status(400).json({
+          success: false,
+          message: "La calificacion debe estar entre 1 y 5"
+        });
+      }
     }
 
     delete req.body.estudiante_id;
     delete req.body.curso_id;
 
-    const updatedResena = await Resena.findByIdAndUpdate(id, req.body, {
+    const campos = {};
+    if (calificacion !== undefined) campos.calificacion = calificacion;
+    if (typeof comentario === "string") campos.comentario = comentario.trim();
+
+    const updatedResena = await Resena.findByIdAndUpdate(id, campos, {
       new: true,
       runValidators: true,
     });
@@ -159,10 +193,10 @@ exports.deleteResena = async (req, res) => {
       return res.status(404).json({ success: false, message: "Reseña no encontrada" });
     }
 
-    if (resena.estudiante_id.toString() !== req.user.id && req.user.rol !== "instructor") {
+    if (resena.estudiante_id.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
-        message: "No tienes permiso para eliminar esta reseña"
+        message: "Solo puedes eliminar tus propias reseñas"
       });
     }
 

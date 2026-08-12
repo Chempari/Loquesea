@@ -117,30 +117,65 @@
   border-radius: 12px;
   color: #e2e8f0;
   font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.curso-preview-instructor:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(163, 190, 176, 0.4);
 }
 
 .curso-preview-instructor img {
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(163, 190, 176, 0.5);
 }
 
-.perfil-photo-placeholder {
-  background: #4f6b5b;
-  color: #ffffff;
+/* =========================================
+   Estadisticas del Curso (Sidebar)
+   ========================================= */
+.curso-preview-stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  font-weight: bold;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 4px;
+  color: #e2e8f0;
+  font-size: 15px;
+}
+
+.stat-value {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.stat-stars {
+  color: #fbbf24;
+}
+
+.stat-label {
+  color: #cbd5e1;
+  font-size: 13.5px;
 }
 
 /* =========================================
-   Botones Globales (Inscribir y Enviar)
+   Boton Inscribir (Sidebar)
    ========================================= */
-.preview-btn-inscribir, .preview-btn-enviar {
+.preview-btn-inscribir {
   width: 100%;
   padding: 14px 20px;
   border-radius: 12px;
@@ -155,13 +190,13 @@
   box-shadow: 0 4px 12px rgba(79, 107, 91, 0.3);
 }
 
-.preview-btn-inscribir:hover, .preview-btn-enviar:hover {
+.preview-btn-inscribir:hover {
   background: #5e7e6c;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(79, 107, 91, 0.4);
 }
 
-.preview-btn-inscribir:disabled, .preview-btn-enviar:disabled {
+.preview-btn-inscribir:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
@@ -217,134 +252,17 @@
 }
 
 /* =========================================
-   Sección de Reseñas
-   ========================================= */
-.resenas-section {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.calificacion-display {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 28px;
-  font-weight: 800;
-  color: #ffffff;
-  margin-bottom: 8px;
-}
-
-.estrellas, .resena-stars {
-  color: #fbbf24; /* Amarillo para las estrellas */
-}
-
-.resena-card {
-  background: rgba(27, 46, 38, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.resena-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.resena-header img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.resena-name {
-  font-weight: 600;
-  color: #ffffff;
-  flex: 1;
-}
-
-.resena-comentario {
-  color: #cbd5e1;
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* =========================================
-   Formulario de Reseña
-   ========================================= */
-.resena-form {
-  margin-top: 16px;
-  background: rgba(27, 46, 38, 0.78);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.preview-star-rating {
-  display: flex;
-  gap: 4px;
-}
-
-.preview-star-rating button {
-  background: none;
-  border: none;
-  font-size: 32px;
-  color: rgba(255, 255, 255, 0.15);
-  cursor: pointer;
-  transition: color 0.2s, transform 0.1s;
-}
-
-.preview-star-rating button:hover {
-  transform: scale(1.1);
-}
-
-.preview-star-rating button.filled {
-  color: #fbbf24;
-}
-
-.resena-form textarea {
-  width: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 16px;
-  color: #ffffff;
-  font-size: 15px;
-  resize: vertical;
-  font-family: inherit;
-  transition: border-color 0.2s;
-  box-sizing: border-box; /* Previene desbordamientos */
-}
-
-.resena-form textarea::placeholder {
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.resena-form textarea:focus {
-  outline: none;
-  border-color: #4f6b5b;
-}
-
-/* =========================================
    Responsive Design
    ========================================= */
 @media (max-width: 900px) {
   .curso-preview-body { flex-direction: column; }
-  .curso-preview-sidebar { 
-    width: 100%; 
+  .curso-preview-sidebar {
+    width: 100%;
     position: static; /* Quita el sticky en móviles */
   }
-  .curso-preview { 
-    padding: 24px; 
-    margin: 20px 16px; 
+  .curso-preview {
+    padding: 24px;
+    margin: 20px 16px;
     border-radius: 16px;
   }
 }

@@ -12,6 +12,7 @@ const ResenasRouter = require("./router/Resenas");
 const SeccionesRouter = require("./router/Secciones");
 const DashboardRouter = require("./router/Dashboard");
 const UploadsRouter = require("./router/Uploads");
+const InstructoresRouter = require("./router/Instructores");
 const app = express()
 
 app.use(cors({
@@ -33,5 +34,6 @@ app.use(`/api/${API_VERSION}`, LeccionesRouter);
 app.use(`/api/${API_VERSION}`, SeccionesRouter);
 app.use(`/api/${API_VERSION}`, DashboardRouter);
 app.use(`/api/${API_VERSION}`, UploadsRouter);
+app.use(`/api/${API_VERSION}`, InstructoresRouter);
 
 module.exports = app
