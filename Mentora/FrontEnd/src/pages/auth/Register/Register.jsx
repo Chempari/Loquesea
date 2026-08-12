@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/useAuth';
 import { AuthBackground, SocialButtons, SignupRedirect } from '../shared';
@@ -14,27 +14,8 @@ export function Register() {
   const [rol, setRol] = useState('estudiante');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [fastMotion, setFastMotion] = useState(false);
-  const [shakePulse, setShakePulse] = useState(0);
-  const interactionTimer = useRef(null);
   const { register } = useAuth();
   const navigate = useNavigate();
-
-  const handleUserActivity = () => {
-    setFastMotion(true);
-    clearTimeout(interactionTimer.current);
-    interactionTimer.current = setTimeout(() => setFastMotion(false), 800);
-  };
-
-  const handleFieldInteraction = (event) => {
-    if (!event.target.closest('input, select')) return;
-    setShakePulse((prev) => prev + 1);
-  };
-
-  const handleFormBlur = () => {
-    clearTimeout(interactionTimer.current);
-    interactionTimer.current = setTimeout(() => setFastMotion(false), 350);
-  };
 
   const handleSubmit = async () => {
     if (password !== confirmPassword) {
@@ -55,11 +36,11 @@ export function Register() {
     }
   };
 
-  const pageClass = `auth-page auth-page--slide-in-right${fastMotion ? ' auth-page--fast-motion' : ''}`;
+  const pageClass = 'auth-page auth-page--slide-in-right';
 
   return (
     <div className={pageClass}>
-      <AuthBackground active={fastMotion} shakePulse={shakePulse} />
+      <AuthBackground active={false} shakePulse={0} />
 
       <main className="auth-wrapper">
         <div className="auth-card">

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/useAuth';
 import { AuthBackground, SocialButtons, SignupRedirect } from '../shared';
@@ -10,27 +10,8 @@ export function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [fastMotion, setFastMotion] = useState(false);
-  const [shakePulse, setShakePulse] = useState(0);
-  const interactionTimer = useRef(null);
   const { login } = useAuth();
   const navigate = useNavigate();
-
-  const handleUserActivity = () => {
-    setFastMotion(true);
-    clearTimeout(interactionTimer.current);
-    interactionTimer.current = setTimeout(() => setFastMotion(false), 900);
-  };
-
-  const handleFieldInteraction = (event) => {
-    if (!event.target.closest('input, select')) return;
-    setShakePulse((prev) => prev + 1);
-  };
-
-  const handleFormBlur = () => {
-    clearTimeout(interactionTimer.current);
-    interactionTimer.current = setTimeout(() => setFastMotion(false), 400);
-  };
 
   const handleSubmit = async () => {
     setError('');
@@ -47,11 +28,11 @@ export function Login() {
     }
   };
 
-  const pageClass = `auth-page auth-page--slide-in-left${fastMotion ? ' auth-page--fast-motion' : ''}`;
+  const pageClass = 'auth-page auth-page--slide-in-left';
 
   return (
     <div className={pageClass}>
-      <AuthBackground active={fastMotion} shakePulse={shakePulse} />
+      <AuthBackground active={false} shakePulse={0} />
 
       <main className="auth-wrapper">
         <div className="auth-card">

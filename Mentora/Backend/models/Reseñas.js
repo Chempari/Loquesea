@@ -20,13 +20,14 @@ const resenas = new mongoose.Schema({
   },
   calificacion: {
     type: Number,
-    required: [true, 'La calificación es obligatoria.'],
+    required: false,
+    default: null,
     min: [1, 'La calificación mínima es 1.'],
     max: [5, 'La calificación máxima es 5.']
   },
   comentario: {
     type: String,
-    trim: true, 
+    trim: true,
     default: ''
   }
 }, {

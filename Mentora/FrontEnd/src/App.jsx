@@ -11,6 +11,7 @@ import { CursoPreview } from './pages/cursos/Preview';
 import { CursoForm } from './pages/cursos/Form';
 import { MisCursos } from './pages/cursos/MisCursos';
 import { CursoAprendizaje } from './pages/cursos/Aprendizaje';
+import { PerfilPublico } from './pages/instructores/PerfilPublico';
 import { Layout } from './components/Layout';
 
 function PublicLayoutRoute({ children, title }) {
@@ -70,6 +71,7 @@ function AppRoutes() {
       <Route path="/perfil" element={<ProtectedRoute title="Mi Perfil"><Perfil /></ProtectedRoute>} />
       <Route path="/explorar" element={<PublicLayoutRoute title="Explorar cursos"><CursosLista /></PublicLayoutRoute>} />
       <Route path="/cursos/:id" element={<PublicLayoutRoute><CursoPreview /></PublicLayoutRoute>} />
+      <Route path="/instructores/:id" element={<PublicLayoutRoute><PerfilPublico /></PublicLayoutRoute>} />
       <Route path="/cursos/nuevo" element={<ProtectedRoute title="Crear curso"><CursoForm /></ProtectedRoute>} />
       <Route path="/cursos/:id/editar" element={<ProtectedRoute title="Editar curso"><CursoForm /></ProtectedRoute>} />
       <Route path="/mis-cursos" element={<ProtectedRoute title="Mis cursos"><MisCursos /></ProtectedRoute>} />
