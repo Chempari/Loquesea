@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { LayoutBackground } from './LayoutBackground';
@@ -8,6 +8,7 @@ export function Layout({ children, title }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const backgroundRef = useRef(null);
 
   useEffect(() => {
     const content = document.querySelector('.layout-page-transition');
@@ -23,16 +24,23 @@ export function Layout({ children, title }) {
     navigate('/login');
   };
 
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    if (backgroundRef.current) {
+      backgroundRef.current.triggerScatter();
+    }
+  };
+
   return (
     <div className="layout-wrapper">
       {/* Fondo Geométrico Global para toda la app */}
-      <LayoutBackground />
+      <LayoutBackground ref={backgroundRef} />
 
       {/* NAVBAR GLASSMORPHISM GLOBAL */}
       <nav className="layout-navbar" style={{ zIndex: 100 }}>
-        <Link to="/dashboard" className="layout-logo" style={{ textDecoration: 'none' }}>
+        <a href="/dashboard" className="layout-logo" style={{ textDecoration: 'none', cursor: 'pointer' }} onClick={handleLogoClick}>
           MENTORA
-        </Link>
+        </a>
 
         {/* Buscador visual (opcional a nivel global) */}
         <div className="layout-search layout-input-container">
