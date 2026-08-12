@@ -37,7 +37,7 @@ exports.createCurso = async (req, res) => {
 
 exports.getCursos = async (req, res) => {
   try {
-    const { titulo, categoria, nivel } = req.query;
+    const { titulo, categoria, nivel, instructorID } = req.query;
     const filter = {};
 
     if (!req.user || req.user.rol !== "instructor") {
@@ -47,6 +47,9 @@ exports.getCursos = async (req, res) => {
     if (titulo) filter.titulo = { $regex: titulo, $options: "i" };
     if (categoria) filter.categoria = { $regex: categoria, $options: "i" };
     if (nivel) filter.nivel = nivel;
+    if (instructorID && mongoose.isValidObjectId(instructorID)) {
+      filter.instructorID = instructorID;
+    }
 
     const cursos = await Curso.find(filter)
       .populate("instructorID", "nombre foto")

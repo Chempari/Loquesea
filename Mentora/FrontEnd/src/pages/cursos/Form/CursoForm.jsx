@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../../Api/axios';
 import { imageUrl } from '../../../utils';
@@ -37,7 +37,7 @@ export function CursoForm() {
     }
   }, [id]);
 
-  const loadSecciones = () => {
+  const loadSecciones = useCallback(() => {
     if (!cursoId) return;
     api.get(`/Secciones?cursoID=${cursoId}`)
       .then((res) => {
@@ -45,9 +45,9 @@ export function CursoForm() {
         Promise.all(s.map((sec) => api.get(`/Lecciones?seccionID=${sec._id}`).then((r) => ({ ...sec, lecciones: r.data.lecciones || [] })))).then(setSecciones);
       })
       .catch(console.error);
-  };
+  }, [cursoId]);
 
-  useEffect(() => { if (cursoId) loadSecciones(); }, [cursoId]);
+  useEffect(() => { if (cursoId) loadSecciones(); }, [cursoId, loadSecciones]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

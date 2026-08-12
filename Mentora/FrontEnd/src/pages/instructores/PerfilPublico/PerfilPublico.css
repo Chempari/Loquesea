@@ -1,0 +1,186 @@
+.perfil-publico-page {
+  width: min(100%, 900px);
+  margin: 0 auto;
+  padding: 28px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.perfil-publico-card {
+  background: rgba(27, 46, 38, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.perfil-publico-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.perfil-publico-foto {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(163, 190, 176, 0.6);
+  flex-shrink: 0;
+}
+
+.perfil-publico-placeholder {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #4f6b5b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.perfil-publico-nombre h1 {
+  color: #ffffff;
+  margin: 0 0 6px;
+  font-size: 28px;
+}
+
+.perfil-publico-rol {
+  display: inline-block;
+  background: rgba(163, 190, 176, 0.15);
+  border: 1px solid rgba(163, 190, 176, 0.2);
+  color: #bbf7d0;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.perfil-publico-bio {
+  color: #cbd5e1;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.perfil-publico-redes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.perfil-publico-redes a {
+  color: #a3beb0;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 1px solid rgba(163, 190, 176, 0.3);
+  border-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.perfil-publico-redes a:hover {
+  background: rgba(163, 190, 176, 0.12);
+  color: #e8f0ec;
+}
+
+.perfil-publico-cursos h2 {
+  color: #ffffff;
+  margin: 0 0 16px;
+  font-size: 20px;
+}
+
+.perfil-publico-empty {
+  color: #cbd5e1;
+  text-align: center;
+  padding: 32px 0;
+  margin: 0;
+}
+
+.perfil-publico-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.perfil-publico-curso {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(27, 46, 38, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 14px 18px;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.perfil-publico-curso:hover {
+  background: rgba(27, 46, 38, 0.8);
+  border-color: rgba(163, 190, 176, 0.4);
+  transform: translateY(-1px);
+}
+
+.perfil-publico-curso img {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.perfil-publico-curso-placeholder {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  background: #4f6b5b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.perfil-publico-curso-info {
+  min-width: 0;
+}
+
+.perfil-publico-curso-info h3 {
+  color: #ffffff;
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+
+.perfil-publico-curso-info span {
+  color: #cbd5e1;
+  font-size: 13.5px;
+}
+
+@media (max-width: 580px) {
+  .perfil-publico-page {
+    padding: 20px 14px 30px;
+  }
+
+  .perfil-publico-card {
+    padding: 24px;
+  }
+
+  .perfil-publico-foto,
+  .perfil-publico-placeholder {
+    width: 72px;
+    height: 72px;
+    font-size: 30px;
+  }
+}

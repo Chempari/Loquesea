@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../../../context/useAuth';
 import api from '../../../Api/axios';
-import { StarPicker, ResenaCard } from './components';
 import { imageUrl } from '../../../utils';
+import { ComentariosCurso } from '../shared/ComentariosCurso';
+import { useResenas } from '../shared/useResenas';
 import './CursoPreview.css';
 
 export function CursoPreview() {
@@ -16,53 +17,32 @@ export function CursoPreview() {
   const [enrolled, setEnrolled] = useState(false);
   const [message, setMessage] = useState('');
   const [seccionAbierta, setSeccionAbierta] = useState(0);
-  const [resenas, setResenas] = useState([]);
-  const [resenasLoading, setResenasLoading] = useState(true);
-  const [nuevaCalif, setNuevaCalif] = useState(0);
-  const [nuevoComentario, setNuevoComentario] = useState('');
-  const [enviandoResena, setEnviandoResena] = useState(false);
-  const [resenaMsg, setResenaMsg] = useState('');
+  const { resenas, loading: resenasLoading, crearComentario, calificar, actualizarResena, eliminarResena } = useResenas(id);
+
+  const cargarCurso = useCallback(() => {
+    return api.get(`/Cursos/${id}`)
+      .then((res) => setCurso(res.data?.curso || res.data?.data?.curso));
+  }, [id]);
 
   useEffect(() => {
-    api.get(`/Cursos/${id}`)
-      .then((res) => setCurso(res.data?.curso || res.data?.data?.curso))
+    cargarCurso()
       .catch((err) => setError(err.response?.data?.message || 'Error al cargar curso'))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [cargarCurso]);
 
   useEffect(() => {
     if (!user || !curso || user.rol !== 'estudiante') return;
     api.get('/Inscripciones/mis-cursos')
       .then((res) => {
         const inscripciones = res.data?.inscripciones || [];
-        setEnrolled(inscripciones.some(insc => insc.curso_id?._id === id));
+        setEnrolled(inscripciones.some((insc) => insc.curso_id?._id === id));
       })
       .catch(console.error);
   }, [id, user, curso]);
 
-  useEffect(() => {
-    api.get(`/Cursos/${id}/resenas`)
-      .then((res) => setResenas(res.data.resenas || []))
-      .catch(() => {})
-      .finally(() => setResenasLoading(false));
-  }, [id]);
-
-  const handleEnviarResena = async () => {
-    if (nuevaCalif < 1) return;
-    setEnviandoResena(true);
-    setResenaMsg('');
-    try {
-      await api.post('/Resenas', { curso_id: id, calificacion: nuevaCalif, comentario: nuevoComentario });
-      setResenaMsg('Resena enviada.');
-      setNuevaCalif(0);
-      setNuevoComentario('');
-      const res = await api.get(`/Cursos/${id}/resenas`);
-      setResenas(res.data.resenas || []);
-    } catch (err) {
-      setResenaMsg(err.response?.data?.message || 'Error al enviar resena');
-    } finally {
-      setEnviandoResena(false);
-    }
+  const handleCalificar = async (calificacion) => {
+    await calificar(calificacion);
+    await cargarCurso();
   };
 
   const handleInscribir = async () => {
@@ -96,6 +76,10 @@ export function CursoPreview() {
   if (error) return <div className="dash-error">{error}</div>;
   if (!curso) return <div className="dash-error">Curso no encontrado</div>;
 
+  const totalReviewers = new Set(resenas.map((r) => r.estudiante_id?._id).filter(Boolean)).size;
+  const totalLecciones = curso.secciones?.reduce((sum, s) => sum + (s.lecciones?.length || 0), 0) || 0;
+  const instructor = curso.instructorID;
+
   return (
     <div>
       <div className="curso-preview">
@@ -104,7 +88,9 @@ export function CursoPreview() {
           <div className="curso-preview-meta">
             <span>{curso.categoria}</span>
             <span>{curso.nivel}</span>
-            {curso.calificacion_promedio > 0 && <span style={{ color: '#f59e0b' }}>{'★'} {curso.calificacion_promedio}</span>}
+            {curso.calificacion_promedio > 0 && (
+              <span style={{ color: '#f59e0b' }}>{'★'} {curso.calificacion_promedio}</span>
+            )}
           </div>
         </div>
         <div className="curso-preview-body">
@@ -113,35 +99,62 @@ export function CursoPreview() {
               <h2>Descripcion</h2>
               <p>{curso.descripcion || 'Sin descripcion.'}</p>
             </div>
-            <div className="curso-preview-sidebar">
-              <div className={`curso-preview-price ${curso.precio === 0 ? 'gratis' : ''}`}>
-                {curso.precio === 0 ? 'Gratis' : `$${curso.precio ?? 0}`}
-              </div>
-              {curso.instructorID && (
-                <div className="curso-preview-instructor">
-                  {curso.instructorID.foto ? (
-                    <img src={imageUrl(curso.instructorID.foto)} alt="Instructor" />
-                  ) : (
-                    <div className="perfil-photo-placeholder" style={{ width: 40, height: 40, fontSize: 18 }}>
-                      {curso.instructorID?.nombre?.charAt(0) || '?'}
-                    </div>
-                  )}
-                  <span>{curso.instructorID?.nombre || 'Sin nombre'}</span>
-                </div>
-              )}
-              {user?.rol === 'estudiante' && !enrolled && (
-                <button className="preview-btn-inscribir" onClick={handleInscribir} disabled={enrolling}>
-                  {enrolling ? 'Inscribiendo...' : 'Inscribirse'}
-                </button>
-              )}
-              {enrolled && (
-                <Link to={`/cursos/${id}/aprender`} className="preview-btn-inscribir" style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
-                  Ir al curso
-                </Link>
-              )}
-              {message && <div style={{ marginTop: 12, fontSize: 14, color: '#059669' }}>{message}</div>}
-              {error && <div style={{ marginTop: 12, fontSize: 14, color: '#ef4444' }}>{error}</div>}
+          </div>
+          <div className="curso-preview-sidebar">
+            <div className={`curso-preview-price ${curso.precio === 0 ? 'gratis' : ''}`}>
+              {curso.precio === 0 ? 'Gratis' : `$${curso.precio ?? 0}`}
             </div>
+
+            {instructor && (
+              <Link to={`/instructores/${instructor._id}`} className="curso-preview-instructor">
+                {instructor.foto ? (
+                  <img src={imageUrl(instructor.foto)} alt="Instructor" />
+                ) : (
+                  <div className="perfil-photo-placeholder" style={{ width: 40, height: 40, fontSize: 18 }}>
+                    {instructor?.nombre?.charAt(0) || '?'}
+                  </div>
+                )}
+                <span>{instructor?.nombre || 'Sin nombre'}</span>
+              </Link>
+            )}
+
+            <div className="curso-preview-stats">
+              <div className="stat-row">
+                <span className="stat-value">{curso.total_inscritos || 0}</span>
+                <span className="stat-label">Estudiantes</span>
+              </div>
+              <div className="stat-row">
+                <span className="stat-value stat-stars">
+                  {'★'} {curso.calificacion_promedio > 0 ? curso.calificacion_promedio : '0.0'}
+                </span>
+                <span className="stat-label">Calificacion</span>
+              </div>
+              <div className="stat-row">
+                <span className="stat-value">{totalReviewers}</span>
+                <span className="stat-label">Resenas</span>
+              </div>
+              <div className="stat-row">
+                <span className="stat-value">{totalLecciones}</span>
+                <span className="stat-label">Lecciones</span>
+              </div>
+            </div>
+
+            {user?.rol === 'estudiante' && !enrolled && (
+              <button className="preview-btn-inscribir" onClick={handleInscribir} disabled={enrolling}>
+                {enrolling ? 'Inscribiendo...' : 'Inscribirse'}
+              </button>
+            )}
+            {enrolled && (
+              <Link
+                to={`/cursos/${id}/aprender`}
+                className="preview-btn-inscribir"
+                style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}
+              >
+                Ir al curso
+              </Link>
+            )}
+            {message && <div style={{ marginTop: 12, fontSize: 14, color: '#059669' }}>{message}</div>}
+            {error && <div style={{ marginTop: 12, fontSize: 14, color: '#ef4444' }}>{error}</div>}
           </div>
         </div>
       </div>
@@ -166,37 +179,17 @@ export function CursoPreview() {
         </div>
       )}
 
-      <div className="resenas-section">
-        <h2>Resenas ({resenas.length})</h2>
-        {curso.calificacion_promedio > 0 && (
-          <div className="calificacion-display">
-            <span className="estrellas">{'\u2605'}</span>
-            <span>{curso.calificacion_promedio}</span>
-          </div>
-        )}
-        {resenasLoading ? (
-          <p style={{ fontSize: 14, color: 'var(--text-light)' }}>Cargando resenas...</p>
-        ) : resenas.length === 0 ? (
-          <p style={{ fontSize: 14, color: 'var(--text-light)' }}>No hay resenas aun.</p>
-        ) : (
-          resenas.map((r) => <ResenaCard key={r._id} resena={r} />)
-        )}
-
-        {user?.rol === 'estudiante' && enrolled && (
-          <div className="resena-form">
-            <h3>Deja tu resena</h3>
-            <StarPicker value={nuevaCalif} onChange={setNuevaCalif} />
-            <div className="preview-form-group">
-              <textarea rows={3} placeholder="Escribe tu comentario..." value={nuevoComentario} onChange={(e) => setNuevoComentario(e.target.value)} />
-            </div>
-            <button className="preview-btn-enviar" onClick={handleEnviarResena} disabled={enviandoResena || nuevaCalif < 1}>
-              {enviandoResena ? 'Enviando...' : 'Enviar resena'}
-            </button>
-            {resenaMsg && <p style={{ marginTop: 8, fontSize: 13, color: resenaMsg.includes('Error') ? 'var(--error)' : '#059669' }}>{resenaMsg}</p>}
-          </div>
-        )}
-      </div>
+      <ComentariosCurso
+        resenas={resenas}
+        loading={resenasLoading}
+        user={user}
+        enrolled={enrolled}
+        promedio={curso.calificacion_promedio || 0}
+        onComentar={crearComentario}
+        onCalificar={handleCalificar}
+        onActualizar={actualizarResena}
+        onEliminar={eliminarResena}
+      />
     </div>
   );
 }
-

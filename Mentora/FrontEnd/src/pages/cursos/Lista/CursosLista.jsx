@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import api from '../../../Api/axios';
-import { imageUrl } from '../../../utils';
 import { CursoCard } from './components/CursoCard';
 import './CursosLista.css';
 
@@ -15,28 +13,25 @@ export function CursosLista() {
   const [filters, setFilters] = useState({ titulo: '', categoria: '', nivel: '' });
 
   useEffect(() => {
-    loadCursos(filters);
-  }, []);
-
-  function loadCursos(params) {
-    setLoading(true);
-    setError('');
     const q = {};
-    if (params.titulo) q.titulo = params.titulo;
-    if (params.categoria) q.categoria = params.categoria;
-    if (params.nivel) q.nivel = params.nivel;
+    if (filters.titulo) q.titulo = filters.titulo;
+    if (filters.categoria) q.categoria = filters.categoria;
+    if (filters.nivel) q.nivel = filters.nivel;
 
+    let cancelado = false;
     api.get('/Cursos', { params: q })
-      .then((res) => setCursos(res.data.cursos || res.data.data?.cursos || []))
-      .catch((err) => setError(err.response?.data?.message || 'Error al cargar cursos'))
-      .finally(() => setLoading(false));
-  }
+      .then((res) => { if (!cancelado) setCursos(res.data.cursos || res.data.data?.cursos || []); })
+      .catch((err) => { if (!cancelado) setError(err.response?.data?.message || 'Error al cargar cursos'); })
+      .finally(() => { if (!cancelado) setLoading(false); });
+
+    return () => { cancelado = true; };
+  }, [filters]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const next = { ...filters, [name]: value };
-    setFilters(next);
-    loadCursos(next);
+    setFilters((prev) => ({ ...prev, [name]: value }));
+    setError('');
+    setLoading(true);
   };
 
   return (
