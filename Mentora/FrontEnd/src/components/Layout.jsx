@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useEffect, useState, useRef } from 'react';
+=======
+import { useEffect, useRef } from 'react';
+>>>>>>> 37cc40546ccbe788f13506a851da9d0c9b54ddb8
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { LayoutBackground } from './LayoutBackground';
@@ -9,11 +13,15 @@ export function Layout({ children, title }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+<<<<<<< HEAD
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
   const dropdownRef = useRef(null);
+=======
+  const backgroundRef = useRef(null);
+>>>>>>> 37cc40546ccbe788f13506a851da9d0c9b54ddb8
 
   useEffect(() => {
     const content = document.querySelector('.layout-page-transition');
@@ -29,6 +37,7 @@ export function Layout({ children, title }) {
     navigate('/login');
   };
 
+<<<<<<< HEAD
   // Search functionality
   const fetchTrending = async () => {
     try {
@@ -97,16 +106,25 @@ export function Layout({ children, title }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showResults]);
 
+=======
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    if (backgroundRef.current) {
+      backgroundRef.current.triggerScatter();
+    }
+  };
+
+>>>>>>> 37cc40546ccbe788f13506a851da9d0c9b54ddb8
   return (
     <div className="layout-wrapper">
       {/* Fondo Geométrico Global para toda la app */}
-      <LayoutBackground />
+      <LayoutBackground ref={backgroundRef} />
 
       {/* NAVBAR GLASSMORPHISM GLOBAL */}
       <nav className="layout-navbar" style={{ zIndex: 100 }}>
-        <Link to="/dashboard" className="layout-logo" style={{ textDecoration: 'none' }}>
+        <a href="/dashboard" className="layout-logo" style={{ textDecoration: 'none', cursor: 'pointer' }} onClick={handleLogoClick}>
           MENTORA
-        </Link>
+        </a>
 
         {/* Buscador funcional */}
         <div className="layout-search layout-input-container" ref={dropdownRef}>

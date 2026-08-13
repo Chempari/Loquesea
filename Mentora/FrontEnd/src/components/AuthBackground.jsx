@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 const randomBetween = (min, max) => Math.random() * (max - min) + min;
 
@@ -22,10 +22,10 @@ const createTriangles = (count, containerWidth, containerHeight) => {
       height,
       x: randomBetween(0, Math.max(1, containerWidth - width)),
       y: randomBetween(0, Math.max(1, containerHeight - height)),
-      vx: randomBetween(-18, 18),
-      vy: randomBetween(-14, 14),
+      vx: randomBetween(-8, 8),
+      vy: randomBetween(-6, 6),
       rotation: randomBetween(0, 360),
-      angularVelocity: randomBetween(-16, 16),
+      angularVelocity: randomBetween(-2, 2),
       color: ['rgba(163, 190, 176, 0.96)', 'rgba(80, 122, 103, 0.92)', 'rgba(27, 46, 38, 0.88)', 'rgba(52, 84, 70, 0.74)'][index % 4],
       shape: triangleShapes[index % triangleShapes.length],
     };
@@ -41,7 +41,44 @@ export function AuthBackground({ active, shakePulse }) {
   const shakeTimeoutRef = useRef(null);
   const sizeRef = useRef({ width: 0, height: 0 });
   const previousShakePulse = useRef(0);
+  const scatterModeRef = useRef(false);
+  const scatterTimerRef = useRef(null);
   const [triangles, setTriangles] = useState(() => createTriangles(4, 1200, 900));
+
+  const handleClick = useCallback((e) => {
+    if (e.target !== containerRef.current) return;
+
+    scatterModeRef.current = true;
+    const clickX = e.clientX;
+    const clickY = e.clientY;
+
+    trianglesRef.current.forEach((triangle) => {
+      const centerX = triangle.x + triangle.width / 2;
+      const centerY = triangle.y + triangle.height / 2;
+      const dx = centerX - clickX;
+      const dy = centerY - clickY;
+      const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+      const force = Math.max(200, 600 - distance * 0.3);
+      const angle = Math.atan2(dy, dx);
+
+      triangle.vx = Math.cos(angle) * force * randomBetween(0.4, 1.2);
+      triangle.vy = Math.sin(angle) * force * randomBetween(0.4, 1.2);
+      triangle.angularVelocity = randomBetween(-3, 3);
+    });
+
+    motionSpeedRef.current = 3.5;
+
+    clearTimeout(scatterTimerRef.current);
+    scatterTimerRef.current = setTimeout(() => {
+      scatterModeRef.current = false;
+      trianglesRef.current.forEach((triangle) => {
+        triangle.vx *= 0.15;
+        triangle.vy *= 0.15;
+        triangle.angularVelocity = randomBetween(-2, 2);
+      });
+      motionSpeedRef.current = active ? 1.8 : 1;
+    }, 2500);
+  }, [active]);
 
   useEffect(() => {
     trianglesRef.current = triangles;
@@ -52,9 +89,9 @@ export function AuthBackground({ active, shakePulse }) {
       previousShakePulse.current = shakePulse;
 
       trianglesRef.current.forEach((triangle) => {
-        triangle.vx = Math.max(-40, Math.min(40, triangle.vx + randomBetween(-12, 12)));
-        triangle.vy = Math.max(-40, Math.min(40, triangle.vy + randomBetween(-12, 12)));
-        triangle.angularVelocity = Math.max(-36, Math.min(36, triangle.angularVelocity + randomBetween(-12, 12)));
+        triangle.vx = Math.max(-20, Math.min(20, triangle.vx + randomBetween(-8, 8)));
+        triangle.vy = Math.max(-20, Math.min(20, triangle.vy + randomBetween(-8, 8)));
+        triangle.angularVelocity = Math.max(-3, Math.min(3, triangle.angularVelocity + randomBetween(-2, 2)));
       });
 
       motionSpeedRef.current = 2.2;
@@ -72,6 +109,8 @@ export function AuthBackground({ active, shakePulse }) {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+
+    container.addEventListener('click', handleClick);
 
     const updateSize = () => {
       const rect = container.getBoundingClientRect();
@@ -95,31 +134,41 @@ export function AuthBackground({ active, shakePulse }) {
       }
 
       const speedFactor = motionSpeedRef.current;
+      const isScattering = scatterModeRef.current;
 
       trianglesRef.current.forEach((triangle) => {
         triangle.x += triangle.vx * 0.06 * speedFactor;
         triangle.y += triangle.vy * 0.06 * speedFactor;
         triangle.rotation += triangle.angularVelocity * 0.04 * speedFactor;
 
-        if (triangle.x < -triangle.width * 0.08) {
-          triangle.x = -triangle.width * 0.08;
-          triangle.vx = Math.abs(triangle.vx) * 0.5;
-        } else if (triangle.x + triangle.width > width + triangle.width * 0.08) {
-          triangle.x = width - triangle.width + triangle.width * 0.08;
-          triangle.vx = -Math.abs(triangle.vx) * 0.5;
-        }
+        if (isScattering) {
+          triangle.vx *= 0.985;
+          triangle.vy *= 0.985;
+          triangle.angularVelocity *= 0.99;
+        } else {
+          if (triangle.x < -triangle.width * 0.08) {
+            triangle.x = -triangle.width * 0.08;
+            triangle.vx = Math.abs(triangle.vx) * 0.5;
+          } else if (triangle.x + triangle.width > width + triangle.width * 0.08) {
+            triangle.x = width - triangle.width + triangle.width * 0.08;
+            triangle.vx = -Math.abs(triangle.vx) * 0.5;
+          }
 
-        if (triangle.y < -triangle.height * 0.08) {
-          triangle.y = -triangle.height * 0.08;
-          triangle.vy = Math.abs(triangle.vy) * 0.55;
-        } else if (triangle.y + triangle.height > height + triangle.height * 0.08) {
-          triangle.y = height - triangle.height + triangle.height * 0.08;
-          triangle.vy = -Math.abs(triangle.vy) * 0.55;
-        }
+          if (triangle.y < -triangle.height * 0.08) {
+            triangle.y = -triangle.height * 0.08;
+            triangle.vy = Math.abs(triangle.vy) * 0.55;
+          } else if (triangle.y + triangle.height > height + triangle.height * 0.08) {
+            triangle.y = height - triangle.height + triangle.height * 0.08;
+            triangle.vy = -Math.abs(triangle.vy) * 0.55;
+          }
 
-        triangle.vx *= active ? 0.992 : 0.988;
-        triangle.vy *= active ? 0.992 : 0.988;
-        triangle.angularVelocity *= active ? 0.996 : 0.994;
+          triangle.vx *= active ? 0.992 : 0.988;
+          triangle.vy *= active ? 0.992 : 0.988;
+          triangle.angularVelocity *= 0.995;
+
+          if (Math.abs(triangle.vx) < 1.5) triangle.vx = triangle.vx < 0 ? -1.8 : 1.8;
+          if (Math.abs(triangle.vy) < 1.2) triangle.vy = triangle.vy < 0 ? -1.5 : 1.5;
+        }
 
         const triangleEl = triangleRefs.current[triangle.id];
         if (triangleEl) {
@@ -133,13 +182,15 @@ export function AuthBackground({ active, shakePulse }) {
     frameRef.current = requestAnimationFrame(step);
 
     return () => {
+      container.removeEventListener('click', handleClick);
       window.removeEventListener('resize', updateSize);
       cancelAnimationFrame(frameRef.current);
+      clearTimeout(scatterTimerRef.current);
     };
-  }, [active]);
+  }, [active, handleClick]);
 
   return (
-    <div className="auth-background" ref={containerRef}>
+    <div className="auth-background" ref={containerRef} style={{ cursor: 'pointer' }}>
       {triangles.map((triangle) => (
         <div
           key={triangle.id}
