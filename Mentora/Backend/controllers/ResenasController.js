@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Resena = require("../models/Reseñas");
 const Curso = require("../models/Cursos");
 const Inscripcion = require("../models/Inscripciones");
-const Leccion = require("../models/Lecciones");
 
 const recalcularPromedio = async (curso_id) => {
   const resultado = await Resena.aggregate([
@@ -22,7 +21,7 @@ const recalcularPromedio = async (curso_id) => {
 
 exports.createResena = async (req, res) => {
   try {
-    const { curso_id, calificacion, comentario, leccion_id } = req.body;
+    const { curso_id, calificacion, comentario } = req.body;
 
     if (!curso_id) {
       return res.status(400).json({
@@ -31,6 +30,7 @@ exports.createResena = async (req, res) => {
       });
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
     if (leccion_id !== undefined && leccion_id !== null) {
@@ -49,6 +49,8 @@ exports.createResena = async (req, res) => {
     }
 
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
     const tieneComentario = typeof comentario === "string" && comentario.trim() !== "";
     const tieneCalificacion = typeof calificacion === "number" && !Number.isNaN(calificacion);
 
@@ -78,6 +80,7 @@ exports.createResena = async (req, res) => {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     if (tieneCalificacion) {
       const resenaConCalificacion = await Resena.findOne({
         estudiante_id: req.user.id,
@@ -89,6 +92,12 @@ exports.createResena = async (req, res) => {
         curso_id,
         leccion_id: null,
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+    if (tieneCalificacion) {
+      const resenaConCalificacion = await Resena.findOne({
+        estudiante_id: req.user.id,
+        curso_id,
+>>>>>>> parent of 50ab708 (Retoques)
         calificacion: { $ne: null }
       });
 
@@ -110,9 +119,12 @@ exports.createResena = async (req, res) => {
       estudiante_id: req.user.id,
       curso_id,
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       leccion_id: leccion_id || null,
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
       calificacion: tieneCalificacion ? calificacion : null,
       comentario: tieneComentario ? comentario.trim() : ""
     });
@@ -133,25 +145,8 @@ exports.getResenasByCurso = async (req, res) => {
       return res.status(400).json({ success: false, message: "ID inválido" });
     }
 
-    const resenas = await Resena.find({ curso_id: id, leccion_id: null })
-      .populate("estudiante_id", "nombre foto rol apellido")
-      .sort("-createdAt");
-
-    return res.status(200).json({ success: true, resenas });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-exports.getResenasByLeccion = async (req, res) => {
-  try {
-    const { id } = req.params;
-    if (!mongoose.isValidObjectId(id)) {
-      return res.status(400).json({ success: false, message: "ID inválido" });
-    }
-
-    const resenas = await Resena.find({ leccion_id: id })
-      .populate("estudiante_id", "nombre foto rol apellido")
+    const resenas = await Resena.find({ curso_id: id })
+      .populate("estudiante_id", "nombre foto")
       .sort("-createdAt");
 
     return res.status(200).json({ success: true, resenas });
@@ -168,7 +163,7 @@ exports.getResenaById = async (req, res) => {
     }
 
     const resena = await Resena.findById(id)
-      .populate("estudiante_id", "nombre foto rol apellido");
+      .populate("estudiante_id", "nombre foto");
     if (!resena) {
       return res.status(404).json({ success: false, message: "Reseña no encontrada" });
     }

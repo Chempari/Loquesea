@@ -1,15 +1,21 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 =======
 import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+>>>>>>> parent of 50ab708 (Retoques)
 import api from '../../../Api/axios';
 import { useAuth } from '../../../context/useAuth';
 import { getEmbedUrl } from '../../../utils';
 import { TemarioSeccion } from './components/TemarioSeccion';
 import { ComentariosCurso } from '../shared/ComentariosCurso';
+<<<<<<< HEAD
 <<<<<<< HEAD
 import { useResenas } from '../shared/useResenas';
 =======
@@ -17,10 +23,14 @@ import { ComentariosLeccion } from './components/ComentariosLeccion';
 import { useResenas } from '../shared/useResenas';
 import { useResenasPorLeccion } from '../shared/useResenasPorLeccion';
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+import { useResenas } from '../shared/useResenas';
+>>>>>>> parent of 50ab708 (Retoques)
 import './CursoAprendizaje.css';
 
 export function CursoAprendizaje() {
   const { id } = useParams();
+<<<<<<< HEAD
 <<<<<<< HEAD
   const { user } = useAuth();
 =======
@@ -29,12 +39,16 @@ export function CursoAprendizaje() {
   const { user } = useAuth();
   const navigate = useNavigate();
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+  const { user } = useAuth();
+>>>>>>> parent of 50ab708 (Retoques)
   const [curso, setCurso] = useState(null);
   const [inscripcion, setInscripcion] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [seccionAbierta, setSeccionAbierta] = useState(0);
   const [leccionActual, setLeccionActual] = useState(null);
+<<<<<<< HEAD
 <<<<<<< HEAD
   const { resenas, loading: resenasLoading, crearComentario, calificar, actualizarResena, eliminarResena } = useResenas(id);
 
@@ -57,36 +71,23 @@ export function CursoAprendizaje() {
 =======
   const [generandoCert, setGenerandoCert] = useState(false);
   const [certMsg, setCertMsg] = useState('');
+=======
+>>>>>>> parent of 50ab708 (Retoques)
   const { resenas, loading: resenasLoading, crearComentario, calificar, actualizarResena, eliminarResena } = useResenas(id);
-  const leccionIdActual = leccionActual && leccionActual._id;
-  const {
-    resenas: resenasLeccion,
-    loading: resenasLeccionLoading,
-    crearComentario: crearComentarioLeccion,
-    eliminarResena: eliminarResenaLeccion
-  } = useResenasPorLeccion(leccionIdActual);
-
-  const isInstructor = useMemo(() => instructorMode && user?.rol === 'instructor', [instructorMode, user?.rol]);
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        if (isInstructor) {
-          const res = await api.get(`/Cursos/${id}`);
-          setCurso(res.data?.curso || res.data?.data?.curso);
-          setError('');
-        } else {
-          const [cRes, iRes] = await Promise.all([
-            api.get(`/Cursos/${id}`),
-            api.get('/Inscripciones/mis-cursos')
-          ]);
-          const cursoData = cRes.data.curso || cRes.data.data?.curso;
-          setCurso(cursoData);
-          const inscs = iRes.data.inscripciones || [];
-          const miInsc = inscs.find((i) => i.curso_id?._id === id || i.curso_id === id);
-          if (miInsc) setInscripcion(miInsc);
-          else setError('No estas inscrito en este curso.');
+    Promise.all([api.get(`/Cursos/${id}`), api.get('/Inscripciones/mis-cursos')])
+      .then(([cRes, iRes]) => {
+        const cursoData = cRes.data.curso || cRes.data.data?.curso;
+        setCurso(cursoData);
+        const inscs = iRes.data.inscripciones || [];
+        const miInsc = inscs.find((i) => i.curso_id?._id === id || i.curso_id === id);
+        if (miInsc) setInscripcion(miInsc);
+        else setError('No estas inscrito en este curso.');
+        if (cursoData?.secciones?.[0]?.lecciones?.[0]) {
+          setLeccionActual(cursoData.secciones[0].lecciones[0]);
         }
+<<<<<<< HEAD
         if (curso?.secciones?.[0]?.lecciones?.[0]) {
           setLeccionActual(curso.secciones[0].lecciones[0]);
         }
@@ -99,6 +100,12 @@ export function CursoAprendizaje() {
     loadData();
   }, [id, isInstructor]);
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+      })
+      .catch((err) => setError(err.response?.data?.message || 'Error al cargar'))
+      .finally(() => setLoading(false));
+  }, [id]);
+>>>>>>> parent of 50ab708 (Retoques)
 
   const marcarLeccion = async (inscripcionId, leccionId) => {
     try {
@@ -121,6 +128,7 @@ export function CursoAprendizaje() {
   };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   const handleGenerarCertificado = async () => {
     setGenerandoCert(true);
@@ -137,16 +145,22 @@ export function CursoAprendizaje() {
   };
 
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
   if (loading) return <div className="dash-loading">Cargando curso...</div>;
   if (error) return <div className="dash-error">{error}</div>;
   if (!curso) return <div className="dash-error">Curso no encontrado</div>;
 
   const progresoMap = {};
 <<<<<<< HEAD
+<<<<<<< HEAD
   if (inscripcion?.progreso) {
 =======
   if (!isInstructor && inscripcion?.progreso) {
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+  if (inscripcion?.progreso) {
+>>>>>>> parent of 50ab708 (Retoques)
     inscripcion.progreso.forEach((p) => { progresoMap[p.leccion_id?._id || p.leccion_id] = p.completada; });
   }
 
@@ -154,15 +168,21 @@ export function CursoAprendizaje() {
   const completadas = Object.values(progresoMap).filter(Boolean).length;
   const embedUrl = leccionActual?.url ? getEmbedUrl(leccionActual.url) : null;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
   const cursoCompleto = !isInstructor && inscripcion && inscripcion.porcentaje >= 100;
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
 
   return (
     <div className="curso-aprendizaje-page">
       <div className="curso-aprendizaje-header">
         <h1 className="curso-aprendizaje-title">{curso.titulo}</h1>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 50ab708 (Retoques)
         <div className="curso-aprendizaje-progress">
           <div className="progress-bar">
             <div className="progress-fill" style={{ width: `${inscripcion?.porcentaje || 0}%` }} />
@@ -170,6 +190,7 @@ export function CursoAprendizaje() {
           <span>{inscripcion?.porcentaje || 0}%</span>
           <span>{completadas}/{totalLecciones} lecciones</span>
         </div>
+<<<<<<< HEAD
 =======
         {!isInstructor && (
           <>
@@ -191,6 +212,8 @@ export function CursoAprendizaje() {
           </>
         )}
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
       </div>
 
       <div className="aprendizaje-grid">
@@ -217,6 +240,7 @@ export function CursoAprendizaje() {
                 {leccionActual.descripcion && <p className="aprendizaje-leccion-desc">{leccionActual.descripcion}</p>}
                 {leccionActual.duracion > 0 && <span className="aprendizaje-leccion-duracion">{leccionActual.duracion} min</span>}
 <<<<<<< HEAD
+<<<<<<< HEAD
               </div>
             </>
 =======
@@ -232,6 +256,10 @@ export function CursoAprendizaje() {
               />
            </>
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+              </div>
+            </>
+>>>>>>> parent of 50ab708 (Retoques)
           ) : (
             <div className="aprendizaje-player-empty">
               Selecciona una leccion del temario para reproducirla.
@@ -239,6 +267,9 @@ export function CursoAprendizaje() {
           )}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 50ab708 (Retoques)
           <ComentariosCurso
             resenas={resenas}
             loading={resenasLoading}
@@ -250,6 +281,7 @@ export function CursoAprendizaje() {
             onActualizar={actualizarResena}
             onEliminar={eliminarResena}
           />
+<<<<<<< HEAD
 =======
           {!isInstructor && (
             <ComentariosCurso
@@ -265,6 +297,8 @@ export function CursoAprendizaje() {
             />
           )}
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
         </div>
 
         <aside className="aprendizaje-temario-column">
@@ -278,6 +312,7 @@ export function CursoAprendizaje() {
                   abierta={seccionAbierta === i}
                   onToggle={() => setSeccionAbierta(seccionAbierta === i ? -1 : i)}
 <<<<<<< HEAD
+<<<<<<< HEAD
                   onMarcarLeccion={marcarLeccion}
                   onSelectLeccion={setLeccionActual}
                   inscripcionId={inscripcion._id}
@@ -286,6 +321,11 @@ export function CursoAprendizaje() {
                   onSelectLeccion={setLeccionActual}
                   inscripcionId={inscripcion?._id}
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+                  onMarcarLeccion={marcarLeccion}
+                  onSelectLeccion={setLeccionActual}
+                  inscripcionId={inscripcion._id}
+>>>>>>> parent of 50ab708 (Retoques)
                   progresoMap={progresoMap}
                   leccionActualId={leccionActual?._id}
                 />
@@ -299,7 +339,11 @@ export function CursoAprendizaje() {
     </div>
   );
 <<<<<<< HEAD
+<<<<<<< HEAD
 }
 =======
 }
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+}
+>>>>>>> parent of 50ab708 (Retoques)

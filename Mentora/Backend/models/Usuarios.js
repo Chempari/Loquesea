@@ -38,12 +38,10 @@ const usuario = new mongoose.Schema(
         type: String,
         default: null
     },
-    redes_sociales: {
-      facebook:  { type: String, default: '' },
-      instagram: { type: String, default: '' },
-      linkedin:  { type: String, default: '' },
-      github:    { type: String, default: '' },
-      whatsapp:  { type: String, default: '' }
+    redes_sociales:
+    {
+      type: [String],
+      default: []
     },
     activo:{
         type: Boolean,

@@ -18,11 +18,6 @@ const resenas = new mongoose.Schema({
     ref: 'Curso',
     required: [true, 'El ID del curso es obligatorio.']
   },
-  leccion_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Leccion',
-    default: null
-  },
   calificacion: {
     type: Number,
     required: false,

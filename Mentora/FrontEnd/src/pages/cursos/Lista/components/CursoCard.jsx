@@ -21,6 +21,7 @@ export function CursoCard({ curso }) {
         {curso.calificacion_promedio > 0 && (
           <span style={{ fontSize: 13, color: '#f59e0b', display: 'block', marginTop: 4 }}>
 <<<<<<< HEAD
+<<<<<<< HEAD
             {'★'} {curso.calificacion_promedio}
 =======
             <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" aria-hidden="true">
@@ -28,6 +29,9 @@ export function CursoCard({ curso }) {
             </svg>
             {curso.calificacion_promedio}
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+            {'★'} {curso.calificacion_promedio}
+>>>>>>> parent of 50ab708 (Retoques)
           </span>
         )}
       </div>

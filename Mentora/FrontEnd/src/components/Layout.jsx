@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { useEffect, useRef } from 'react';
 =======
 <<<<<<< HEAD
@@ -7,16 +8,19 @@ import { useEffect, useState, useRef } from 'react';
 import { useEffect, useRef } from 'react';
 >>>>>>> 37cc40546ccbe788f13506a851da9d0c9b54ddb8
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+import { useEffect } from 'react';
+>>>>>>> parent of 50ab708 (Retoques)
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { LayoutBackground } from './LayoutBackground';
-import api from '../Api/axios';
 import './layout.css';
 
 export function Layout({ children, title }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+<<<<<<< HEAD
 <<<<<<< HEAD
   const backgroundRef = useRef(null);
 =======
@@ -30,6 +34,8 @@ export function Layout({ children, title }) {
   const backgroundRef = useRef(null);
 >>>>>>> 37cc40546ccbe788f13506a851da9d0c9b54ddb8
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
 
   useEffect(() => {
     const content = document.querySelector('.layout-page-transition');
@@ -45,6 +51,7 @@ export function Layout({ children, title }) {
     navigate('/login');
   };
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -129,6 +136,8 @@ export function Layout({ children, title }) {
 =======
 >>>>>>> 37cc40546ccbe788f13506a851da9d0c9b54ddb8
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
   return (
     <div className="layout-wrapper">
       {/* Fondo Geométrico Global para toda la app */}
@@ -140,16 +149,12 @@ export function Layout({ children, title }) {
           MENTORA
         </a>
 
-        {/* Buscador funcional */}
-        <div className="layout-search layout-input-container" ref={dropdownRef}>
+        {/* Buscador visual (opcional a nivel global) */}
+        <div className="layout-search layout-input-container">
           <input
             type="text"
             placeholder="Buscar cursos..."
             className="layout-input layout-search-input"
-            value={searchQuery}
-            onChange={handleSearchChange}
-            onFocus={handleSearchFocus}
-            onBlur={handleSearchBlur}
           />
           <span className="layout-input-icon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -157,30 +162,6 @@ export function Layout({ children, title }) {
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
           </span>
-          {showResults && (
-            <div className="layout-search-dropdown">
-              {searchLoading ? (
-                <div className="layout-search-loading">Buscando...</div>
-              ) : searchResults.length === 0 ? (
-                <div className="layout-search-empty">No se encontraron cursos</div>
-              ) : (
-                searchResults.map((curso) => (
-                  <button
-                    key={curso._id}
-                    type="button"
-                    className="layout-search-result"
-                    onClick={() => handleResultClick(curso)}
-                  >
-                    <img src={curso.imagen ? `http://localhost:3977${curso.imagen}` : ''} alt={curso.titulo} className="layout-search-result-img" onError={(e) => e.target.style.display='none'} />
-                    <div className="layout-search-result-info">
-                      <span className="layout-search-result-title">{curso.titulo}</span>
-                      <span className="layout-search-result-meta">{curso.categoria} · {curso.nivel}</span>
-                    </div>
-                  </button>
-                ))
-              )}
-            </div>
-          )}
         </div>
 
         <div className="layout-auth-buttons">
@@ -189,12 +170,12 @@ export function Layout({ children, title }) {
 
           {/* Opciones exclusivas para instructor */}
           {user?.rol === 'instructor' && (
-            <Link to="/cursos/nuevo" className="layout-btn-text" style={{ textDecoration: 'none' }}>Crear curso</Link>
+            <>
+              <Link to="/cursos/nuevo" className="layout-btn-text" style={{ textDecoration: 'none' }}>Crear curso</Link>
+              <Link to="/mis-cursos" className="layout-btn-text" style={{ textDecoration: 'none' }}>Mis cursos</Link>
+            </>
           )}
 
-          {user?.rol !== 'instructor' && (
-            <Link to="/certificates" className="layout-btn-text" style={{ textDecoration: 'none' }}>Mis Certificados</Link>
-          )}
           <Link to="/perfil" className="layout-btn-text" style={{ textDecoration: 'none' }}>Perfil</Link>
 
           {/* Nombre del usuario dinámico */}

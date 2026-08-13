@@ -1,9 +1,13 @@
 import { useState } from 'react';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { imageUrl } from '../../../../utils';
 =======
 import { UserLink } from '../../../../components/UserLink';
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+import { imageUrl } from '../../../../utils';
+>>>>>>> parent of 50ab708 (Retoques)
 
 export function ResenaCard({ resena, currentUserId, onUpdate, onDelete }) {
   const isOwner = currentUserId && resena.estudiante_id?._id === currentUserId;
@@ -78,6 +82,9 @@ export function ResenaCard({ resena, currentUserId, onUpdate, onDelete }) {
 
       <div className="resena-header">
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 50ab708 (Retoques)
         {resena.estudiante_id?.foto ? (
           <img src={imageUrl(resena.estudiante_id.foto)} alt="" />
         ) : (
@@ -86,9 +93,12 @@ export function ResenaCard({ resena, currentUserId, onUpdate, onDelete }) {
           </div>
         )}
         <span className="resena-name">{resena.estudiante_id?.nombre || 'Anonimo'}</span>
+<<<<<<< HEAD
 =======
         <UserLink user={resena.estudiante_id} size="sm" />
 >>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
         {mostrarEstrellas && (
           <span className="resena-stars">
             {'\u2605'.repeat(resena.calificacion)}
