@@ -1,5 +1,9 @@
 import { useState } from 'react';
+<<<<<<< HEAD
 import { imageUrl } from '../../../../utils';
+=======
+import { UserLink } from '../../../../components/UserLink';
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
 
 export function ResenaCard({ resena, currentUserId, onUpdate, onDelete }) {
   const isOwner = currentUserId && resena.estudiante_id?._id === currentUserId;
@@ -73,6 +77,7 @@ export function ResenaCard({ resena, currentUserId, onUpdate, onDelete }) {
       )}
 
       <div className="resena-header">
+<<<<<<< HEAD
         {resena.estudiante_id?.foto ? (
           <img src={imageUrl(resena.estudiante_id.foto)} alt="" />
         ) : (
@@ -81,6 +86,9 @@ export function ResenaCard({ resena, currentUserId, onUpdate, onDelete }) {
           </div>
         )}
         <span className="resena-name">{resena.estudiante_id?.nombre || 'Anonimo'}</span>
+=======
+        <UserLink user={resena.estudiante_id} size="sm" />
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
         {mostrarEstrellas && (
           <span className="resena-stars">
             {'\u2605'.repeat(resena.calificacion)}

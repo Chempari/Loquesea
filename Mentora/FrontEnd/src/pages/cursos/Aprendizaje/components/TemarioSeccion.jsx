@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+=======
+const ChevronIcon = ({ open }) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+    <polyline points="6 9 12 15 18 9" />
+  </svg>
+);
+
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
 export function TemarioSeccion({
   seccion,
   abierta,
@@ -12,7 +21,11 @@ export function TemarioSeccion({
     <div className="aprendizaje-seccion">
       <div className="aprendizaje-seccion-header" onClick={onToggle}>
         <span>{seccion.titulo}</span>
+<<<<<<< HEAD
         <span>{abierta ? '▲' : '▼'}</span>
+=======
+        <ChevronIcon open={abierta} />
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
       </div>
       {abierta && seccion.lecciones?.map((leccion) => {
         const estaCompletada = progresoMap[leccion._id];

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../../../context/useAuth';
@@ -5,6 +6,16 @@ import api from '../../../Api/axios';
 import { imageUrl } from '../../../utils';
 import { ComentariosCurso } from '../shared/ComentariosCurso';
 import { useResenas } from '../shared/useResenas';
+=======
+﻿import { useState, useEffect, useCallback } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { useAuth } from '../../../context/useAuth';
+import api from '../../../Api/axios';
+import { ComentariosCurso } from '../shared/ComentariosCurso';
+import { useResenas } from '../shared/useResenas';
+import { UserLink } from '../../../components/UserLink';
+import { PagoModal } from '../../../components/PagoModal';
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
 import './CursoPreview.css';
 
 export function CursoPreview() {
@@ -16,6 +27,10 @@ export function CursoPreview() {
   const [enrolling, setEnrolling] = useState(false);
   const [enrolled, setEnrolled] = useState(false);
   const [message, setMessage] = useState('');
+<<<<<<< HEAD
+=======
+  const [pagoModalOpen, setPagoModalOpen] = useState(false);
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
   const [seccionAbierta, setSeccionAbierta] = useState(0);
   const { resenas, loading: resenasLoading, crearComentario, calificar, actualizarResena, eliminarResena } = useResenas(id);
 
@@ -45,11 +60,16 @@ export function CursoPreview() {
     await cargarCurso();
   };
 
+<<<<<<< HEAD
   const handleInscribir = async () => {
+=======
+  const handleInscribirGratis = async () => {
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
     setEnrolling(true);
     setMessage('');
     setError('');
     try {
+<<<<<<< HEAD
       const res = await api.post('/Inscripciones', { curso_id: id });
       if (res.data.requiere_pago) {
         setMessage('Redirigiendo al pago...');
@@ -60,6 +80,11 @@ export function CursoPreview() {
         setEnrolled(true);
         setMessage('Inscripcion exitosa!');
       }
+=======
+      await api.post('/Inscripciones', { curso_id: id });
+      setEnrolled(true);
+      setMessage('Inscripcion exitosa!');
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
     } catch (err) {
       if (err.response?.data?.message?.includes('Ya estas inscrito')) {
         setEnrolled(true);
@@ -72,6 +97,39 @@ export function CursoPreview() {
     }
   };
 
+<<<<<<< HEAD
+=======
+  const handleInscribir = () => {
+    setMessage('');
+    setError('');
+    if ((curso?.precio || 0) > 0) {
+      setPagoModalOpen(true);
+    } else {
+      handleInscribirGratis();
+    }
+  };
+
+  const handleConfirmarPago = async () => {
+    setEnrolling(true);
+    try {
+      await api.post('/Inscripciones/pagar', { curso_id: id });
+      setEnrolled(true);
+      setPagoModalOpen(false);
+      setMessage('Inscripcion exitosa!');
+    } catch (err) {
+      if (err.response?.data?.message?.includes('Ya estas inscrito')) {
+        setEnrolled(true);
+        setPagoModalOpen(false);
+        setMessage('Ya estas inscrito.');
+      } else {
+        setError(err.response?.data?.message || 'Error al procesar pago');
+      }
+    } finally {
+      setEnrolling(false);
+    }
+  };
+
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
   if (loading) return <div className="dash-loading">Cargando curso...</div>;
   if (error) return <div className="dash-error">{error}</div>;
   if (!curso) return <div className="dash-error">Curso no encontrado</div>;
@@ -89,7 +147,11 @@ export function CursoPreview() {
             <span>{curso.categoria}</span>
             <span>{curso.nivel}</span>
             {curso.calificacion_promedio > 0 && (
+<<<<<<< HEAD
               <span style={{ color: '#f59e0b' }}>{'★'} {curso.calificacion_promedio}</span>
+=======
+              <span style={{ color: '#f59e0b' }}>{'â˜…'} {curso.calificacion_promedio}</span>
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
             )}
           </div>
         </div>
@@ -106,6 +168,7 @@ export function CursoPreview() {
             </div>
 
             {instructor && (
+<<<<<<< HEAD
               <Link to={`/instructores/${instructor._id}`} className="curso-preview-instructor">
                 {instructor.foto ? (
                   <img src={imageUrl(instructor.foto)} alt="Instructor" />
@@ -116,6 +179,11 @@ export function CursoPreview() {
                 )}
                 <span>{instructor?.nombre || 'Sin nombre'}</span>
               </Link>
+=======
+              <div className="curso-preview-instructor">
+                <UserLink user={instructor} size="sm" />
+            </div>
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
             )}
 
             <div className="curso-preview-stats">
@@ -125,7 +193,11 @@ export function CursoPreview() {
               </div>
               <div className="stat-row">
                 <span className="stat-value stat-stars">
+<<<<<<< HEAD
                   {'★'} {curso.calificacion_promedio > 0 ? curso.calificacion_promedio : '0.0'}
+=======
+                  {'â˜…'} {curso.calificacion_promedio > 0 ? curso.calificacion_promedio : '0.0'}
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
                 </span>
                 <span className="stat-label">Calificacion</span>
               </div>
@@ -159,18 +231,38 @@ export function CursoPreview() {
         </div>
       </div>
 
+<<<<<<< HEAD
       {curso.secciones?.length > 0 && (
+=======
+
+      <PagoModal
+        open={pagoModalOpen}
+        onClose={() => setPagoModalOpen(false)}
+        onConfirm={handleConfirmarPago}
+        precio={curso ? curso.precio : 0}
+        titulo={curso ? curso.titulo : ''}
+        loading={enrolling}
+      />      {curso.secciones?.length > 0 && (
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
         <div className="preview-temario">
           <h2>Temario</h2>
           {curso.secciones.map((seccion, i) => (
             <div key={seccion._id} className="seccion-item">
               <div className="preview-seccion-header" onClick={() => setSeccionAbierta(seccionAbierta === i ? -1 : i)}>
                 <span>Seccion {i + 1}: {seccion.titulo}</span>
+<<<<<<< HEAD
                 <span>{seccionAbierta === i ? '▲' : '▼'}</span>
               </div>
               {seccionAbierta === i && seccion.lecciones?.map((leccion) => (
                 <div key={leccion._id} className="preview-leccion-item">
                   <span className="leccion-icon">{'▶'}</span>
+=======
+                <span>{seccionAbierta === i ? 'â–²' : 'â–¼'}</span>
+              </div>
+              {seccionAbierta === i && seccion.lecciones?.map((leccion) => (
+                <div key={leccion._id} className="preview-leccion-item">
+                  <span className="leccion-icon">{'â–¶'}</span>
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
                   <span>{leccion.titulo}</span>
                 </div>
               ))}

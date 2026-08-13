@@ -5,6 +5,7 @@ const { API_VERSION } = require("./constants");
 
 const AuthRouter = require("./router/Auth");
 const UsuariosRouter = require("./router/Usuarios");
+const UsuariosPublicRouter = require("./router/UsuariosPublic");
 const CursosRouter = require("./router/Cursos");
 const InscripcionesRouter = require("./router/Inscripciones");
 const LeccionesRouter = require("./router/Lecciones");
@@ -27,6 +28,7 @@ app.use('/images', express.static(path.join(__dirname, 'uploads', 'images')));
 
 app.use(`/api/${API_VERSION}`, AuthRouter);
 app.use(`/api/${API_VERSION}`, UsuariosRouter);
+app.use(`/api/${API_VERSION}`, UsuariosPublicRouter);
 app.use(`/api/${API_VERSION}`, InscripcionesRouter);
 app.use(`/api/${API_VERSION}`, ResenasRouter);
 app.use(`/api/${API_VERSION}`, CursosRouter);
