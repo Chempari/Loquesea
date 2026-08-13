@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { CursoCard } from './CursoCard';
 
-export function InstructorCourses({ cursos, onTogglePublicado, onDelete, onVisualizar }) {
+export function InstructorCourses({ cursos, onTogglePublicado }) {
   if (cursos.length === 0) {
     return (
       <p className="dashboard-instructor__no-courses">
@@ -11,14 +11,12 @@ export function InstructorCourses({ cursos, onTogglePublicado, onDelete, onVisua
   }
 
   return (
-    <div className="instructor-course-grid">
+    <div className="course-list">
       {cursos.map((curso) => (
         <CursoCard
           key={curso._id}
           curso={curso}
           onTogglePublicado={onTogglePublicado}
-          onDelete={onDelete}
-          onVisualizar={onVisualizar}
         />
       ))}
     </div>

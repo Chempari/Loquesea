@@ -1,1 +1,0 @@
-export { PerfilPublico } from './PerfilPublico';

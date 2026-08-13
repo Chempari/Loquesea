@@ -1,25 +1,36 @@
 import { useState, useEffect } from 'react';
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
 import { useSearchParams } from 'react-router-dom';
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
 import api from '../../../Api/axios';
 import { CursoCard } from './components/CursoCard';
 import './CursosLista.css';
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+const CATEGORIAS = ['programacion', 'diseno', 'negocios', 'musica', 'fotografia', 'marketing', 'desarrollo'];
 const NIVELES = ['', 'principiante', 'intermedio', 'avanzado'];
-const PRECIO_RANGOS = [
-  { value: '', label: 'Todos los precios' },
-  { value: '0,0', label: 'Gratis' },
-  { value: '0,100', label: '0 - 100' },
-  { value: '100,300', label: '100 - 300' },
-  { value: '300,700', label: '300 - 700' },
-  { value: '700,', label: '700+' },
-];
 
 export function CursosLista() {
-  const [searchParams, setSearchParams] = useSearchParams();
   const [cursos, setCursos] = useState([]);
-  const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [filters, setFilters] = useState({ titulo: '', categoria: '', nivel: '' });
+=======
+=======
+const CATEGORIAS = ['programacion', 'diseno', 'negocios', 'musica', 'fotografia', 'marketing', 'desarrollo'];
+>>>>>>> parent of 50ab708 (Retoques)
+const NIVELES = ['', 'principiante', 'intermedio', 'avanzado'];
+
+export function CursosLista() {
+  const [cursos, setCursos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+<<<<<<< HEAD
   const filters = {
     titulo: searchParams.get('q') || '',
     categoria: searchParams.get('categoria') || '',
@@ -32,17 +43,27 @@ export function CursosLista() {
       .then((res) => setCategorias(res.data.categorias || []))
       .catch(console.error);
   }, []);
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+  const [filters, setFilters] = useState({ titulo: '', categoria: '', nivel: '' });
+>>>>>>> parent of 50ab708 (Retoques)
 
   useEffect(() => {
     const q = {};
     if (filters.titulo) q.titulo = filters.titulo;
     if (filters.categoria) q.categoria = filters.categoria;
     if (filters.nivel) q.nivel = filters.nivel;
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
     if (filters.precio) {
       const [min, max] = filters.precio.split(',');
       if (min !== undefined && min !== '') q.precio_min = Number(min);
       if (max !== undefined && max !== '') q.precio_max = Number(max);
     }
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
 
     let cancelado = false;
     api.get('/Cursos', { params: q })
@@ -51,6 +72,14 @@ export function CursosLista() {
       .finally(() => { if (!cancelado) setLoading(false); });
 
     return () => { cancelado = true; };
+<<<<<<< HEAD
+<<<<<<< HEAD
+  }, [filters]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+=======
   }, [filters.titulo, filters.categoria, filters.nivel, filters.precio]);
 
   const handleChange = (e) => {
@@ -59,6 +88,14 @@ export function CursosLista() {
     if (value) next.set(name, value);
     else next.delete(name);
     setSearchParams(next);
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+  }, [filters]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+>>>>>>> parent of 50ab708 (Retoques)
     setError('');
     setLoading(true);
   };
@@ -69,15 +106,29 @@ export function CursosLista() {
         <input name="titulo" placeholder="Buscar por titulo..." value={filters.titulo} onChange={handleChange} />
         <select name="categoria" value={filters.categoria} onChange={handleChange}>
           <option value="">Todas las categorias</option>
+<<<<<<< HEAD
+<<<<<<< HEAD
+          {CATEGORIAS.map((c) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+=======
           {categorias.map((c) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+          {CATEGORIAS.map((c) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+>>>>>>> parent of 50ab708 (Retoques)
         </select>
         <select name="nivel" value={filters.nivel} onChange={handleChange}>
           <option value="">Todos los niveles</option>
           {NIVELES.filter(Boolean).map((n) => <option key={n} value={n}>{n.charAt(0).toUpperCase() + n.slice(1)}</option>)}
         </select>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
         <select name="precio" value={filters.precio} onChange={handleChange}>
           {PRECIO_RANGOS.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
         </select>
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
       </div>
 
       {loading && <div className="dash-loading">Cargando cursos...</div>}

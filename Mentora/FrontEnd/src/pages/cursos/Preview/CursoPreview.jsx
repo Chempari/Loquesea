@@ -1,11 +1,29 @@
-﻿import { useState, useEffect, useCallback } from 'react';
+<<<<<<< HEAD
+<<<<<<< HEAD
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../../../context/useAuth';
 import api from '../../../Api/axios';
+import { imageUrl } from '../../../utils';
 import { ComentariosCurso } from '../shared/ComentariosCurso';
 import { useResenas } from '../shared/useResenas';
+=======
+﻿import { useState, useEffect, useCallback } from 'react';
+=======
+import { useState, useEffect, useCallback } from 'react';
+>>>>>>> parent of 50ab708 (Retoques)
+import { Link, useParams } from 'react-router-dom';
+import { useAuth } from '../../../context/useAuth';
+import api from '../../../Api/axios';
+import { imageUrl } from '../../../utils';
+import { ComentariosCurso } from '../shared/ComentariosCurso';
+import { useResenas } from '../shared/useResenas';
+<<<<<<< HEAD
 import { UserLink } from '../../../components/UserLink';
 import { PagoModal } from '../../../components/PagoModal';
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
 import './CursoPreview.css';
 
 export function CursoPreview() {
@@ -17,7 +35,13 @@ export function CursoPreview() {
   const [enrolling, setEnrolling] = useState(false);
   const [enrolled, setEnrolled] = useState(false);
   const [message, setMessage] = useState('');
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
   const [pagoModalOpen, setPagoModalOpen] = useState(false);
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
   const [seccionAbierta, setSeccionAbierta] = useState(0);
   const { resenas, loading: resenasLoading, crearComentario, calificar, actualizarResena, eliminarResena } = useResenas(id);
 
@@ -47,14 +71,41 @@ export function CursoPreview() {
     await cargarCurso();
   };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+  const handleInscribir = async () => {
+=======
   const handleInscribirGratis = async () => {
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+  const handleInscribir = async () => {
+>>>>>>> parent of 50ab708 (Retoques)
     setEnrolling(true);
     setMessage('');
     setError('');
     try {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 50ab708 (Retoques)
+      const res = await api.post('/Inscripciones', { curso_id: id });
+      if (res.data.requiere_pago) {
+        setMessage('Redirigiendo al pago...');
+        await api.post('/Inscripciones/pagar', { curso_id: id });
+        setEnrolled(true);
+        setMessage('Inscripcion exitosa!');
+      } else {
+        setEnrolled(true);
+        setMessage('Inscripcion exitosa!');
+      }
+<<<<<<< HEAD
+=======
       await api.post('/Inscripciones', { curso_id: id });
       setEnrolled(true);
       setMessage('Inscripcion exitosa!');
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
     } catch (err) {
       if (err.response?.data?.message?.includes('Ya estas inscrito')) {
         setEnrolled(true);
@@ -67,6 +118,9 @@ export function CursoPreview() {
     }
   };
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
   const handleInscribir = () => {
     setMessage('');
     setError('');
@@ -97,6 +151,9 @@ export function CursoPreview() {
     }
   };
 
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
   if (loading) return <div className="dash-loading">Cargando curso...</div>;
   if (error) return <div className="dash-error">{error}</div>;
   if (!curso) return <div className="dash-error">Curso no encontrado</div>;
@@ -114,7 +171,15 @@ export function CursoPreview() {
             <span>{curso.categoria}</span>
             <span>{curso.nivel}</span>
             {curso.calificacion_promedio > 0 && (
+<<<<<<< HEAD
+<<<<<<< HEAD
+              <span style={{ color: '#f59e0b' }}>{'★'} {curso.calificacion_promedio}</span>
+=======
               <span style={{ color: '#f59e0b' }}>{'â˜…'} {curso.calificacion_promedio}</span>
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+              <span style={{ color: '#f59e0b' }}>{'★'} {curso.calificacion_promedio}</span>
+>>>>>>> parent of 50ab708 (Retoques)
             )}
           </div>
         </div>
@@ -131,9 +196,28 @@ export function CursoPreview() {
             </div>
 
             {instructor && (
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 50ab708 (Retoques)
+              <Link to={`/instructores/${instructor._id}`} className="curso-preview-instructor">
+                {instructor.foto ? (
+                  <img src={imageUrl(instructor.foto)} alt="Instructor" />
+                ) : (
+                  <div className="perfil-photo-placeholder" style={{ width: 40, height: 40, fontSize: 18 }}>
+                    {instructor?.nombre?.charAt(0) || '?'}
+                  </div>
+                )}
+                <span>{instructor?.nombre || 'Sin nombre'}</span>
+              </Link>
+<<<<<<< HEAD
+=======
               <div className="curso-preview-instructor">
                 <UserLink user={instructor} size="sm" />
             </div>
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+>>>>>>> parent of 50ab708 (Retoques)
             )}
 
             <div className="curso-preview-stats">
@@ -143,7 +227,15 @@ export function CursoPreview() {
               </div>
               <div className="stat-row">
                 <span className="stat-value stat-stars">
+<<<<<<< HEAD
+<<<<<<< HEAD
+                  {'★'} {curso.calificacion_promedio > 0 ? curso.calificacion_promedio : '0.0'}
+=======
                   {'â˜…'} {curso.calificacion_promedio > 0 ? curso.calificacion_promedio : '0.0'}
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+                  {'★'} {curso.calificacion_promedio > 0 ? curso.calificacion_promedio : '0.0'}
+>>>>>>> parent of 50ab708 (Retoques)
                 </span>
                 <span className="stat-label">Calificacion</span>
               </div>
@@ -177,6 +269,10 @@ export function CursoPreview() {
         </div>
       </div>
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+      {curso.secciones?.length > 0 && (
+=======
 
       <PagoModal
         open={pagoModalOpen}
@@ -186,17 +282,37 @@ export function CursoPreview() {
         titulo={curso ? curso.titulo : ''}
         loading={enrolling}
       />      {curso.secciones?.length > 0 && (
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+      {curso.secciones?.length > 0 && (
+>>>>>>> parent of 50ab708 (Retoques)
         <div className="preview-temario">
           <h2>Temario</h2>
           {curso.secciones.map((seccion, i) => (
             <div key={seccion._id} className="seccion-item">
               <div className="preview-seccion-header" onClick={() => setSeccionAbierta(seccionAbierta === i ? -1 : i)}>
                 <span>Seccion {i + 1}: {seccion.titulo}</span>
+<<<<<<< HEAD
+<<<<<<< HEAD
+                <span>{seccionAbierta === i ? '▲' : '▼'}</span>
+              </div>
+              {seccionAbierta === i && seccion.lecciones?.map((leccion) => (
+                <div key={leccion._id} className="preview-leccion-item">
+                  <span className="leccion-icon">{'▶'}</span>
+=======
                 <span>{seccionAbierta === i ? 'â–²' : 'â–¼'}</span>
               </div>
               {seccionAbierta === i && seccion.lecciones?.map((leccion) => (
                 <div key={leccion._id} className="preview-leccion-item">
                   <span className="leccion-icon">{'â–¶'}</span>
+>>>>>>> ceaeef02401b6a586d6225eba92589d016ac29b2
+=======
+                <span>{seccionAbierta === i ? '▲' : '▼'}</span>
+              </div>
+              {seccionAbierta === i && seccion.lecciones?.map((leccion) => (
+                <div key={leccion._id} className="preview-leccion-item">
+                  <span className="leccion-icon">{'▶'}</span>
+>>>>>>> parent of 50ab708 (Retoques)
                   <span>{leccion.titulo}</span>
                 </div>
               ))}
