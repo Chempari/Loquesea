@@ -114,6 +114,10 @@ src/
         CursoPreview.css
         CursoPreview.jsx
         index.js
+      shared/
+        ComentariosCurso.jsx
+        resenas.css
+        useResenas.js
     dashboard/
       Estudiante/
         components/
@@ -137,6 +141,11 @@ src/
         ProgressBar.jsx
         SummaryCard.jsx
         Switch.jsx
+    instructores/
+      PerfilPublico/
+        index.js
+        PerfilPublico.css
+        PerfilPublico.jsx
     perfil/
       index.js
       Perfil.css
@@ -236,7 +245,7 @@ export default api;
 </file>
 
 <file path="src/components/AuthBackground.jsx">
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 const randomBetween = (min, max) => Math.random() * (max - min) + min;
 
@@ -260,10 +269,10 @@ const createTriangles = (count, containerWidth, containerHeight) => {
       height,
       x: randomBetween(0, Math.max(1, containerWidth - width)),
       y: randomBetween(0, Math.max(1, containerHeight - height)),
-      vx: randomBetween(-18, 18),
-      vy: randomBetween(-14, 14),
+      vx: randomBetween(-8, 8),
+      vy: randomBetween(-6, 6),
       rotation: randomBetween(0, 360),
-      angularVelocity: randomBetween(-16, 16),
+      angularVelocity: randomBetween(-2, 2),
       color: ['rgba(163, 190, 176, 0.96)', 'rgba(80, 122, 103, 0.92)', 'rgba(27, 46, 38, 0.88)', 'rgba(52, 84, 70, 0.74)'][index % 4],
       shape: triangleShapes[index % triangleShapes.length],
     };
@@ -279,7 +288,44 @@ export function AuthBackground({ active, shakePulse }) {
   const shakeTimeoutRef = useRef(null);
   const sizeRef = useRef({ width: 0, height: 0 });
   const previousShakePulse = useRef(0);
+  const scatterModeRef = useRef(false);
+  const scatterTimerRef = useRef(null);
   const [triangles, setTriangles] = useState(() => createTriangles(4, 1200, 900));
+
+  const handleClick = useCallback((e) => {
+    if (e.target !== containerRef.current) return;
+
+    scatterModeRef.current = true;
+    const clickX = e.clientX;
+    const clickY = e.clientY;
+
+    trianglesRef.current.forEach((triangle) => {
+      const centerX = triangle.x + triangle.width / 2;
+      const centerY = triangle.y + triangle.height / 2;
+      const dx = centerX - clickX;
+      const dy = centerY - clickY;
+      const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+      const force = Math.max(200, 600 - distance * 0.3);
+      const angle = Math.atan2(dy, dx);
+
+      triangle.vx = Math.cos(angle) * force * randomBetween(0.4, 1.2);
+      triangle.vy = Math.sin(angle) * force * randomBetween(0.4, 1.2);
+      triangle.angularVelocity = randomBetween(-3, 3);
+    });
+
+    motionSpeedRef.current = 3.5;
+
+    clearTimeout(scatterTimerRef.current);
+    scatterTimerRef.current = setTimeout(() => {
+      scatterModeRef.current = false;
+      trianglesRef.current.forEach((triangle) => {
+        triangle.vx *= 0.15;
+        triangle.vy *= 0.15;
+        triangle.angularVelocity = randomBetween(-2, 2);
+      });
+      motionSpeedRef.current = active ? 1.8 : 1;
+    }, 2500);
+  }, [active]);
 
   useEffect(() => {
     trianglesRef.current = triangles;
@@ -290,9 +336,9 @@ export function AuthBackground({ active, shakePulse }) {
       previousShakePulse.current = shakePulse;
 
       trianglesRef.current.forEach((triangle) => {
-        triangle.vx = Math.max(-40, Math.min(40, triangle.vx + randomBetween(-12, 12)));
-        triangle.vy = Math.max(-40, Math.min(40, triangle.vy + randomBetween(-12, 12)));
-        triangle.angularVelocity = Math.max(-36, Math.min(36, triangle.angularVelocity + randomBetween(-12, 12)));
+        triangle.vx = Math.max(-20, Math.min(20, triangle.vx + randomBetween(-8, 8)));
+        triangle.vy = Math.max(-20, Math.min(20, triangle.vy + randomBetween(-8, 8)));
+        triangle.angularVelocity = Math.max(-3, Math.min(3, triangle.angularVelocity + randomBetween(-2, 2)));
       });
 
       motionSpeedRef.current = 2.2;
@@ -310,6 +356,8 @@ export function AuthBackground({ active, shakePulse }) {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+
+    container.addEventListener('click', handleClick);
 
     const updateSize = () => {
       const rect = container.getBoundingClientRect();
@@ -333,31 +381,41 @@ export function AuthBackground({ active, shakePulse }) {
       }
 
       const speedFactor = motionSpeedRef.current;
+      const isScattering = scatterModeRef.current;
 
       trianglesRef.current.forEach((triangle) => {
         triangle.x += triangle.vx * 0.06 * speedFactor;
         triangle.y += triangle.vy * 0.06 * speedFactor;
         triangle.rotation += triangle.angularVelocity * 0.04 * speedFactor;
 
-        if (triangle.x < -triangle.width * 0.08) {
-          triangle.x = -triangle.width * 0.08;
-          triangle.vx = Math.abs(triangle.vx) * 0.5;
-        } else if (triangle.x + triangle.width > width + triangle.width * 0.08) {
-          triangle.x = width - triangle.width + triangle.width * 0.08;
-          triangle.vx = -Math.abs(triangle.vx) * 0.5;
-        }
+        if (isScattering) {
+          triangle.vx *= 0.985;
+          triangle.vy *= 0.985;
+          triangle.angularVelocity *= 0.99;
+        } else {
+          if (triangle.x < -triangle.width * 0.08) {
+            triangle.x = -triangle.width * 0.08;
+            triangle.vx = Math.abs(triangle.vx) * 0.5;
+          } else if (triangle.x + triangle.width > width + triangle.width * 0.08) {
+            triangle.x = width - triangle.width + triangle.width * 0.08;
+            triangle.vx = -Math.abs(triangle.vx) * 0.5;
+          }
 
-        if (triangle.y < -triangle.height * 0.08) {
-          triangle.y = -triangle.height * 0.08;
-          triangle.vy = Math.abs(triangle.vy) * 0.55;
-        } else if (triangle.y + triangle.height > height + triangle.height * 0.08) {
-          triangle.y = height - triangle.height + triangle.height * 0.08;
-          triangle.vy = -Math.abs(triangle.vy) * 0.55;
-        }
+          if (triangle.y < -triangle.height * 0.08) {
+            triangle.y = -triangle.height * 0.08;
+            triangle.vy = Math.abs(triangle.vy) * 0.55;
+          } else if (triangle.y + triangle.height > height + triangle.height * 0.08) {
+            triangle.y = height - triangle.height + triangle.height * 0.08;
+            triangle.vy = -Math.abs(triangle.vy) * 0.55;
+          }
 
-        triangle.vx *= active ? 0.992 : 0.988;
-        triangle.vy *= active ? 0.992 : 0.988;
-        triangle.angularVelocity *= active ? 0.996 : 0.994;
+          triangle.vx *= active ? 0.992 : 0.988;
+          triangle.vy *= active ? 0.992 : 0.988;
+          triangle.angularVelocity *= 0.995;
+
+          if (Math.abs(triangle.vx) < 1.5) triangle.vx = triangle.vx < 0 ? -1.8 : 1.8;
+          if (Math.abs(triangle.vy) < 1.2) triangle.vy = triangle.vy < 0 ? -1.5 : 1.5;
+        }
 
         const triangleEl = triangleRefs.current[triangle.id];
         if (triangleEl) {
@@ -371,13 +429,15 @@ export function AuthBackground({ active, shakePulse }) {
     frameRef.current = requestAnimationFrame(step);
 
     return () => {
+      container.removeEventListener('click', handleClick);
       window.removeEventListener('resize', updateSize);
       cancelAnimationFrame(frameRef.current);
+      clearTimeout(scatterTimerRef.current);
     };
-  }, [active]);
+  }, [active, handleClick]);
 
   return (
-    <div className="auth-background" ref={containerRef}>
+    <div className="auth-background" ref={containerRef} style={{ cursor: 'pointer' }}>
       {triangles.map((triangle) => (
         <div
           key={triangle.id}
@@ -587,7 +647,7 @@ export function AuthBackground({ active, shakePulse }) {
 </file>
 
 <file path="src/components/Layout.jsx">
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { LayoutBackground } from './LayoutBackground';
@@ -597,6 +657,7 @@ export function Layout({ children, title }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const backgroundRef = useRef(null);
 
   useEffect(() => {
     const content = document.querySelector('.layout-page-transition');
@@ -612,16 +673,23 @@ export function Layout({ children, title }) {
     navigate('/login');
   };
 
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    if (backgroundRef.current) {
+      backgroundRef.current.triggerScatter();
+    }
+  };
+
   return (
     <div className="layout-wrapper">
       {/* Fondo Geométrico Global para toda la app */}
-      <LayoutBackground />
+      <LayoutBackground ref={backgroundRef} />
 
       {/* NAVBAR GLASSMORPHISM GLOBAL */}
       <nav className="layout-navbar" style={{ zIndex: 100 }}>
-        <Link to="/dashboard" className="layout-logo" style={{ textDecoration: 'none' }}>
+        <a href="/dashboard" className="layout-logo" style={{ textDecoration: 'none', cursor: 'pointer' }} onClick={handleLogoClick}>
           MENTORA
-        </Link>
+        </a>
 
         {/* Buscador visual (opcional a nivel global) */}
         <div className="layout-search layout-input-container">
@@ -681,7 +749,7 @@ export function Layout({ children, title }) {
 </file>
 
 <file path="src/components/LayoutBackground.jsx">
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback, useImperativeHandle, forwardRef } from 'react';
 
 const randomBetween = (min, max) => Math.random() * (max - min) + min;
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -707,10 +775,10 @@ const createShapes = (count, containerWidth, containerHeight) => {
       height,
       x: randomBetween(-width * 0.25, Math.max(0, containerWidth - width + width * 0.25)),
       y: randomBetween(-height * 0.22, Math.max(0, containerHeight - height + height * 0.22)),
-      vx: randomBetween(-18, 18),
-      vy: randomBetween(-14, 14),
+      vx: randomBetween(-6, 6),
+      vy: randomBetween(-5, 5),
       rotation: randomBetween(0, 360),
-      angularVelocity: randomBetween(-6, 6),
+      angularVelocity: randomBetween(-1.5, 1.5),
       color,
       shape: shapePath,
       opacity: index % 3 === 0 ? 0.78 : index % 2 === 0 ? 0.82 : 0.7,
@@ -718,13 +786,40 @@ const createShapes = (count, containerWidth, containerHeight) => {
   });
 };
 
-export function LayoutBackground() {
+export const LayoutBackground = forwardRef(function LayoutBackground(_, ref) {
   const containerRef = useRef(null);
   const shapeRefs = useRef([]);
   const shapesRef = useRef([]);
   const frameRef = useRef(null);
   const sizeRef = useRef({ width: 0, height: 0 });
+  const scatterModeRef = useRef(false);
+  const scatterTimerRef = useRef(null);
   const [shapes, setShapes] = useState(() => createShapes(8, 1200, 900));
+
+  const triggerScatter = useCallback(() => {
+    scatterModeRef.current = true;
+
+    shapesRef.current.forEach((shape) => {
+      const angle = randomBetween(0, Math.PI * 2);
+      const force = randomBetween(200, 600);
+
+      shape.vx = Math.cos(angle) * force * randomBetween(0.4, 1.2);
+      shape.vy = Math.sin(angle) * force * randomBetween(0.4, 1.2);
+      shape.angularVelocity = randomBetween(-8, 8);
+    });
+
+    clearTimeout(scatterTimerRef.current);
+    scatterTimerRef.current = setTimeout(() => {
+      scatterModeRef.current = false;
+      shapesRef.current.forEach((shape) => {
+        shape.vx *= 0.1;
+        shape.vy *= 0.1;
+        shape.angularVelocity = randomBetween(-1.5, 1.5);
+      });
+    }, 3500);
+  }, []);
+
+  useImperativeHandle(ref, () => ({ triggerScatter }), [triggerScatter]);
 
   useEffect(() => {
     shapesRef.current = shapes;
@@ -755,40 +850,51 @@ export function LayoutBackground() {
         return;
       }
 
+      const isScattering = scatterModeRef.current;
+
       shapesRef.current.forEach((shape) => {
         shape.x += shape.vx * 0.03;
         shape.y += shape.vy * 0.03;
         shape.rotation += shape.angularVelocity * 0.03;
 
-        const horizontalLimit = shape.width * 0.08;
-        const verticalLimit = shape.height * 0.08;
+        if (isScattering) {
+          shape.vx *= 0.988;
+          shape.vy *= 0.988;
+          shape.angularVelocity *= 0.997;
+        } else {
+          const horizontalLimit = shape.width * 0.08;
+          const verticalLimit = shape.height * 0.08;
 
-        if (shape.x < -horizontalLimit) {
-          shape.x = -horizontalLimit;
-          shape.vx = Math.abs(shape.vx) * randomBetween(0.76, 0.96);
-        } else if (shape.x + shape.width > width + horizontalLimit) {
-          shape.x = width - shape.width + horizontalLimit;
-          shape.vx = -Math.abs(shape.vx) * randomBetween(0.76, 0.96);
-        }
+          if (shape.x < -horizontalLimit) {
+            shape.x = -horizontalLimit;
+            shape.vx = Math.abs(shape.vx) * randomBetween(0.76, 0.96);
+          } else if (shape.x + shape.width > width + horizontalLimit) {
+            shape.x = width - shape.width + horizontalLimit;
+            shape.vx = -Math.abs(shape.vx) * randomBetween(0.76, 0.96);
+          }
 
-        if (shape.y < -verticalLimit) {
-          shape.y = -verticalLimit;
-          shape.vy = Math.abs(shape.vy) * randomBetween(0.78, 0.94);
-        } else if (shape.y + shape.height > height + verticalLimit) {
-          shape.y = height - shape.height + verticalLimit;
-          shape.vy = -Math.abs(shape.vy) * randomBetween(0.78, 0.94);
-        }
+          if (shape.y < -verticalLimit) {
+            shape.y = -verticalLimit;
+            shape.vy = Math.abs(shape.vy) * randomBetween(0.78, 0.94);
+          } else if (shape.y + shape.height > height + verticalLimit) {
+            shape.y = height - shape.height + verticalLimit;
+            shape.vy = -Math.abs(shape.vy) * randomBetween(0.78, 0.94);
+          }
 
-        if (Math.abs(shape.vx) < 1.6) {
-          shape.vx = shape.vx < 0 ? -1.8 : 1.8;
-        }
-        if (Math.abs(shape.vy) < 1.6) {
-          shape.vy = shape.vy < 0 ? -1.8 : 1.8;
-        }
+          if (Math.abs(shape.vx) < 1.0) {
+            shape.vx = shape.vx < 0 ? -1.2 : 1.2;
+          }
+          if (Math.abs(shape.vy) < 1.0) {
+            shape.vy = shape.vy < 0 ? -1.2 : 1.2;
+          }
 
-        shape.vx = clamp(shape.vx, -24, 24);
-        shape.vy = clamp(shape.vy, -20, 20);
-        shape.angularVelocity = clamp(shape.angularVelocity, -6, 6);
+          shape.vx = clamp(shape.vx, -15, 15);
+          shape.vy = clamp(shape.vy, -12, 12);
+          shape.angularVelocity = clamp(shape.angularVelocity, -2, 2);
+
+          shape.vx *= 0.998;
+          shape.vy *= 0.998;
+        }
 
         const shapeEl = shapeRefs.current[shape.id];
         if (shapeEl) {
@@ -804,6 +910,7 @@ export function LayoutBackground() {
     return () => {
       window.removeEventListener('resize', updateSize);
       cancelAnimationFrame(frameRef.current);
+      clearTimeout(scatterTimerRef.current);
     };
   }, []);
 
@@ -826,7 +933,7 @@ export function LayoutBackground() {
       ))}
     </div>
   );
-}
+});
 </file>
 
 <file path="src/context/AuthContext.jsx">
@@ -968,7 +1075,7 @@ export { Login } from './Login';
 </file>
 
 <file path="src/pages/auth/Login/Login.jsx">
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/useAuth';
 import { AuthBackground, SocialButtons, SignupRedirect } from '../shared';
@@ -980,27 +1087,8 @@ export function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [fastMotion, setFastMotion] = useState(false);
-  const [shakePulse, setShakePulse] = useState(0);
-  const interactionTimer = useRef(null);
   const { login } = useAuth();
   const navigate = useNavigate();
-
-  const handleUserActivity = () => {
-    setFastMotion(true);
-    clearTimeout(interactionTimer.current);
-    interactionTimer.current = setTimeout(() => setFastMotion(false), 900);
-  };
-
-  const handleFieldInteraction = (event) => {
-    if (!event.target.closest('input, select')) return;
-    setShakePulse((prev) => prev + 1);
-  };
-
-  const handleFormBlur = () => {
-    clearTimeout(interactionTimer.current);
-    interactionTimer.current = setTimeout(() => setFastMotion(false), 400);
-  };
 
   const handleSubmit = async () => {
     setError('');
@@ -1017,11 +1105,11 @@ export function Login() {
     }
   };
 
-  const pageClass = `auth-page auth-page--slide-in-left${fastMotion ? ' auth-page--fast-motion' : ''}`;
+  const pageClass = 'auth-page auth-page--slide-in-left';
 
   return (
     <div className={pageClass}>
-      <AuthBackground active={fastMotion} shakePulse={shakePulse} />
+      <AuthBackground active={false} shakePulse={0} />
 
       <main className="auth-wrapper">
         <div className="auth-card">
@@ -1188,7 +1276,7 @@ export { Register } from './Register';
 </file>
 
 <file path="src/pages/auth/Register/Register.jsx">
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/useAuth';
 import { AuthBackground, SocialButtons, SignupRedirect } from '../shared';
@@ -1204,27 +1292,8 @@ export function Register() {
   const [rol, setRol] = useState('estudiante');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [fastMotion, setFastMotion] = useState(false);
-  const [shakePulse, setShakePulse] = useState(0);
-  const interactionTimer = useRef(null);
   const { register } = useAuth();
   const navigate = useNavigate();
-
-  const handleUserActivity = () => {
-    setFastMotion(true);
-    clearTimeout(interactionTimer.current);
-    interactionTimer.current = setTimeout(() => setFastMotion(false), 800);
-  };
-
-  const handleFieldInteraction = (event) => {
-    if (!event.target.closest('input, select')) return;
-    setShakePulse((prev) => prev + 1);
-  };
-
-  const handleFormBlur = () => {
-    clearTimeout(interactionTimer.current);
-    interactionTimer.current = setTimeout(() => setFastMotion(false), 350);
-  };
 
   const handleSubmit = async () => {
     if (password !== confirmPassword) {
@@ -1245,11 +1314,11 @@ export function Register() {
     }
   };
 
-  const pageClass = `auth-page auth-page--slide-in-right${fastMotion ? ' auth-page--fast-motion' : ''}`;
+  const pageClass = 'auth-page auth-page--slide-in-right';
 
   return (
     <div className={pageClass}>
-      <AuthBackground active={fastMotion} shakePulse={shakePulse} />
+      <AuthBackground active={false} shakePulse={0} />
 
       <main className="auth-wrapper">
         <div className="auth-card">
@@ -1435,6 +1504,39 @@ export function Register() {
   display: flex;
   align-items: center;
   pointer-events: none;
+}
+
+.auth-input-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(232, 240, 236, 0.7);
+  cursor: pointer;
+  pointer-events: auto;
+  border-radius: 50%;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.auth-input-toggle:hover {
+  color: rgba(232, 240, 236, 1);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.auth-input-toggle:focus {
+  outline: none;
+  color: rgba(163, 190, 176, 1);
+}
+
+.auth-input-toggle:focus-visible {
+  outline: 2px solid rgba(163, 190, 176, 0.6);
+  outline-offset: 2px;
 }
 
 /* --- Form Options --- */
@@ -1731,6 +1833,24 @@ export function AuthBackground({ active, shakePulse }) {
 </file>
 
 <file path="src/pages/auth/shared/FormInput.jsx">
+import { useState } from 'react';
+
+const eyeIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+    <circle cx="12" cy="12" r="3" />
+ </svg>
+);
+
+const eyeOffIcon = (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24" />
+    <line x1="1" y1="1" x2="23" y2="23" />
+ </svg>
+);
+
 export function FormInput({
   id,
   type = 'text',
@@ -1742,11 +1862,15 @@ export function FormInput({
   icon,
   autoComplete,
 }) {
+  const [showPassword, setShowPassword] = useState(false);
+  const isPassword = type === 'password';
+  const effectiveType = isPassword && showPassword ? 'text' : type;
+
   return (
     <div className="auth-input-container">
       <input
         id={id}
-        type={type}
+        type={effectiveType}
         placeholder={placeholder}
         required={required}
         minLength={minLength}
@@ -1755,8 +1879,22 @@ export function FormInput({
         onChange={onChange}
         autoComplete={autoComplete}
       />
-      <span className="auth-input-icon">{icon}</span>
-    </div>
+      {isPassword ? (
+        <button
+          type="button"
+          className="auth-input-toggle"
+          onClick={() => setShowPassword((s) => !s)}
+          onMouseDown={(e) => e.preventDefault()}
+          aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+          aria-pressed={showPassword}
+          tabIndex={-1}
+        >
+          {showPassword ? eyeOffIcon : eyeIcon}
+       </button>
+      ) : (
+          <span className="auth-input-icon">{icon}</span>
+      )}
+   </div>
   );
 }
 </file>
@@ -1812,7 +1950,16 @@ export { TemarioSeccion } from './TemarioSeccion';
 </file>
 
 <file path="src/pages/cursos/Aprendizaje/components/TemarioSeccion.jsx">
-export function TemarioSeccion({ seccion, abierta, onToggle, onMarcarLeccion, inscripcionId, progresoMap }) {
+export function TemarioSeccion({
+  seccion,
+  abierta,
+  onToggle,
+  onMarcarLeccion,
+  onSelectLeccion,
+  inscripcionId,
+  progresoMap,
+  leccionActualId,
+}) {
   return (
     <div className="aprendizaje-seccion">
       <div className="aprendizaje-seccion-header" onClick={onToggle}>
@@ -1821,21 +1968,25 @@ export function TemarioSeccion({ seccion, abierta, onToggle, onMarcarLeccion, in
       </div>
       {abierta && seccion.lecciones?.map((leccion) => {
         const estaCompletada = progresoMap[leccion._id];
+        const esActiva = leccion._id === leccionActualId;
         return (
-          <div key={leccion._id} className={`aprendizaje-leccion ${estaCompletada ? 'completada' : ''}`}>
-            <label>
-              <input
-                type="checkbox"
-                checked={!!estaCompletada}
-                onChange={() => onMarcarLeccion(inscripcionId, leccion._id)}
-              />
-              <span>{leccion.titulo}</span>
-            </label>
-            {leccion.url && (
-              <a href={leccion.url} target="_blank" rel="noopener noreferrer" style={{ marginLeft: 'auto', fontSize: 13, color: 'var(--accent)' }}>
-                Ver video
-              </a>
-            )}
+          <div
+            key={leccion._id}
+            className={`aprendizaje-leccion ${estaCompletada ? 'completada' : ''} ${esActiva ? 'activa' : ''}`}
+          >
+            <input
+              type="checkbox"
+              checked={!!estaCompletada}
+              onChange={() => onMarcarLeccion(inscripcionId, leccion._id)}
+              onClick={(e) => e.stopPropagation()}
+            />
+            <button
+              type="button"
+              className="aprendizaje-leccion-btn"
+              onClick={() => onSelectLeccion(leccion)}
+            >
+              {leccion.titulo}
+            </button>
           </div>
         );
       })}
@@ -1846,7 +1997,7 @@ export function TemarioSeccion({ seccion, abierta, onToggle, onMarcarLeccion, in
 
 <file path="src/pages/cursos/Aprendizaje/CursoAprendizaje.css">
 .curso-aprendizaje-page {
-  width: min(100%, 1080px);
+  width: min(100%, 1200px);
   margin: 0 auto;
   padding: 28px 20px 40px;
 }
@@ -1910,6 +2061,100 @@ export function TemarioSeccion({ seccion, abierta, onToggle, onMarcarLeccion, in
   white-space: nowrap;
 }
 
+/* =========================================
+   Grid Principal: Player + Temario
+   ========================================= */
+.aprendizaje-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 28px;
+  align-items: start;
+}
+
+.aprendizaje-player-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.aprendizaje-temario-column {
+  min-width: 0;
+}
+
+.aprendizaje-temario-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0 0 14px;
+}
+
+/* =========================================
+   Reproductor Integrado
+   ========================================= */
+.aprendizaje-player-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+.aprendizaje-player-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.aprendizaje-player-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  width: 100%;
+  background: rgba(27, 46, 38, 0.4);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.aprendizaje-leccion-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.aprendizaje-leccion-titulo {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+}
+
+.aprendizaje-leccion-desc {
+  color: #cbd5e1;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.aprendizaje-leccion-duracion {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #a3beb0;
+}
+
+/* =========================================
+   Temario (Acordeón)
+   ========================================= */
 .aprendizaje-temario {
   display: flex;
   flex-direction: column;
@@ -1947,14 +2192,19 @@ export function TemarioSeccion({ seccion, abierta, onToggle, onMarcarLeccion, in
 }
 
 .aprendizaje-leccion {
-  padding: 16px 22px;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   color: rgba(241, 245, 249, 0.92);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(27, 46, 38, 0.5);
   font-size: 0.97rem;
+  transition: background 0.2s ease, padding-left 0.2s ease;
+}
+
+.aprendizaje-leccion:hover {
+  background: rgba(27, 46, 38, 0.75);
 }
 
 .aprendizaje-leccion.completada {
@@ -1962,16 +2212,14 @@ export function TemarioSeccion({ seccion, abierta, onToggle, onMarcarLeccion, in
   color: rgba(203, 213, 225, 0.92);
 }
 
-.aprendizaje-leccion.completada span {
+.aprendizaje-leccion.completada .aprendizaje-leccion-btn {
   text-decoration: line-through;
 }
 
-.aprendizaje-leccion label {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  cursor: pointer;
+.aprendizaje-leccion.activa {
+  background: rgba(79, 107, 91, 0.45);
+  border-left: 3px solid #a3beb0;
+  padding-left: 13px;
 }
 
 .aprendizaje-leccion input[type="checkbox"] {
@@ -1979,24 +2227,26 @@ export function TemarioSeccion({ seccion, abierta, onToggle, onMarcarLeccion, in
   height: 16px;
   accent-color: #a3beb0;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
-.aprendizaje-leccion span {
+.aprendizaje-leccion-btn {
   flex: 1;
   min-width: 0;
+  background: none;
+  border: none;
+  padding: 4px 0;
+  text-align: left;
+  font-size: inherit;
+  font-family: inherit;
   color: inherit;
+  cursor: pointer;
+  line-height: 1.4;
+  transition: color 0.2s ease;
 }
 
-.aprendizaje-leccion a {
-  color: #a3beb0;
-  font-size: 0.88rem;
-  font-weight: 600;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.aprendizaje-leccion a:hover {
-  text-decoration: underline;
+.aprendizaje-leccion-btn:hover {
+  color: #f8fafc;
 }
 
 .aprendizaje-empty-message {
@@ -2004,6 +2254,12 @@ export function TemarioSeccion({ seccion, abierta, onToggle, onMarcarLeccion, in
   text-align: center;
   padding: 42px 0;
   font-size: 1rem;
+}
+
+@media (max-width: 960px) {
+  .aprendizaje-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 800px) {
@@ -2033,12 +2289,8 @@ export function TemarioSeccion({ seccion, abierta, onToggle, onMarcarLeccion, in
   }
 
   .aprendizaje-leccion {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .aprendizaje-leccion a {
-    margin-top: 10px;
+    flex-direction: row;
+    align-items: center;
   }
 }
 </file>
@@ -2047,25 +2299,36 @@ export function TemarioSeccion({ seccion, abierta, onToggle, onMarcarLeccion, in
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../../Api/axios';
+import { useAuth } from '../../../context/useAuth';
+import { getEmbedUrl } from '../../../utils';
 import { TemarioSeccion } from './components/TemarioSeccion';
+import { ComentariosCurso } from '../shared/ComentariosCurso';
+import { useResenas } from '../shared/useResenas';
 import './CursoAprendizaje.css';
 
 export function CursoAprendizaje() {
   const { id } = useParams();
+  const { user } = useAuth();
   const [curso, setCurso] = useState(null);
   const [inscripcion, setInscripcion] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [seccionAbierta, setSeccionAbierta] = useState(0);
+  const [leccionActual, setLeccionActual] = useState(null);
+  const { resenas, loading: resenasLoading, crearComentario, calificar, actualizarResena, eliminarResena } = useResenas(id);
 
   useEffect(() => {
     Promise.all([api.get(`/Cursos/${id}`), api.get('/Inscripciones/mis-cursos')])
       .then(([cRes, iRes]) => {
-        setCurso(cRes.data.curso || cRes.data.data?.curso);
+        const cursoData = cRes.data.curso || cRes.data.data?.curso;
+        setCurso(cursoData);
         const inscs = iRes.data.inscripciones || [];
         const miInsc = inscs.find((i) => i.curso_id?._id === id || i.curso_id === id);
         if (miInsc) setInscripcion(miInsc);
         else setError('No estas inscrito en este curso.');
+        if (cursoData?.secciones?.[0]?.lecciones?.[0]) {
+          setLeccionActual(cursoData.secciones[0].lecciones[0]);
+        }
       })
       .catch((err) => setError(err.response?.data?.message || 'Error al cargar'))
       .finally(() => setLoading(false));
@@ -2076,6 +2339,16 @@ export function CursoAprendizaje() {
       const res = await api.patch(`/Inscripciones/${inscripcionId}/lecciones/${leccionId}`);
       const updated = res.data.inscripcion;
       setInscripcion((prev) => ({ ...prev, progreso: updated.progreso, porcentaje: updated.porcentaje }));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleCalificar = async (calificacion) => {
+    await calificar(calificacion);
+    try {
+      const res = await api.get(`/Cursos/${id}`);
+      setCurso(res.data?.curso || res.data?.data?.curso);
     } catch (err) {
       console.error(err);
     }
@@ -2092,37 +2365,88 @@ export function CursoAprendizaje() {
 
   const totalLecciones = curso.secciones?.reduce((sum, s) => sum + (s.lecciones?.length || 0), 0) || 0;
   const completadas = Object.values(progresoMap).filter(Boolean).length;
+  const embedUrl = leccionActual?.url ? getEmbedUrl(leccionActual.url) : null;
 
   return (
-    <div>
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 700 }}>{curso.titulo}</h1>
-        <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div className="progress-bar" style={{ flex: 1, height: 10 }}>
+    <div className="curso-aprendizaje-page">
+      <div className="curso-aprendizaje-header">
+        <h1 className="curso-aprendizaje-title">{curso.titulo}</h1>
+        <div className="curso-aprendizaje-progress">
+          <div className="progress-bar">
             <div className="progress-fill" style={{ width: `${inscripcion?.porcentaje || 0}%` }} />
           </div>
-          <span style={{ fontSize: 14, fontWeight: 600 }}>{inscripcion?.porcentaje || 0}%</span>
-          <span style={{ fontSize: 13, color: 'var(--text-light)' }}>{completadas}/{totalLecciones} lecciones</span>
+          <span>{inscripcion?.porcentaje || 0}%</span>
+          <span>{completadas}/{totalLecciones} lecciones</span>
         </div>
       </div>
 
-      {curso.secciones?.length > 0 ? (
-        <div className="aprendizaje-temario" style={{ marginTop: 0 }}>
-          {curso.secciones.map((seccion, i) => (
-            <TemarioSeccion
-              key={seccion._id}
-              seccion={seccion}
-              abierta={seccionAbierta === i}
-              onToggle={() => setSeccionAbierta(seccionAbierta === i ? -1 : i)}
-              onMarcarLeccion={marcarLeccion}
-              inscripcionId={inscripcion._id}
-              progresoMap={progresoMap}
-            />
-          ))}
+      <div className="aprendizaje-grid">
+        <div className="aprendizaje-player-column">
+          {leccionActual ? (
+            <>
+              <div className="aprendizaje-player-wrapper">
+                {embedUrl ? (
+                  <iframe
+                    className="aprendizaje-player-frame"
+                    src={embedUrl}
+                    title={leccionActual.titulo}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <div className="aprendizaje-player-empty">
+                    Esta leccion no tiene video asociado.
+                  </div>
+                )}
+              </div>
+              <div className="aprendizaje-leccion-info">
+                <h2 className="aprendizaje-leccion-titulo">{leccionActual.titulo}</h2>
+                {leccionActual.descripcion && <p className="aprendizaje-leccion-desc">{leccionActual.descripcion}</p>}
+                {leccionActual.duracion > 0 && <span className="aprendizaje-leccion-duracion">{leccionActual.duracion} min</span>}
+              </div>
+            </>
+          ) : (
+            <div className="aprendizaje-player-empty">
+              Selecciona una leccion del temario para reproducirla.
+            </div>
+          )}
+
+          <ComentariosCurso
+            resenas={resenas}
+            loading={resenasLoading}
+            user={user}
+            enrolled={!!inscripcion}
+            promedio={curso.calificacion_promedio || 0}
+            onComentar={crearComentario}
+            onCalificar={handleCalificar}
+            onActualizar={actualizarResena}
+            onEliminar={eliminarResena}
+          />
         </div>
-      ) : (
-        <p className="aprendizaje-empty-message">Este curso no tiene contenido aun.</p>
-      )}
+
+        <aside className="aprendizaje-temario-column">
+          <h2 className="aprendizaje-temario-title">Temario</h2>
+          {curso.secciones?.length > 0 ? (
+            <div className="aprendizaje-temario">
+              {curso.secciones.map((seccion, i) => (
+                <TemarioSeccion
+                  key={seccion._id}
+                  seccion={seccion}
+                  abierta={seccionAbierta === i}
+                  onToggle={() => setSeccionAbierta(seccionAbierta === i ? -1 : i)}
+                  onMarcarLeccion={marcarLeccion}
+                  onSelectLeccion={setLeccionActual}
+                  inscripcionId={inscripcion._id}
+                  progresoMap={progresoMap}
+                  leccionActualId={leccionActual?._id}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="aprendizaje-empty-message">Este curso no tiene contenido aun.</p>
+          )}
+        </aside>
+      </div>
     </div>
   );
 }
@@ -2464,7 +2788,7 @@ export function SeccionBlock({ seccion, lecciones, onDelete, onAddLeccion, onDel
 </file>
 
 <file path="src/pages/cursos/Form/CursoForm.jsx">
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../../Api/axios';
 import { imageUrl } from '../../../utils';
@@ -2503,7 +2827,7 @@ export function CursoForm() {
     }
   }, [id]);
 
-  const loadSecciones = () => {
+  const loadSecciones = useCallback(() => {
     if (!cursoId) return;
     api.get(`/Secciones?cursoID=${cursoId}`)
       .then((res) => {
@@ -2511,9 +2835,9 @@ export function CursoForm() {
         Promise.all(s.map((sec) => api.get(`/Lecciones?seccionID=${sec._id}`).then((r) => ({ ...sec, lecciones: r.data.lecciones || [] })))).then(setSecciones);
       })
       .catch(console.error);
-  };
+  }, [cursoId]);
 
-  useEffect(() => { if (cursoId) loadSecciones(); }, [cursoId]);
+  useEffect(() => { if (cursoId) loadSecciones(); }, [cursoId, loadSecciones]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -2852,9 +3176,7 @@ export { CursoCard } from './CursoCard';
 
 <file path="src/pages/cursos/Lista/CursosLista.jsx">
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import api from '../../../Api/axios';
-import { imageUrl } from '../../../utils';
 import { CursoCard } from './components/CursoCard';
 import './CursosLista.css';
 
@@ -2868,28 +3190,25 @@ export function CursosLista() {
   const [filters, setFilters] = useState({ titulo: '', categoria: '', nivel: '' });
 
   useEffect(() => {
-    loadCursos(filters);
-  }, []);
-
-  function loadCursos(params) {
-    setLoading(true);
-    setError('');
     const q = {};
-    if (params.titulo) q.titulo = params.titulo;
-    if (params.categoria) q.categoria = params.categoria;
-    if (params.nivel) q.nivel = params.nivel;
+    if (filters.titulo) q.titulo = filters.titulo;
+    if (filters.categoria) q.categoria = filters.categoria;
+    if (filters.nivel) q.nivel = filters.nivel;
 
+    let cancelado = false;
     api.get('/Cursos', { params: q })
-      .then((res) => setCursos(res.data.cursos || res.data.data?.cursos || []))
-      .catch((err) => setError(err.response?.data?.message || 'Error al cargar cursos'))
-      .finally(() => setLoading(false));
-  }
+      .then((res) => { if (!cancelado) setCursos(res.data.cursos || res.data.data?.cursos || []); })
+      .catch((err) => { if (!cancelado) setError(err.response?.data?.message || 'Error al cargar cursos'); })
+      .finally(() => { if (!cancelado) setLoading(false); });
+
+    return () => { cancelado = true; };
+  }, [filters]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const next = { ...filters, [name]: value };
-    setFilters(next);
-    loadCursos(next);
+    setFilters((prev) => ({ ...prev, [name]: value }));
+    setError('');
+    setLoading(true);
   };
 
   return (
@@ -3190,11 +3509,80 @@ export { ResenaCard } from './ResenaCard';
 </file>
 
 <file path="src/pages/cursos/Preview/components/ResenaCard.jsx">
+import { useState } from 'react';
 import { imageUrl } from '../../../../utils';
 
-export function ResenaCard({ resena }) {
+export function ResenaCard({ resena, currentUserId, onUpdate, onDelete }) {
+  const isOwner = currentUserId && resena.estudiante_id?._id === currentUserId;
+  const [editing, setEditing] = useState(false);
+  const [texto, setTexto] = useState(resena.comentario || '');
+  const [error, setError] = useState('');
+  const [guardando, setGuardando] = useState(false);
+
+  const iniciarEdicion = () => {
+    setTexto(resena.comentario || '');
+    setError('');
+    setEditing(true);
+  };
+
+  const cancelarEdicion = () => {
+    setTexto(resena.comentario || '');
+    setError('');
+    setEditing(false);
+  };
+
+  const guardar = async () => {
+    if (!texto.trim()) {
+      setError('El comentario no puede estar vacio.');
+      return;
+    }
+    setGuardando(true);
+    setError('');
+    try {
+      await onUpdate(resena._id, { comentario: texto });
+      setEditing(false);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error al guardar.');
+    } finally {
+      setGuardando(false);
+    }
+  };
+
+  const eliminar = async () => {
+    const ok = window.confirm('Estas seguro de que quieres eliminar este comentario?');
+    if (!ok) return;
+    try {
+      await onDelete(resena._id);
+    } catch (err) {
+      window.alert(err.response?.data?.message || 'Error al eliminar.');
+    }
+  };
+
+  const mostrarEstrellas = typeof resena.calificacion === 'number' && resena.calificacion !== null;
+
   return (
     <div className="resena-card">
+      {isOwner && !editing && (
+        <div className="resena-actions">
+          <button
+            type="button"
+            className="resena-action-btn resena-action-edit"
+            onClick={iniciarEdicion}
+            aria-label="Editar comentario"
+          >
+            Editar
+          </button>
+          <button
+            type="button"
+            className="resena-action-btn resena-action-delete"
+            onClick={eliminar}
+            aria-label="Eliminar comentario"
+          >
+            Eliminar
+          </button>
+        </div>
+      )}
+
       <div className="resena-header">
         {resena.estudiante_id?.foto ? (
           <img src={imageUrl(resena.estudiante_id.foto)} alt="" />
@@ -3204,11 +3592,40 @@ export function ResenaCard({ resena }) {
           </div>
         )}
         <span className="resena-name">{resena.estudiante_id?.nombre || 'Anonimo'}</span>
-        <span className="resena-stars" style={{ color: '#f59e0b' }}>
-          {'\u2605'.repeat(resena.calificacion)}{'\u2606'.repeat(5 - resena.calificacion)}
-        </span>
+        {mostrarEstrellas && (
+          <span className="resena-stars">
+            {'\u2605'.repeat(resena.calificacion)}
+            {'\u2606'.repeat(5 - resena.calificacion)}
+          </span>
+        )}
       </div>
-      {resena.comentario && <p className="resena-comentario">{resena.comentario}</p>}
+
+      {editing ? (
+        <div className="resena-edit">
+          <textarea
+            rows={3}
+            value={texto}
+            onChange={(e) => setTexto(e.target.value)}
+            disabled={guardando}
+          />
+          {error && <p className="resena-edit-error">{error}</p>}
+          <div className="resena-edit-actions">
+            <button type="button" className="preview-btn-enviar" onClick={guardar} disabled={guardando}>
+              {guardando ? 'Guardando...' : 'Guardar'}
+            </button>
+            <button
+              type="button"
+              className="resena-btn-cancel"
+              onClick={cancelarEdicion}
+              disabled={guardando}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      ) : (
+        resena.comentario && <p className="resena-comentario">{resena.comentario}</p>
+      )}
     </div>
   );
 }
@@ -3353,30 +3770,65 @@ export function StarPicker({ value, onChange }) {
   border-radius: 12px;
   color: #e2e8f0;
   font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.curso-preview-instructor:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(163, 190, 176, 0.4);
 }
 
 .curso-preview-instructor img {
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(163, 190, 176, 0.5);
 }
 
-.perfil-photo-placeholder {
-  background: #4f6b5b;
-  color: #ffffff;
+/* =========================================
+   Estadisticas del Curso (Sidebar)
+   ========================================= */
+.curso-preview-stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  font-weight: bold;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 4px;
+  color: #e2e8f0;
+  font-size: 15px;
+}
+
+.stat-value {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.stat-stars {
+  color: #fbbf24;
+}
+
+.stat-label {
+  color: #cbd5e1;
+  font-size: 13.5px;
 }
 
 /* =========================================
-   Botones Globales (Inscribir y Enviar)
+   Boton Inscribir (Sidebar)
    ========================================= */
-.preview-btn-inscribir, .preview-btn-enviar {
+.preview-btn-inscribir {
   width: 100%;
   padding: 14px 20px;
   border-radius: 12px;
@@ -3391,13 +3843,13 @@ export function StarPicker({ value, onChange }) {
   box-shadow: 0 4px 12px rgba(79, 107, 91, 0.3);
 }
 
-.preview-btn-inscribir:hover, .preview-btn-enviar:hover {
+.preview-btn-inscribir:hover {
   background: #5e7e6c;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(79, 107, 91, 0.4);
 }
 
-.preview-btn-inscribir:disabled, .preview-btn-enviar:disabled {
+.preview-btn-inscribir:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
@@ -3453,8 +3905,341 @@ export function StarPicker({ value, onChange }) {
 }
 
 /* =========================================
-   Sección de Reseñas
+   Responsive Design
    ========================================= */
+@media (max-width: 900px) {
+  .curso-preview-body { flex-direction: column; }
+  .curso-preview-sidebar {
+    width: 100%;
+    position: static; /* Quita el sticky en móviles */
+  }
+  .curso-preview {
+    padding: 24px;
+    margin: 20px 16px;
+    border-radius: 16px;
+  }
+}
+</file>
+
+<file path="src/pages/cursos/Preview/CursoPreview.jsx">
+import { useState, useEffect, useCallback } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { useAuth } from '../../../context/useAuth';
+import api from '../../../Api/axios';
+import { imageUrl } from '../../../utils';
+import { ComentariosCurso } from '../shared/ComentariosCurso';
+import { useResenas } from '../shared/useResenas';
+import './CursoPreview.css';
+
+export function CursoPreview() {
+  const { id } = useParams();
+  const { user } = useAuth();
+  const [curso, setCurso] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [enrolling, setEnrolling] = useState(false);
+  const [enrolled, setEnrolled] = useState(false);
+  const [message, setMessage] = useState('');
+  const [seccionAbierta, setSeccionAbierta] = useState(0);
+  const { resenas, loading: resenasLoading, crearComentario, calificar, actualizarResena, eliminarResena } = useResenas(id);
+
+  const cargarCurso = useCallback(() => {
+    return api.get(`/Cursos/${id}`)
+      .then((res) => setCurso(res.data?.curso || res.data?.data?.curso));
+  }, [id]);
+
+  useEffect(() => {
+    cargarCurso()
+      .catch((err) => setError(err.response?.data?.message || 'Error al cargar curso'))
+      .finally(() => setLoading(false));
+  }, [cargarCurso]);
+
+  useEffect(() => {
+    if (!user || !curso || user.rol !== 'estudiante') return;
+    api.get('/Inscripciones/mis-cursos')
+      .then((res) => {
+        const inscripciones = res.data?.inscripciones || [];
+        setEnrolled(inscripciones.some((insc) => insc.curso_id?._id === id));
+      })
+      .catch(console.error);
+  }, [id, user, curso]);
+
+  const handleCalificar = async (calificacion) => {
+    await calificar(calificacion);
+    await cargarCurso();
+  };
+
+  const handleInscribir = async () => {
+    setEnrolling(true);
+    setMessage('');
+    setError('');
+    try {
+      const res = await api.post('/Inscripciones', { curso_id: id });
+      if (res.data.requiere_pago) {
+        setMessage('Redirigiendo al pago...');
+        await api.post('/Inscripciones/pagar', { curso_id: id });
+        setEnrolled(true);
+        setMessage('Inscripcion exitosa!');
+      } else {
+        setEnrolled(true);
+        setMessage('Inscripcion exitosa!');
+      }
+    } catch (err) {
+      if (err.response?.data?.message?.includes('Ya estas inscrito')) {
+        setEnrolled(true);
+        setMessage('Ya estas inscrito.');
+      } else {
+        setError(err.response?.data?.message || 'Error al inscribirse');
+      }
+    } finally {
+      setEnrolling(false);
+    }
+  };
+
+  if (loading) return <div className="dash-loading">Cargando curso...</div>;
+  if (error) return <div className="dash-error">{error}</div>;
+  if (!curso) return <div className="dash-error">Curso no encontrado</div>;
+
+  const totalReviewers = new Set(resenas.map((r) => r.estudiante_id?._id).filter(Boolean)).size;
+  const totalLecciones = curso.secciones?.reduce((sum, s) => sum + (s.lecciones?.length || 0), 0) || 0;
+  const instructor = curso.instructorID;
+
+  return (
+    <div>
+      <div className="curso-preview">
+        <div className="curso-preview-header">
+          <h1>{curso.titulo}</h1>
+          <div className="curso-preview-meta">
+            <span>{curso.categoria}</span>
+            <span>{curso.nivel}</span>
+            {curso.calificacion_promedio > 0 && (
+              <span style={{ color: '#f59e0b' }}>{'★'} {curso.calificacion_promedio}</span>
+            )}
+          </div>
+        </div>
+        <div className="curso-preview-body">
+          <div className="curso-preview-info">
+            <div className="curso-preview-desc">
+              <h2>Descripcion</h2>
+              <p>{curso.descripcion || 'Sin descripcion.'}</p>
+            </div>
+          </div>
+          <div className="curso-preview-sidebar">
+            <div className={`curso-preview-price ${curso.precio === 0 ? 'gratis' : ''}`}>
+              {curso.precio === 0 ? 'Gratis' : `$${curso.precio ?? 0}`}
+            </div>
+
+            {instructor && (
+              <Link to={`/instructores/${instructor._id}`} className="curso-preview-instructor">
+                {instructor.foto ? (
+                  <img src={imageUrl(instructor.foto)} alt="Instructor" />
+                ) : (
+                  <div className="perfil-photo-placeholder" style={{ width: 40, height: 40, fontSize: 18 }}>
+                    {instructor?.nombre?.charAt(0) || '?'}
+                  </div>
+                )}
+                <span>{instructor?.nombre || 'Sin nombre'}</span>
+              </Link>
+            )}
+
+            <div className="curso-preview-stats">
+              <div className="stat-row">
+                <span className="stat-value">{curso.total_inscritos || 0}</span>
+                <span className="stat-label">Estudiantes</span>
+              </div>
+              <div className="stat-row">
+                <span className="stat-value stat-stars">
+                  {'★'} {curso.calificacion_promedio > 0 ? curso.calificacion_promedio : '0.0'}
+                </span>
+                <span className="stat-label">Calificacion</span>
+              </div>
+              <div className="stat-row">
+                <span className="stat-value">{totalReviewers}</span>
+                <span className="stat-label">Resenas</span>
+              </div>
+              <div className="stat-row">
+                <span className="stat-value">{totalLecciones}</span>
+                <span className="stat-label">Lecciones</span>
+              </div>
+            </div>
+
+            {user?.rol === 'estudiante' && !enrolled && (
+              <button className="preview-btn-inscribir" onClick={handleInscribir} disabled={enrolling}>
+                {enrolling ? 'Inscribiendo...' : 'Inscribirse'}
+              </button>
+            )}
+            {enrolled && (
+              <Link
+                to={`/cursos/${id}/aprender`}
+                className="preview-btn-inscribir"
+                style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}
+              >
+                Ir al curso
+              </Link>
+            )}
+            {message && <div style={{ marginTop: 12, fontSize: 14, color: '#059669' }}>{message}</div>}
+            {error && <div style={{ marginTop: 12, fontSize: 14, color: '#ef4444' }}>{error}</div>}
+          </div>
+        </div>
+      </div>
+
+      {curso.secciones?.length > 0 && (
+        <div className="preview-temario">
+          <h2>Temario</h2>
+          {curso.secciones.map((seccion, i) => (
+            <div key={seccion._id} className="seccion-item">
+              <div className="preview-seccion-header" onClick={() => setSeccionAbierta(seccionAbierta === i ? -1 : i)}>
+                <span>Seccion {i + 1}: {seccion.titulo}</span>
+                <span>{seccionAbierta === i ? '▲' : '▼'}</span>
+              </div>
+              {seccionAbierta === i && seccion.lecciones?.map((leccion) => (
+                <div key={leccion._id} className="preview-leccion-item">
+                  <span className="leccion-icon">{'▶'}</span>
+                  <span>{leccion.titulo}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <ComentariosCurso
+        resenas={resenas}
+        loading={resenasLoading}
+        user={user}
+        enrolled={enrolled}
+        promedio={curso.calificacion_promedio || 0}
+        onComentar={crearComentario}
+        onCalificar={handleCalificar}
+        onActualizar={actualizarResena}
+        onEliminar={eliminarResena}
+      />
+    </div>
+  );
+}
+</file>
+
+<file path="src/pages/cursos/Preview/index.js">
+export { CursoPreview } from './CursoPreview';
+</file>
+
+<file path="src/pages/cursos/shared/ComentariosCurso.jsx">
+import { useState } from 'react';
+import { StarPicker, ResenaCard } from '../Preview/components';
+import './resenas.css';
+
+export function ComentariosCurso({
+  resenas,
+  loading,
+  user,
+  enrolled,
+  promedio,
+  onComentar,
+  onCalificar,
+  onActualizar,
+  onEliminar,
+}) {
+  const currentUserId = user?._id;
+  const [nuevoComentario, setNuevoComentario] = useState('');
+  const [enviando, setEnviando] = useState(false);
+  const [msg, setMsg] = useState('');
+
+  const totalReviewers = new Set(resenas.map((r) => r.estudiante_id?._id).filter(Boolean)).size;
+  const miCalificacion = resenas.find(
+    (r) => r.estudiante_id?._id === currentUserId && typeof r.calificacion === 'number' && r.calificacion !== null
+  )?.calificacion || 0;
+
+  const puedeParticipar = user?.rol === 'estudiante' && enrolled;
+
+  const handleComentar = async () => {
+    if (!nuevoComentario.trim()) return;
+    setEnviando(true);
+    setMsg('');
+    try {
+      await onComentar(nuevoComentario);
+      setNuevoComentario('');
+      setMsg('Comentario publicado.');
+    } catch (err) {
+      setMsg(err.response?.data?.message || 'Error al publicar el comentario');
+    } finally {
+      setEnviando(false);
+    }
+  };
+
+  return (
+    <div className="resenas-section">
+      <h2>Comentarios ({resenas.length})</h2>
+      {promedio > 0 && (
+        <div className="calificacion-display">
+          <span className="estrellas">{'\u2605'}</span>
+          <span>{promedio}</span>
+          <span style={{ fontSize: 14, color: 'var(--text-light)', fontWeight: 400 }}>
+            ({totalReviewers} {totalReviewers === 1 ? 'resena' : 'resenas'})
+          </span>
+        </div>
+      )}
+      {loading ? (
+        <p style={{ fontSize: 14, color: 'var(--text-light)' }}>Cargando comentarios...</p>
+      ) : resenas.length === 0 ? (
+        <p style={{ fontSize: 14, color: 'var(--text-light)' }}>No hay comentarios aun.</p>
+      ) : (
+        resenas.map((r) => (
+          <ResenaCard
+            key={r._id}
+            resena={r}
+            currentUserId={currentUserId}
+            onUpdate={onActualizar}
+            onDelete={onEliminar}
+          />
+        ))
+      )}
+
+      {puedeParticipar && (
+        <div className="resena-form">
+          <div className="comentario-form">
+            <h3>Deja un comentario</h3>
+            <div className="preview-form-group">
+              <textarea
+                rows={3}
+                placeholder="Escribe tu comentario..."
+                value={nuevoComentario}
+                onChange={(e) => setNuevoComentario(e.target.value)}
+              />
+            </div>
+            <button
+              className="preview-btn-enviar"
+              onClick={handleComentar}
+              disabled={enviando || !nuevoComentario.trim()}
+            >
+              {enviando ? 'Publicando...' : 'Comentar'}
+            </button>
+            {msg && (
+              <p style={{ marginTop: 8, fontSize: 13, color: msg.includes('Error') ? 'var(--error)' : '#059669' }}>
+                {msg}
+              </p>
+            )}
+          </div>
+
+          <div className="calificacion-form">
+            <h3>Tu calificacion</h3>
+            <StarPicker value={miCalificacion} onChange={onCalificar} />
+            <p className="calificacion-form-hint">
+              Haz clic en las estrellas para calificar. Solo se guarda una calificacion por curso y puedes cambiarla cuando quieras.
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/pages/cursos/shared/resenas.css">
+/* =========================================
+   Estilos compartidos de Reseñas / Comentarios
+   Usados por CursoPreview y CursoAprendizaje
+   ========================================= */
+
 .resenas-section {
   display: flex;
   flex-direction: column;
@@ -3485,6 +4270,100 @@ export function StarPicker({ value, onChange }) {
   gap: 12px;
 }
 
+.resena-actions {
+  display: flex;
+  gap: 6px;
+  align-self: flex-start;
+}
+
+.resena-action-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.resena-action-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.resena-action-edit:hover {
+  border-color: rgba(163, 190, 176, 0.6);
+  color: #bbf7d0;
+}
+
+.resena-action-delete:hover {
+  border-color: rgba(248, 113, 113, 0.6);
+  color: #fca5a5;
+}
+
+.resena-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.resena-edit textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px;
+  color: #ffffff;
+  font-size: 15px;
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.resena-edit textarea:focus {
+  outline: none;
+  border-color: #4f6b5b;
+}
+
+.resena-edit-error {
+  color: #f87171;
+  font-size: 13px;
+  margin: 0;
+}
+
+.resena-edit-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.resena-edit-actions .preview-btn-enviar {
+  width: auto;
+  padding: 8px 18px;
+  font-size: 14px;
+}
+
+.resena-btn-cancel {
+  padding: 8px 18px;
+  border-radius: 12px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #e2e8f0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.resena-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.resena-btn-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .resena-header {
   display: flex;
   align-items: center;
@@ -3511,7 +4390,7 @@ export function StarPicker({ value, onChange }) {
 }
 
 /* =========================================
-   Formulario de Reseña
+   Formulario de Reseña / Comentario
    ========================================= */
 .resena-form {
   margin-top: 16px;
@@ -3519,11 +4398,47 @@ export function StarPicker({ value, onChange }) {
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 16px;
   padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
 }
 
+.comentario-form,
+.calificacion-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.calificacion-form {
+  align-items: flex-start;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding-left: 24px;
+}
+
+.calificacion-form-hint {
+  font-size: 13px;
+  color: rgba(203, 213, 225, 0.7);
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .resena-form {
+    grid-template-columns: 1fr;
+  }
+
+  .calificacion-form {
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+  }
+}
+
+/* =========================================
+   Selector de estrellas
+   ========================================= */
 .preview-star-rating {
   display: flex;
   gap: 4px;
@@ -3569,229 +4484,95 @@ export function StarPicker({ value, onChange }) {
   border-color: #4f6b5b;
 }
 
-/* =========================================
-   Responsive Design
-   ========================================= */
-@media (max-width: 900px) {
-  .curso-preview-body { flex-direction: column; }
-  .curso-preview-sidebar { 
-    width: 100%; 
-    position: static; /* Quita el sticky en móviles */
-  }
-  .curso-preview { 
-    padding: 24px; 
-    margin: 20px 16px; 
-    border-radius: 16px;
-  }
+.perfil-photo-placeholder {
+  background: #4f6b5b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+/* Botones compartidos de reseñas */
+.preview-btn-enviar {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 12px;
+  background: #4f6b5b;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(79, 107, 91, 0.3);
+}
+
+.preview-btn-enviar:hover {
+  background: #5e7e6c;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(79, 107, 91, 0.4);
+}
+
+.preview-btn-enviar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 </file>
 
-<file path="src/pages/cursos/Preview/CursoPreview.jsx">
-import { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { useAuth } from '../../../context/useAuth';
+<file path="src/pages/cursos/shared/useResenas.js">
+import { useState, useEffect, useCallback } from 'react';
 import api from '../../../Api/axios';
-import { StarPicker, ResenaCard } from './components';
-import { imageUrl } from '../../../utils';
-import './CursoPreview.css';
 
-export function CursoPreview() {
-  const { id } = useParams();
-  const { user } = useAuth();
-  const [curso, setCurso] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [enrolling, setEnrolling] = useState(false);
-  const [enrolled, setEnrolled] = useState(false);
-  const [message, setMessage] = useState('');
-  const [seccionAbierta, setSeccionAbierta] = useState(0);
+export function useResenas(cursoId) {
   const [resenas, setResenas] = useState([]);
-  const [resenasLoading, setResenasLoading] = useState(true);
-  const [nuevaCalif, setNuevaCalif] = useState(0);
-  const [nuevoComentario, setNuevoComentario] = useState('');
-  const [enviandoResena, setEnviandoResena] = useState(false);
-  const [resenaMsg, setResenaMsg] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  const cargarResenas = useCallback(() => {
+    return api.get(`/Cursos/${cursoId}/resenas`)
+      .then((res) => setResenas(res.data.resenas || []));
+  }, [cursoId]);
 
   useEffect(() => {
-    api.get(`/Cursos/${id}`)
-      .then((res) => setCurso(res.data?.curso || res.data?.data?.curso))
-      .catch((err) => setError(err.response?.data?.message || 'Error al cargar curso'))
-      .finally(() => setLoading(false));
-  }, [id]);
-
-  useEffect(() => {
-    if (!user || !curso || user.rol !== 'estudiante') return;
-    api.get('/Inscripciones/mis-cursos')
-      .then((res) => {
-        const inscripciones = res.data?.inscripciones || [];
-        setEnrolled(inscripciones.some(insc => insc.curso_id?._id === id));
-      })
-      .catch(console.error);
-  }, [id, user, curso]);
-
-  useEffect(() => {
-    api.get(`/Cursos/${id}/resenas`)
-      .then((res) => setResenas(res.data.resenas || []))
+    cargarResenas()
       .catch(() => {})
-      .finally(() => setResenasLoading(false));
-  }, [id]);
+      .finally(() => setLoading(false));
+  }, [cargarResenas]);
 
-  const handleEnviarResena = async () => {
-    if (nuevaCalif < 1) return;
-    setEnviandoResena(true);
-    setResenaMsg('');
-    try {
-      await api.post('/Resenas', { curso_id: id, calificacion: nuevaCalif, comentario: nuevoComentario });
-      setResenaMsg('Resena enviada.');
-      setNuevaCalif(0);
-      setNuevoComentario('');
-      const res = await api.get(`/Cursos/${id}/resenas`);
-      setResenas(res.data.resenas || []);
-    } catch (err) {
-      setResenaMsg(err.response?.data?.message || 'Error al enviar resena');
-    } finally {
-      setEnviandoResena(false);
-    }
+  const crearComentario = useCallback(async (comentario) => {
+    const res = await api.post('/Resenas', { curso_id: cursoId, comentario: comentario.trim() });
+    await cargarResenas();
+    return res.data.resena;
+  }, [cursoId, cargarResenas]);
+
+  const calificar = useCallback(async (calificacion) => {
+    await api.post('/Resenas', { curso_id: cursoId, calificacion });
+    await cargarResenas();
+  }, [cursoId, cargarResenas]);
+
+  const actualizarResena = useCallback(async (resenaId, data) => {
+    await api.put(`/Resenas/${resenaId}`, data);
+    await cargarResenas();
+  }, [cargarResenas]);
+
+  const eliminarResena = useCallback(async (resenaId) => {
+    await api.delete(`/Resenas/${resenaId}`);
+    await cargarResenas();
+  }, [cargarResenas]);
+
+  return {
+    resenas,
+    loading,
+    crearComentario,
+    calificar,
+    actualizarResena,
+    eliminarResena,
   };
-
-  const handleInscribir = async () => {
-    setEnrolling(true);
-    setMessage('');
-    setError('');
-    try {
-      const res = await api.post('/Inscripciones', { curso_id: id });
-      if (res.data.requiere_pago) {
-        setMessage('Redirigiendo al pago...');
-        await api.post('/Inscripciones/pagar', { curso_id: id });
-        setEnrolled(true);
-        setMessage('Inscripcion exitosa!');
-      } else {
-        setEnrolled(true);
-        setMessage('Inscripcion exitosa!');
-      }
-    } catch (err) {
-      if (err.response?.data?.message?.includes('Ya estas inscrito')) {
-        setEnrolled(true);
-        setMessage('Ya estas inscrito.');
-      } else {
-        setError(err.response?.data?.message || 'Error al inscribirse');
-      }
-    } finally {
-      setEnrolling(false);
-    }
-  };
-
-  if (loading) return <div className="dash-loading">Cargando curso...</div>;
-  if (error) return <div className="dash-error">{error}</div>;
-  if (!curso) return <div className="dash-error">Curso no encontrado</div>;
-
-  return (
-    <div>
-      <div className="curso-preview">
-        <div className="curso-preview-header">
-          <h1>{curso.titulo}</h1>
-          <div className="curso-preview-meta">
-            <span>{curso.categoria}</span>
-            <span>{curso.nivel}</span>
-            {curso.calificacion_promedio > 0 && <span style={{ color: '#f59e0b' }}>{'★'} {curso.calificacion_promedio}</span>}
-          </div>
-        </div>
-        <div className="curso-preview-body">
-          <div className="curso-preview-info">
-            <div className="curso-preview-desc">
-              <h2>Descripcion</h2>
-              <p>{curso.descripcion || 'Sin descripcion.'}</p>
-            </div>
-            <div className="curso-preview-sidebar">
-              <div className={`curso-preview-price ${curso.precio === 0 ? 'gratis' : ''}`}>
-                {curso.precio === 0 ? 'Gratis' : `$${curso.precio ?? 0}`}
-              </div>
-              {curso.instructorID && (
-                <div className="curso-preview-instructor">
-                  {curso.instructorID.foto ? (
-                    <img src={imageUrl(curso.instructorID.foto)} alt="Instructor" />
-                  ) : (
-                    <div className="perfil-photo-placeholder" style={{ width: 40, height: 40, fontSize: 18 }}>
-                      {curso.instructorID?.nombre?.charAt(0) || '?'}
-                    </div>
-                  )}
-                  <span>{curso.instructorID?.nombre || 'Sin nombre'}</span>
-                </div>
-              )}
-              {user?.rol === 'estudiante' && !enrolled && (
-                <button className="preview-btn-inscribir" onClick={handleInscribir} disabled={enrolling}>
-                  {enrolling ? 'Inscribiendo...' : 'Inscribirse'}
-                </button>
-              )}
-              {enrolled && (
-                <Link to={`/cursos/${id}/aprender`} className="preview-btn-inscribir" style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
-                  Ir al curso
-                </Link>
-              )}
-              {message && <div style={{ marginTop: 12, fontSize: 14, color: '#059669' }}>{message}</div>}
-              {error && <div style={{ marginTop: 12, fontSize: 14, color: '#ef4444' }}>{error}</div>}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {curso.secciones?.length > 0 && (
-        <div className="preview-temario">
-          <h2>Temario</h2>
-          {curso.secciones.map((seccion, i) => (
-            <div key={seccion._id} className="seccion-item">
-              <div className="preview-seccion-header" onClick={() => setSeccionAbierta(seccionAbierta === i ? -1 : i)}>
-                <span>Seccion {i + 1}: {seccion.titulo}</span>
-                <span>{seccionAbierta === i ? '▲' : '▼'}</span>
-              </div>
-              {seccionAbierta === i && seccion.lecciones?.map((leccion) => (
-                <div key={leccion._id} className="preview-leccion-item">
-                  <span className="leccion-icon">{'▶'}</span>
-                  <span>{leccion.titulo}</span>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div className="resenas-section">
-        <h2>Resenas ({resenas.length})</h2>
-        {curso.calificacion_promedio > 0 && (
-          <div className="calificacion-display">
-            <span className="estrellas">{'\u2605'}</span>
-            <span>{curso.calificacion_promedio}</span>
-          </div>
-        )}
-        {resenasLoading ? (
-          <p style={{ fontSize: 14, color: 'var(--text-light)' }}>Cargando resenas...</p>
-        ) : resenas.length === 0 ? (
-          <p style={{ fontSize: 14, color: 'var(--text-light)' }}>No hay resenas aun.</p>
-        ) : (
-          resenas.map((r) => <ResenaCard key={r._id} resena={r} />)
-        )}
-
-        {user?.rol === 'estudiante' && enrolled && (
-          <div className="resena-form">
-            <h3>Deja tu resena</h3>
-            <StarPicker value={nuevaCalif} onChange={setNuevaCalif} />
-            <div className="preview-form-group">
-              <textarea rows={3} placeholder="Escribe tu comentario..." value={nuevoComentario} onChange={(e) => setNuevoComentario(e.target.value)} />
-            </div>
-            <button className="preview-btn-enviar" onClick={handleEnviarResena} disabled={enviandoResena || nuevaCalif < 1}>
-              {enviandoResena ? 'Enviando...' : 'Enviar resena'}
-            </button>
-            {resenaMsg && <p style={{ marginTop: 8, fontSize: 13, color: resenaMsg.includes('Error') ? 'var(--error)' : '#059669' }}>{resenaMsg}</p>}
-          </div>
-        )}
-      </div>
-    </div>
-  );
 }
-</file>
-
-<file path="src/pages/cursos/Preview/index.js">
-export { CursoPreview } from './CursoPreview';
 </file>
 
 <file path="src/pages/dashboard/Estudiante/components/CursosLista.jsx">
@@ -4619,6 +5400,285 @@ export function Switch({ isOn, onToggle, title }) {
 }
 </file>
 
+<file path="src/pages/instructores/PerfilPublico/index.js">
+export { PerfilPublico } from './PerfilPublico';
+</file>
+
+<file path="src/pages/instructores/PerfilPublico/PerfilPublico.css">
+.perfil-publico-page {
+  width: min(100%, 900px);
+  margin: 0 auto;
+  padding: 28px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.perfil-publico-card {
+  background: rgba(27, 46, 38, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.perfil-publico-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.perfil-publico-foto {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(163, 190, 176, 0.6);
+  flex-shrink: 0;
+}
+
+.perfil-publico-placeholder {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #4f6b5b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.perfil-publico-nombre h1 {
+  color: #ffffff;
+  margin: 0 0 6px;
+  font-size: 28px;
+}
+
+.perfil-publico-rol {
+  display: inline-block;
+  background: rgba(163, 190, 176, 0.15);
+  border: 1px solid rgba(163, 190, 176, 0.2);
+  color: #bbf7d0;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.perfil-publico-bio {
+  color: #cbd5e1;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.perfil-publico-redes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.perfil-publico-redes a {
+  color: #a3beb0;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 6px 12px;
+  border: 1px solid rgba(163, 190, 176, 0.3);
+  border-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.perfil-publico-redes a:hover {
+  background: rgba(163, 190, 176, 0.12);
+  color: #e8f0ec;
+}
+
+.perfil-publico-cursos h2 {
+  color: #ffffff;
+  margin: 0 0 16px;
+  font-size: 20px;
+}
+
+.perfil-publico-empty {
+  color: #cbd5e1;
+  text-align: center;
+  padding: 32px 0;
+  margin: 0;
+}
+
+.perfil-publico-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.perfil-publico-curso {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(27, 46, 38, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 14px 18px;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.perfil-publico-curso:hover {
+  background: rgba(27, 46, 38, 0.8);
+  border-color: rgba(163, 190, 176, 0.4);
+  transform: translateY(-1px);
+}
+
+.perfil-publico-curso img {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.perfil-publico-curso-placeholder {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  background: #4f6b5b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.perfil-publico-curso-info {
+  min-width: 0;
+}
+
+.perfil-publico-curso-info h3 {
+  color: #ffffff;
+  margin: 0 0 4px;
+  font-size: 16px;
+}
+
+.perfil-publico-curso-info span {
+  color: #cbd5e1;
+  font-size: 13.5px;
+}
+
+@media (max-width: 580px) {
+  .perfil-publico-page {
+    padding: 20px 14px 30px;
+  }
+
+  .perfil-publico-card {
+    padding: 24px;
+  }
+
+  .perfil-publico-foto,
+  .perfil-publico-placeholder {
+    width: 72px;
+    height: 72px;
+    font-size: 30px;
+  }
+}
+</file>
+
+<file path="src/pages/instructores/PerfilPublico/PerfilPublico.jsx">
+import { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import api from '../../../Api/axios';
+import { imageUrl } from '../../../utils';
+import './PerfilPublico.css';
+
+export function PerfilPublico() {
+  const { id } = useParams();
+  const [instructor, setInstructor] = useState(null);
+  const [cursos, setCursos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    Promise.all([
+      api.get(`/Instructores/${id}`),
+      api.get('/Cursos', { params: { instructorID: id } }),
+    ])
+      .then(([iRes, cRes]) => {
+        setInstructor(iRes.data.instructor);
+        setCursos(cRes.data.cursos || []);
+      })
+      .catch((err) => setError(err.response?.data?.message || 'Error al cargar perfil'))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  if (loading) return <div className="dash-loading">Cargando perfil...</div>;
+  if (error) return <div className="dash-error">{error}</div>;
+  if (!instructor) return <div className="dash-error">Instructor no encontrado</div>;
+
+  return (
+    <div className="perfil-publico-page">
+      <div className="perfil-publico-card">
+        <div className="perfil-publico-header">
+          {instructor.foto ? (
+            <img src={imageUrl(instructor.foto)} alt={instructor.nombre} className="perfil-publico-foto" />
+          ) : (
+            <div className="perfil-publico-placeholder">
+              {instructor.nombre?.charAt(0)?.toUpperCase() || '?'}
+            </div>
+          )}
+          <div className="perfil-publico-nombre">
+            <h1>{instructor.nombre} {instructor.apellido || ''}</h1>
+            <span className="perfil-publico-rol">Instructor</span>
+          </div>
+        </div>
+        {instructor.biografia && <p className="perfil-publico-bio">{instructor.biografia}</p>}
+        {instructor.redes_sociales?.length > 0 && (
+          <div className="perfil-publico-redes">
+            {instructor.redes_sociales.map((red, i) => (
+              <a key={i} href={red} target="_blank" rel="noopener noreferrer">
+                {red}
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="perfil-publico-cursos">
+        <h2>Sus cursos ({cursos.length})</h2>
+        {cursos.length === 0 ? (
+          <p className="perfil-publico-empty">Este instructor no tiene cursos publicados.</p>
+        ) : (
+          <div className="perfil-publico-lista">
+            {cursos.map((curso) => (
+              <Link key={curso._id} to={`/cursos/${curso._id}`} className="perfil-publico-curso">
+                {curso.imagen ? (
+                  <img src={imageUrl(curso.imagen)} alt="" />
+                ) : (
+                  <div className="perfil-publico-curso-placeholder">{'▶'}</div>
+                )}
+                <div className="perfil-publico-curso-info">
+                  <h3>{curso.titulo}</h3>
+                  <span>{curso.categoria || 'Sin categoria'} · {curso.nivel || ''}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+</file>
+
 <file path="src/pages/perfil/index.js">
 export { Perfil } from './Perfil';
 </file>
@@ -4975,6 +6035,7 @@ import { CursoPreview } from './pages/cursos/Preview';
 import { CursoForm } from './pages/cursos/Form';
 import { MisCursos } from './pages/cursos/MisCursos';
 import { CursoAprendizaje } from './pages/cursos/Aprendizaje';
+import { PerfilPublico } from './pages/instructores/PerfilPublico';
 import { Layout } from './components/Layout';
 
 function PublicLayoutRoute({ children, title }) {
@@ -5034,6 +6095,7 @@ function AppRoutes() {
       <Route path="/perfil" element={<ProtectedRoute title="Mi Perfil"><Perfil /></ProtectedRoute>} />
       <Route path="/explorar" element={<PublicLayoutRoute title="Explorar cursos"><CursosLista /></PublicLayoutRoute>} />
       <Route path="/cursos/:id" element={<PublicLayoutRoute><CursoPreview /></PublicLayoutRoute>} />
+      <Route path="/instructores/:id" element={<PublicLayoutRoute><PerfilPublico /></PublicLayoutRoute>} />
       <Route path="/cursos/nuevo" element={<ProtectedRoute title="Crear curso"><CursoForm /></ProtectedRoute>} />
       <Route path="/cursos/:id/editar" element={<ProtectedRoute title="Editar curso"><CursoForm /></ProtectedRoute>} />
       <Route path="/mis-cursos" element={<ProtectedRoute title="Mis cursos"><MisCursos /></ProtectedRoute>} />
@@ -5260,6 +6322,45 @@ export function imageUrl(path) {
   if (path.startsWith('data:')) return path;
   return path;
 }
+
+export function youtubeEmbed(url) {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes('youtube.com')) {
+      const v = u.searchParams.get('v');
+      if (v) return `https://www.youtube.com/embed/${v}`;
+      const parts = u.pathname.split('/').filter(Boolean);
+      if (parts[0] === 'embed' && parts[1]) return `https://www.youtube.com/embed/${parts[1]}`;
+    }
+    if (u.hostname === 'youtu.be') {
+      const v = u.pathname.replace(/^\/+/, '').split('/')[0];
+      if (v) return `https://www.youtube.com/embed/${v}`;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function vimeoEmbed(url) {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes('vimeo.com')) {
+      const parts = u.pathname.split('/').filter(Boolean);
+      const v = parts[parts.length - 1];
+      if (v && /^\d+$/.test(v)) return `https://player.vimeo.com/video/${v}`;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export function getEmbedUrl(url) {
+  return youtubeEmbed(url) || vimeoEmbed(url) || url;
+}
 </file>
 
 <file path=".gitignore">
@@ -5337,6 +6438,7 @@ export default defineConfig([
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "front": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -5356,7 +6458,7 @@ export default defineConfig([
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
-    "vite": "^8.0.12"
+    "vite": "^8.2.1"
   }
 }
 </file>
