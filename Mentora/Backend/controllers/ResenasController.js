@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Resena = require("../models/Reseñas");
 const Curso = require("../models/Cursos");
 const Inscripcion = require("../models/Inscripciones");
+const Leccion = require("../models/Lecciones");
 
 const recalcularPromedio = async (curso_id) => {
   const resultado = await Resena.aggregate([
@@ -21,13 +22,28 @@ const recalcularPromedio = async (curso_id) => {
 
 exports.createResena = async (req, res) => {
   try {
-    const { curso_id, calificacion, comentario } = req.body;
+    const { curso_id, calificacion, comentario, leccion_id } = req.body;
 
     if (!curso_id) {
       return res.status(400).json({
         success: false,
         message: "curso_id es requerido"
       });
+    }
+
+    if (leccion_id !== undefined && leccion_id !== null) {
+      if (!mongoose.isValidObjectId(leccion_id)) {
+        return res.status(400).json({ success: false, message: "leccion_id invalido" });
+      }
+      const leccion = await Leccion.findById(leccion_id);
+      if (!leccion) {
+        return res.status(404).json({ success: false, message: "La leccion no existe" });
+      }
+      const Seccion = require("../models/Secciones");
+      const seccion = await Seccion.findById(leccion.seccionID);
+      if (!seccion || seccion.cursoID.toString() !== curso_id) {
+        return res.status(400).json({ success: false, message: "La leccion no pertenece al curso indicado" });
+      }
     }
 
     const tieneComentario = typeof comentario === "string" && comentario.trim() !== "";
@@ -58,10 +74,11 @@ exports.createResena = async (req, res) => {
       });
     }
 
-    if (tieneCalificacion) {
+    if (tieneCalificacion && !leccion_id) {
       const resenaConCalificacion = await Resena.findOne({
         estudiante_id: req.user.id,
         curso_id,
+        leccion_id: null,
         calificacion: { $ne: null }
       });
 
@@ -82,6 +99,7 @@ exports.createResena = async (req, res) => {
     const resena = new Resena({
       estudiante_id: req.user.id,
       curso_id,
+      leccion_id: leccion_id || null,
       calificacion: tieneCalificacion ? calificacion : null,
       comentario: tieneComentario ? comentario.trim() : ""
     });
@@ -102,8 +120,25 @@ exports.getResenasByCurso = async (req, res) => {
       return res.status(400).json({ success: false, message: "ID inválido" });
     }
 
-    const resenas = await Resena.find({ curso_id: id })
-      .populate("estudiante_id", "nombre foto")
+    const resenas = await Resena.find({ curso_id: id, leccion_id: null })
+      .populate("estudiante_id", "nombre foto rol apellido")
+      .sort("-createdAt");
+
+    return res.status(200).json({ success: true, resenas });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+exports.getResenasByLeccion = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({ success: false, message: "ID inválido" });
+    }
+
+    const resenas = await Resena.find({ leccion_id: id })
+      .populate("estudiante_id", "nombre foto rol apellido")
       .sort("-createdAt");
 
     return res.status(200).json({ success: true, resenas });
@@ -120,7 +155,7 @@ exports.getResenaById = async (req, res) => {
     }
 
     const resena = await Resena.findById(id)
-      .populate("estudiante_id", "nombre foto");
+      .populate("estudiante_id", "nombre foto rol apellido");
     if (!resena) {
       return res.status(404).json({ success: false, message: "Reseña no encontrada" });
     }

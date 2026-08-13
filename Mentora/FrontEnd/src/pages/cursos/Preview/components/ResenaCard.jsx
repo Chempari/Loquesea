@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { imageUrl } from '../../../../utils';
+import { UserLink } from '../../../../components/UserLink';
 
 export function ResenaCard({ resena, currentUserId, onUpdate, onDelete }) {
   const isOwner = currentUserId && resena.estudiante_id?._id === currentUserId;
@@ -73,14 +73,7 @@ export function ResenaCard({ resena, currentUserId, onUpdate, onDelete }) {
       )}
 
       <div className="resena-header">
-        {resena.estudiante_id?.foto ? (
-          <img src={imageUrl(resena.estudiante_id.foto)} alt="" />
-        ) : (
-          <div className="perfil-photo-placeholder" style={{ width: 32, height: 32, fontSize: 14 }}>
-            {resena.estudiante_id?.nombre?.charAt(0) || '?'}
-          </div>
-        )}
-        <span className="resena-name">{resena.estudiante_id?.nombre || 'Anonimo'}</span>
+        <UserLink user={resena.estudiante_id} size="sm" />
         {mostrarEstrellas && (
           <span className="resena-stars">
             {'\u2605'.repeat(resena.calificacion)}
